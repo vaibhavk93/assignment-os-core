@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+*.pyc
+__pycache__/
+.env
+.env.local
+.claude/settings.local.json
+Companies/*/media/
+dist/
+build/
+.tmp*

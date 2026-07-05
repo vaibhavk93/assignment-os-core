@@ -1,0 +1,19 @@
+{
+  "company": "Ixigo",
+  "last_updated": "2026-07-05",
+  "total_items": 1,
+  "media": [
+    {
+      "media_id": "ixigo_pdf_001",
+      "file": "2026-07-05_0900_ProductManagementCaseStudy.pdf",
+      "meta": "2026-07-05_0900_ProductManagementCaseStudy.meta.json",
+      "type": "pdf",
+      "added_date": "2026-07-05",
+      "assignment_id": "2026-07-05_InternationalBookingExperience",
+      "screen_name": "Ixigo PM Case Study Assignment",
+      "analysis_summary": "Ixigo PM case study — AI-Native international travel booking for Indian customers. 5 problem areas: discovery, visa/info uncertainty, booking complexity, customization, payments. Requires AI-First approach (not chatbot), full UX design, funnel changes, metrics, rollout.",
+      "analysis_confidence": "high",
+      "tags": ["assignment", "case_study", "international_travel", "ai_native"]
+    }
+  ]
+}

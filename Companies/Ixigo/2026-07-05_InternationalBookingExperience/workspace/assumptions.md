@@ -1,0 +1,19 @@
+# Assumptions Register
+_Written by: Case Builder_
+
+| # | Assumption | Confidence | Falsifier | Grounded? |
+|---|---|---|---|---|
+| A1 | Ixigo has no live product-layer AI personalization/ranking today (search, recommendations) beyond conversational and customer-service AI | 0.6 | Ixigo discloses an existing ML-based search ranking or recommendation system with specifics comparable to Airbnb/Booking.com's disclosed architecture | no |
+| A2 | Corridor-level OTA market share (Bangkok/Dubai/Singapore) mirrors the national ~81.74% OTA share | 0.4 | Corridor-specific booking channel data becomes available showing meaningfully different OTA penetration in any of the three corridors | no |
+| A3 | Ixigo does not currently have a visa-tech or forex-tech partnership (Atlys, VFS Global, BookMyForex) in negotiation or in place | 0.5 | Ixigo announces or is confirmed to have already signed a visa/forex partnership not surfaced in public search results | no |
+| A4 | The domestic Ixigo booking funnel is meaningfully simpler than what an international funnel requires (visa/forex/trust steps) | 0.7 | A direct UX audit of Ixigo's domestic funnel shows comparable complexity/step count to what's proposed for international | no |
+| A5 | Bangkok/Dubai/Singapore growth rates (17-22% YoY observed) will continue at similar rates through the proposed rollout window rather than being a one-time post-pandemic recovery effect | 0.5 | Next 1-2 years of corridor-level visitor data shows growth reverting to low-single-digit rates | no |
+| A6 | Indian first-time-traveler trust/cultural-anxiety concerns (Dubai dress code, Singapore behavioral rules) are addressable via in-app AI guidance rather than requiring deeper destination-side intervention | 0.6 | User testing shows travelers don't act on in-app cultural guidance regardless of how well-timed/personalized it is | no |
+| A7 | International bookings carry higher GMV per booking than domestic bookings on Ixigo — sensitivity range 1.3x (conservative) / 2x (base) / 3x (upside), not a single 2-3x point estimate | 0.5 | Ixigo discloses booking-level GMV data showing international and domestic AOV are at or below parity (1x) | no |
+| A8 | An international-intent classifier can be built from Ixigo's existing behavioral data with sufficient accuracy to be useful at launch | 0.55 | Offline evaluation shows precision/recall too low to usefully re-rank results without excessive false positives | no |
+
+## Notes on Confidence
+
+- All assumptions in this register are labeled `ungrounded` in draft.json's `source_type` field — they are reasoned inferences, not directly sourced facts, even where they draw on corroborating research signals (e.g., A1 is informed by two independent absence-of-evidence findings from research Q1 and Q4, which raises its combined confidence to 0.6 but does not make it a grounded fact).
+- A7 (the GMV multiple) is the assumption most load-bearing for the business case magnitude in section s7. Following Devil's Advocate review (v2), this is now presented as a sensitivity range (1.3x conservative / 2x base / 3x upside) rather than a single 2-3x point estimate, and the business case is explicitly framed to hold directionally even at the conservative end — the "fund now" recommendation depends on international AOV exceeding domestic by any meaningful margin, not on the upside case being true. The market-timing argument (investor guidance on booking-volume growth + the Bangkok visa-policy trigger) is structured to not depend on this multiplier at all, so even a parity scenario (1x) does not fully undercut the "why now" case.
+- A3 (no existing visa/forex partnership) directly affects the build-vs-partner tradeoff in section s10 — the recommendation is phrased as "negotiate or confirm" rather than assuming a clean-slate start, per Insight Synthesizer's explicit caveat.

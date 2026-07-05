@@ -1,0 +1,19 @@
+{
+  "format": "md",
+  "file": "OUTPUTS/interview_qa.md",
+  "verdict": "PASS",
+  "checked_at": "2026-07-05T00:00:00Z",
+  "issues": [],
+  "question_count_actual": 11,
+  "question_count_expected": 11,
+  "placeholder_found": false,
+  "thin_answers": [],
+  "notes": {
+    "placeholder_scan": "No TODO, TBD, FIXME, [INSERT], [object Object], undefined, null, lorem, or placeholder text found",
+    "structure_check": "All 11 questions present; each has 'Why they're asking', 'Suggested answer', 'Key points to hit', and 'Assumption being probed' sections",
+    "content_integrity": "Answers are grounded in draft.json content: verified references to 480M users, outgrowing domestic guidance, GMV multiplier sensitivity, Atlys partnership, Airbnb/Booking.com patterns, Bangkok visa policy trigger, $36.5M AI funding, A6/A7/A8 assumptions cross-referenced with draft assumptions_register",
+    "answer_length": "All answers substantive (minimum ~300 words, ~2-3 minute delivery estimate); no empty answer sections detected",
+    "sentence_completeness": "No truncated text; all answers end at complete sentences with proper punctuation",
+    "distinctness": "No duplicate or copy-paste answers detected across the 11 Q&A pairs"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "verdict": "PASS",
+  "loop_number": 1,
+  "draft_hash": "v2-loop1",
+  "tier1": {
+    "all_pass": true,
+    "checks": [
+      {
+        "criterion": "required_format_present",
+        "verdict": "PASS",
+        "evidence": "sections array is non-empty (12 sections). Contains one executive_summary (s1) and multiple recommendation-type sections (s4, s5, s7, s9, s12). Assignment type case_study; structure matches the intent's recommendation frame stage-for-stage.",
+        "deterministic": true
+      },
+      {
+        "criterion": "all_intent_success_criteria_addressed",
+        "verdict": "PASS",
+        "evidence": "All 9 criteria ADDRESSED at argued depth (not merely MENTIONED). C1 AI-native/not-chatbot: s4+s6 build a ranking/personalization layer beneath the search box and explicitly reject chat as the primary solution. C2 full journey: s5 covers all 5 stages with per-stage AI mechanics. C3 India specificity: visa-friction ranking, DCC/forex-decline nudge, first-timer trust orchestration (3 distinct mechanisms). C4 algorithm layer: s6 specifies intent classifier + re-ranker (with named ranking features) + proactive trigger system. C5 business case: s7 answers should-ixigo-prioritize via GMV mix-shift + market timing + 3 forcing functions. C6 metrics: s8 covers conversion (pCTR/pCVR), satisfaction (task completion over NPS), business impact (GMV/intl share). C7 monitoring: s8 drift detection, monthly recheck, alert thresholds. C8 rollout: s9 two-track with distinct staffing/technical rationale + corridor sequencing. C9 funnel diff: s5 addresses it explicitly, honestly flagged as reasoned inference (registered A4).",
+        "deterministic": false
+      },
+      {
+        "criterion": "all_quantitative_claims_cited",
+        "verdict": "PASS",
+        "evidence": "Every numeric claim carries a populated citation source. Spot-checked: $23-35B/11.4% CAGR (Q5), 480M AAU (Company Memory/investor reports), 60% vs 7-9% share (market research), 2.13-2.5M Bangkok (Q5), $36.5M Prosus, ~150 ML models (Q3), 99%/majority conversions (Q3), GMV multiplier 1.3-3x (cited to A7 estimate, flagged ungrounded). No uncited numbers found.",
+        "deterministic": true
+      },
+      {
+        "criterion": "no_placeholder_text",
+        "verdict": "PASS",
+        "evidence": "Grep for TODO/[INSERT]/[ADD]/TBD/lorem/PLACEHOLDER/FIXME/XXX returned only substring matches inside 'JTBD' (Jobs-To-Be-Done framework acronym contains the letters T-B-D). No actual placeholder tokens present.",
+        "deterministic": true
+      },
+      {
+        "criterion": "assumptions_register_present",
+        "verdict": "PASS",
+        "evidence": "assumptions_register is a non-empty 8-entry array (A1-A8). Only s7 has is_assumption:true; its load-bearing assumption (A7, the GMV multiplier sensitivity range) is present with confidence 0.5, falsifier, and source_type 'ungrounded'. All entries carry rationale + falsifier + confidence.",
+        "deterministic": true
+      },
+      {
+        "criterion": "hiring_signals_covered",
+        "verdict": "PASS",
+        "evidence": "All 5 PRIMARY evaluation areas covered explicitly. AI-native product thinking: s4/s6. End-to-end systems thinking: s5 connected 5-stage narrative + s6 three-component system. Indian customer depth: s2/s3/s5 visa/forex/first-timer specifics. Business judgment/prioritization: s7 explicit fund-now call with opportunity-cost reasoning. Product metrics fluency: s8 dedicated section directly answering the 'weak metrics' red flag. SECONDARY areas (algorithm s6, funnel s5, rollout s9) also covered.",
+        "deterministic": false
+      }
+    ]
+  },
+  "tier2": {
+    "all_above_threshold": true,
+    "threshold": 0.8,
+    "scores": [
+      {
+        "criterion": "intent_alignment",
+        "reasoning": "The Real Question is dual: (a) what is the AI-native architecture that makes international travel feel effortless, and (b) is this the right bet now? The central thesis 'algorithm gap not feature gap, a ranking layer not a chatbot' maps directly to (a); s7/s12 answer (b) with an explicit fund-now call tied to GMV mix-shift and market timing. The draft resists the intent's named trap (NOT 'build 10 features') and delivers a product paradigm, mirroring the intent's recommendation frame stage-for-stage. The primary 'not a chatbot' gate is directly and repeatedly answered with the ranking-layer bet, and the draft honestly flags that Ixigo's own shipped AI is conversational rather than over-reading the earnings quote. Exact match to the real question, not a related one.",
+        "score": 0.93,
+        "verdict": "PASS"
+      },
+      {
+        "criterion": "completeness",
+        "reasoning": "All 9 success criteria covered (9/9), each at argued depth rather than mention-level: journey stages each get a specific mechanism, algorithm section names three components and separates ML from rules-based, metrics span all three required dimensions plus monitoring, rollout has genuine staffing/technical rationale. Senior-PM depth requirement met. The one lighter spot is C9 (funnel diff): it is handled as reasoned inference plus a recommended pre-build UX audit rather than a concrete step-by-step side-by-side of Ixigo's actual domestic vs international funnels. This is transparently owned and registered (A4), but it is genuinely thinner than the other eight criteria, which caps a perfect score.",
+        "score": 0.88,
+        "verdict": "PASS"
+      },
+      {
+        "criterion": "grounding_faithfulness",
+        "reasoning": "Cross-checked 6 specific claims against research. (1) MMT-Atlys exclusive-leaning, 2-3mo head start -> Q6 Finding 3 confirms. (2) $23-35B/11.4% CAGR -> Q5 Findings 1-2 confirm. (3) Airbnb ranking drives majority of conversions -> Q3 Finding 3 (KDD '99% of conversions'); draft softens to 'large/substantial majority' appropriately. (4) Booking.com ~150 ML models under chat UI -> Q3 Finding 6, flagged company-disclosed; draft carries same caveat. (5) Thailand visa-free removal May 19 2026 + 2.13-2.5M Bangkok -> Q2 Finding 5 + Q5 Finding 4 confirm. (6) Ixigo shipped AI is conversational, no product-layer ranking evidence -> Q4 confirms; draft flags ~0.6 confidence absence-of-evidence. GMV multiplier explicitly labeled ungrounded estimate (A7), not claimed as research fact. Draft does NOT overclaim Atlys exclusivity (Q6 notes MMT is investor not exclusive partner) and instead frames exclusivity as a risk with fallbacks. 6/6 verified claims grounded; estimates correctly flagged.",
+        "score": 0.92,
+        "verdict": "PASS"
+      },
+      {
+        "criterion": "insight_quality",
+        "reasoning": "Clears the rubric's 'wrong by design not feature gap' bar. Core insights carry non-obvious second-order implications: (1) MMT's visa/forex features reframed as evidence of the pain point to convert into ranking signals, not features to copy; (2) low CAC named and rejected as the wrong business argument in favor of GMV mix-shift (senior opportunity-cost reasoning); (3) two-track rollout defended as different-in-kind by skill set, pre-empting the 'relabeled sequential work' critique; (4) the Booking.com 'chat gets the press, ranking gets the investment' contrast used to justify the architectural bet rather than merely cited. Each major section converts fact into 'so what'; minimal pure data restatement.",
+        "score": 0.90,
+        "verdict": "PASS"
+      },
+      {
+        "criterion": "internal_consistency",
+        "reasoning": "Cross-section coherence holds. The three s6 components (intent classifier, re-ranker, trigger system) map cleanly onto s8 metrics (offline ranking quality, pCTR/pCVR per layer, drift monitoring) and onto s9 rollout (trigger system = 4-week Bangkok feature; classifier+re-ranker = 16-week build). GMV multiplier presented consistently as 1.3/2/3x across s1, s7, s11, A7 with no lingering '2-3x' point estimate from v1 — the Devil's Advocate revision propagated cleanly. 'Not a chatbot' thesis consistent s1->s12. Proposed metrics actually measure the claimed trust/conversion outcome. Rollout complexity ordering (Dubai < Bangkok < Singapore) matches Q6's constraint ranking. The feasibility-vs-urgency tension is explicitly reconciled rather than left contradictory. No contradictions found.",
+        "score": 0.93,
+        "verdict": "PASS"
+      }
+    ]
+  },
+  "tier3": {
+    "notes": [
+      "Tone matches the stated audience (Senior PM case-study panel): confident, thesis-first, self-aware about assumptions. slide_notes on each section show strong presentation instinct (title-as-argument, anticipated Q&A). Appropriate.",
+      "case_study rubric extras satisfied: framework applied explicitly (JTBD in s5, sensitivity analysis in s7); options evaluated rather than a single path (feasibility-first vs urgency-first reconciled in s9; build-vs-partner in s10); tradeoffs acknowledged (dedicated s10 + risks s11). Business impact quantified via GMV sensitivity range.",
+      "Advisory strengthening opportunity (not required by intent): C9 funnel-diff is the one criterion resting on inference. If a live ixigo.com UX audit is feasible before the panel, converting the inferred funnel delta into 1-2 concrete added steps would harden the single softest section. The draft already recommends this as pre-work.",
+      "Word count estimate ~5300 for 12 core + 5 appendix sections is within reasonable case-study bounds; Formatter should confirm slide count against the 12-15 target from intent (appendix separated)."
+    ]
+  },
+  "routing": {
+    "route_to": null,
+    "reason": "All 6 Tier 1 hard gates PASS and all 5 Tier 2 criteria are at or above the 0.8 threshold (lowest: completeness 0.88). The draft answers the real question, is grounded in research with uncertainties honestly flagged, and is internally consistent. Proceed to Executive Reviewer then Formatter.",
+    "specific_fix": "None required. Optional advisory only: if a live ixigo.com funnel audit is feasible, sharpen s5's international-vs-domestic funnel delta from inference to concrete step-level detail."
+  },
+  "unmet_criteria": []
+}

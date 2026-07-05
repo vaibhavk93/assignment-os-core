@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ixigo — AI-Native International Travel Architecture (Paytm Branding Test)</title>
+<style>
+:root {
+  /* Brand — Paytm blue (test colors) */
+  --color-primary: #1F51BA;
+  --color-background: #1B1B1B;
+  --color-surface: rgba(255,255,255,0.06);
+  --color-surface-strong: rgba(255,255,255,0.12);
+  --color-text-primary: #FFFFFF;
+  --color-text-muted: rgba(255,255,255,0.55);
+  --color-border: rgba(255,255,255,0.10);
+
+  /* 8px spacing grid */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+
+  /* Typography — clamp() only */
+  --text-title: clamp(1.375rem, 2.8vw + 0.5rem, 2.25rem);
+  --text-subtitle: clamp(1rem, 1.8vw + 0.3rem, 1.5rem);
+  --text-body: clamp(0.875rem, 1.4vw + 0.25rem, 1.125rem);
+  --text-small: clamp(0.625rem, 0.8vw + 0.15rem, 0.75rem);
+  --text-stat: clamp(2rem, 5vw + 0.5rem, 4rem);
+
+  /* Chrome */
+  --text-chrome: clamp(7px, 0.55vw + 4px, 9px);
+  --chrome-h: 32px;
+  --chrome-f: 28px;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  overflow: hidden;
+}
+
+.deck {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+  background: var(--color-background);
+}
+
+.slides-container {
+  width: 100%;
+  height: calc(100vh - 60px);
+  height: calc(100dvh - 60px);
+  overflow: hidden;
+}
+
+/* ── Slide base ── */
+.slide {
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.slide.active { display: flex; }
+
+/* ── Chrome header ── */
+.slide-chrome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-8);
+  height: var(--chrome-h);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.chrome-company {
+  font-size: var(--text-chrome);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.85;
+}
+.chrome-project {
+  font-size: var(--text-chrome);
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Content area ── */
+.slide-content {
+  flex: 1;
+  padding: var(--space-4) var(--space-8);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ── Chrome footer ── */
+.slide-chrome-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-8);
+  height: var(--chrome-f);
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
+}
+.chrome-creator, .chrome-slide-num, .chrome-date {
+  font-size: var(--text-chrome);
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+.chrome-slide-num { opacity: 0.7; }
+
+/* Cover chrome overrides */
+.chrome-cover { border-bottom: none; background: transparent; }
+.chrome-company-cover { font-size: calc(var(--text-chrome) * 1.4); opacity: 1; }
+.chrome-assignment-type {
+  font-size: var(--text-chrome);
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Typography ── */
+.slide-heading {
+  font-size: var(--text-title);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-primary);
+}
+.slide-body { font-size: var(--text-body); line-height: 1.65; }
+.slide-body ul { list-style: none; padding: 0; margin: 0; }
+.slide-body li {
+  padding: var(--space-1) 0 var(--space-1) var(--space-4);
+  position: relative;
+  margin-bottom: var(--space-1);
+}
+.slide-body li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.slide-footnote {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  margin-top: auto;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ── COVER ── */
+.slide-cover .slide-content {
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.cover-accent {
+  width: 48px;
+  height: 4px;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+.cover-title {
+  font-size: clamp(1.75rem, 4vw + 0.5rem, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--color-text-primary);
+  max-width: 70%;
+}
+.cover-subtitle {
+  font-size: var(--text-subtitle);
+  color: var(--color-text-muted);
+  max-width: 60%;
+  line-height: 1.4;
+}
+.cover-meta {
+  font-size: var(--text-body);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+/* ── EXEC SUMMARY ── */
+.exec-cards {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.exec-card {
+  flex: 1;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.exec-card:first-child { border-left: 3px solid var(--color-primary); }
+.exec-card-label {
+  font-size: var(--text-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+}
+.exec-card-content {
+  font-size: var(--text-small);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+/* ── DATA CLUSTER ── */
+.infographic-cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+}
+.cluster-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--space-1);
+}
+.cluster-num {
+  font-size: var(--text-stat);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+.cluster-lbl {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  text-align: center;
+  max-width: 100px;
+}
+.cluster-divider {
+  width: 1px; height: 48px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+/* ── STAT RING ── */
+.infographic-ring {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--color-primary) calc(var(--pct) * 1%),
+    var(--color-surface) 0
+  );
+  display: flex; align-items: center; justify-content: center;
+  position: relative; flex-shrink: 0;
+}
+.infographic-ring::after {
+  content: '';
+  width: 64px; height: 64px;
+  background: var(--color-background);
+  border-radius: 50%;
+  position: absolute;
+}
+.ring-value {
+  position: relative; z-index: 1;
+  font-size: var(--text-body); font-weight: 700;
+  color: var(--color-text-primary);
+}
+.ring-label {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+  max-width: 120px; text-align: center;
+}
+
+/* ── INSIGHT LAYOUT ── */
+.insight-layout {
+  display: flex;
+  gap: var(--space-6);
+  flex: 1;
+  min-height: 0;
+  align-items: flex-start;
+}
+.insight-evidence { flex: 1; }
+.insight-callout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+.stat-inline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.stat-big {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+/* ── STEP CHAIN ── */
+.infographic-chain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: nowrap;
+  overflow: hidden;
+  margin: var(--space-2) 0;
+}
+.chain-step {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-small);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+.chain-step.chain-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+.chain-arrow {
+  color: var(--color-primary);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ── COMPARISON GRID ── */
+.comparison-grid {
+  display: flex;
+  gap: var(--space-3);
+  flex: 1;
+  min-height: 0;
+}
+.comparison-col {
+  flex: 1;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.comparison-chosen { border-left: 3px solid var(--color-primary); }
+.comparison-rejected { opacity: 0.7; }
+.comparison-label {
+  font-size: var(--text-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+}
+.comparison-rejected .comparison-label { color: var(--color-text-muted); }
+.comparison-verdict {
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-strong);
+  border-radius: 4px;
+  font-size: var(--text-small);
+  color: var(--color-text-primary);
+  border-left: 3px solid var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* ── BEFORE/AFTER ── */
+.infographic-ba {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-3);
+  flex: 1;
+  min-height: 0;
+}
+.ba-col {
+  flex: 1;
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+.ba-after { border-color: var(--color-primary); }
+.ba-tag {
+  font-size: var(--text-small); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
+.ba-tag-good { color: var(--color-primary); }
+.ba-list {
+  list-style: none; padding: 0; margin: 0;
+  font-size: var(--text-small); color: var(--color-text-primary);
+  flex: 1;
+}
+.ba-list li { padding: var(--space-1) 0; }
+.ba-list li::before { content: "· "; color: var(--color-text-muted); }
+.ba-metric {
+  font-size: var(--text-body); font-weight: 700;
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--color-border);
+}
+.ba-metric-bad { color: var(--color-text-muted); }
+.ba-metric-good { color: var(--color-primary); }
+.ba-arrow {
+  font-size: var(--text-subtitle); color: var(--color-primary);
+  align-self: center; flex-shrink: 0;
+}
+
+/* ── REC TAG ── */
+.rec-tag {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--text-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 2px var(--space-2);
+  border-radius: 3px;
+  margin-bottom: var(--space-2);
+}
+
+/* ── SPEAKER NOTES ── */
+.speaker-notes {
+  display: none;
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  background: rgba(0,0,0,0.6);
+  padding: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+.speaker-notes.visible { display: block; }
+
+/* ── DOT NAV ── */
+nav.dot-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--color-background);
+  border-top: 1px solid var(--color-border);
+  z-index: 100;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--color-border);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: background var(--duration-fast) var(--easing-default),
+              transform var(--duration-fast) var(--easing-default);
+}
+.dot.active {
+  background: var(--color-primary);
+  transform: scale(1.35);
+}
+.dot:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.slide-counter {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  margin-left: var(--space-3);
+}
+
+/* ── PRINT ── */
+@media print {
+  .deck { height: auto; overflow: visible; }
+  .slides-container { height: auto; overflow: visible; }
+  .slide {
+    display: flex !important;
+    page-break-after: always;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  .slide-chrome-header, .slide-chrome-footer { display: flex !important; }
+  .dot-nav, .slide-counter { display: none !important; }
+  .speaker-notes { display: block !important; }
+}
+</style>
+</head>
+<body>
+<main>
+<div class="deck" role="main">
+  <div class="slides-container">
+
+    <!-- ══════════════════════════════════════
+         SLIDE 1 — Cover
+    ══════════════════════════════════════ -->
+    <div class="slide slide-cover active" data-index="0">
+      <header class="slide-chrome-header chrome-cover" role="banner">
+        <span class="chrome-company chrome-company-cover">IXIGO</span>
+        <span class="chrome-assignment-type">Product Strategy — Senior PM Case Study</span>
+      </header>
+
+      <div class="slide-content">
+        <div class="cover-accent"></div>
+        <h1 class="cover-title">The AI-Native International Travel Architecture</h1>
+        <p class="cover-subtitle">Giving Ixigo's hyper-personalization promise concrete product form</p>
+        <p class="cover-meta">Vaibhav Kumawat &nbsp;·&nbsp; July 2026 &nbsp;·&nbsp; Senior PM Case Study</p>
+      </div>
+
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>1 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">Open with the reframe, not the problem. This is an algorithm diagnosis, not a feature list. Transition: "Let's start with why the current algorithm fails international travelers specifically."</aside>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 2 — Executive Summary
+    ══════════════════════════════════════ -->
+    <div class="slide slide-exec-summary" data-index="1">
+      <header class="slide-chrome-header" role="banner">
+        <span class="chrome-company">IXIGO</span>
+        <span class="chrome-project">International Booking Experience</span>
+      </header>
+
+      <div class="slide-content">
+        <h2 class="slide-heading">Ixigo's international problem is an algorithm gap, not a feature gap — the fix is a ranking layer, not a chatbot</h2>
+        <div class="exec-cards">
+          <div class="exec-card">
+            <div class="exec-card-label">Problem</div>
+            <div class="exec-card-content">Search engine built for domestic price-sensitivity fails international travelers whose real question is "can I get a visa, will my card work, am I about to mess this up?"</div>
+          </div>
+          <div class="exec-card">
+            <div class="exec-card-label">Recommendation</div>
+            <div class="exec-card-content">Build an intent-ranking model treating visa friction, forex risk, and first-timer trust signals as ranking inputs — not as separate bolt-on features</div>
+          </div>
+          <div class="exec-card">
+            <div class="exec-card-label">Impact</div>
+            <div class="exec-card-content">1.3–3× GMV per acquired user; 4-week Bangkok pilot + 16-week full architecture; captures $36.5M of earmarked AI investment</div>
+          </div>
+        </div>
+        <div class="infographic-cluster">
+          <div class="cluster-item">
+            <span class="cluster-num">$35B</span>
+            <span class="cluster-lbl">India outbound OTA market</span>
+          </div>
+          <div class="cluster-divider"></div>
+          <div class="cluster-item">
+            <span class="cluster-num">11.4%</span>
+            <span class="cluster-lbl">CAGR — faster than domestic</span>
+          </div>
+          <div class="cluster-divider"></div>
+          <div class="cluster-item">
+            <span class="cluster-num">480M</span>
+            <span class="cluster-lbl">Ixigo annual active users</span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>2 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">Three-card framing: problem / solution / impact — let them scan. Anchor with the three cluster numbers to prove real market scale. Anticipate Q: "What's the timeline?" A: Two tracks — 4-week Bangkok pilot, 16-week full ranking architecture.</aside>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 3 — Problem
+    ══════════════════════════════════════ -->
+    <div class="slide slide-insight" data-index="2">
+      <header class="slide-chrome-header" role="banner">
+        <span class="chrome-company">IXIGO</span>
+        <span class="chrome-project">International Booking Experience</span>
+      </header>
+
+      <div class="slide-content">
+        <h2 class="slide-heading">A $23-35B market growing at 11.4% CAGR is being served by an algorithm trained for a different problem entirely</h2>
+        <div class="insight-layout">
+          <div class="insight-evidence">
+            <div class="slide-body">
+              <ul>
+                <li>480M annual active users — distribution isn't the bottleneck, <em>relevance</em> is</li>
+                <li>International first-timer asks "can I get a visa, will my card decline?" — not "cheapest fare?"</li>
+                <li>MakeMyTrip: 60% OTA share vs Ixigo's 7–9% — not a price gap, an algorithm gap</li>
+                <li>Bangkok: 2.5M Indian visitors/yr, highest-volume target corridor, newly visa-affected (May 2026)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="insight-callout">
+            <div class="infographic-ring" style="--pct: 8">
+              <span class="ring-value">8%</span>
+            </div>
+            <p class="ring-label">Ixigo intl OTA share vs MMT's 60%</p>
+            <div class="stat-inline">
+              <span class="stat-big">2.5M</span>
+              <p class="ring-label">Bangkok Indian visitors/yr at risk</p>
+            </div>
+          </div>
+        </div>
+        <p class="slide-footnote">Sources: NSE FY26 filings · Ixigo Q2 FY26 investor guidance · Thai Cabinet visa ruling, May 19 2026 · Tourism Authority of Thailand 2024</p>
+      </div>
+
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>3 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">Key line: distribution isn't the bottleneck, relevance is. Ixigo already has 480M users — the asset exists. Panel needs to see algorithm diagnosis, not feature envy. Transition: "What would actually fixing the algorithm look like?"</aside>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 4 — Insight: MMT Competitive Read
+    ══════════════════════════════════════ -->
+    <div class="slide slide-comparison" data-index="3">
+      <header class="slide-chrome-header" role="banner">
+        <span class="chrome-company">IXIGO</span>
+        <span class="chrome-project">International Booking Experience</span>
+      </header>
+
+      <div class="slide-content">
+        <h2 class="slide-heading">MMT's visa and forex tools aren't the moat to copy — they're proof of what to turn into ranking signals</h2>
+        <div class="infographic-chain">
+          <div class="chain-step">User Query</div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-step chain-active">Intent Classifier</div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-step">Visa Signal</div>
+          <div class="chain-arrow">+</div>
+          <div class="chain-step">Forex Signal</div>
+          <div class="chain-arrow">+</div>
+          <div class="chain-step">Trust Signal</div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-step chain-active">Re-ranked Results</div>
+        </div>
+        <div class="comparison-grid">
+          <div class="comparison-col comparison-rejected">
+            <div class="comparison-label">MMT's Approach — don't copy</div>
+            <div class="slide-body">
+              <ul>
+                <li>Visa via Atlys investment — static 3rd-party integration, not ML</li>
+                <li>Forex via TripMoney — bolt-on card, not predictive re-ranking</li>
+                <li>Each pain point addressed separately, no unified adaptive system</li>
+              </ul>
+            </div>
+          </div>
+          <div class="comparison-col comparison-chosen">
+            <div class="comparison-label">Ixigo's Leapfrog — build this</div>
+            <div class="slide-body">
+              <ul>
+                <li>Visa friction → ranking input, not a separate portal</li>
+                <li>Forex decline risk → re-ranks payment methods by predicted risk</li>
+                <li>Trust deficit → guidance surfaces at exact moment of hesitation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="comparison-verdict">Global proof: Airbnb and Booking.com's value sits in invisible ranking layers, not chat UIs. Booking.com runs ~150 ML models underneath a chat surface. No Indian OTA has built this yet.</div>
+      </div>
+
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>4 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">This separates a senior answer from a junior one. Junior: "copy MMT's features." Senior: "MMT's features are evidence of the pain point, not the solution to copy." Airbnb/Booking.com as global proof that ranking, not chat, is where value lives. Transition: "Here's what that ranking-first architecture looks like."</aside>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 5 — Recommendation: AI Vision
+    ══════════════════════════════════════ -->
+    <div class="slide slide-recommendation" data-index="4">
+      <header class="slide-chrome-header" role="banner">
+        <span class="chrome-company">IXIGO</span>
+        <span class="chrome-project">International Booking Experience</span>
+      </header>
+
+      <div class="slide-content">
+        <div class="rec-tag">Recommendation</div>
+        <h2 class="slide-heading">Build a personalization layer that knows a traveler is "international-curious" before they type a query</h2>
+        <div class="infographic-ba">
+          <div class="ba-col">
+            <div class="ba-tag">Today — blank canvas</div>
+            <ul class="ba-list">
+              <li>Every user treated identically until they search</li>
+              <li>Price-ranked results for all queries, including international</li>
+              <li>Visa/forex friction discovered mid-booking or post-purchase</li>
+              <li>Help content surfaces reactively, not at moment of hesitation</li>
+            </ul>
+            <div class="ba-metric ba-metric-bad">International conversion drops at discovery</div>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-col ba-after">
+            <div class="ba-tag ba-tag-good">AI-Native — predictive layer</div>
+            <ul class="ba-list">
+              <li>Behavioral signals flag "international-curious" users pre-query</li>
+              <li>Destinations re-ranked by visa-friction-adjusted feasibility score</li>
+              <li>Forex decline risk re-ranks payment methods before checkout</li>
+              <li>Policy alerts (e.g. Thailand visa change) surface inline, proactively</li>
+            </ul>
+            <div class="ba-metric ba-metric-good">1.3–3× GMV multiplier on international bookings</div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>5 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">Quote Ixigo's Q2 FY26 earnings call: "hyper-personalization: knowing what the user wants before they ask." This is the ranking-layer interpretation of that promise, not the chatbot interpretation. Before/after proves the paradigm shift concretely. Close: "Next: the full architecture, business case, and two-track rollout."</aside>
+    </div>
+
+  </div><!-- /slides-container -->
+
+  <nav class="dot-nav" aria-label="Slide navigation">
+    <button class="dot active" aria-label="Go to slide 1"></button>
+    <button class="dot" aria-label="Go to slide 2"></button>
+    <button class="dot" aria-label="Go to slide 3"></button>
+    <button class="dot" aria-label="Go to slide 4"></button>
+    <button class="dot" aria-label="Go to slide 5"></button>
+    <span class="slide-counter" aria-live="polite">1 / 5</span>
+  </nav>
+</div><!-- /deck -->
+</main>
+
+<script>
+(function() {
+  'use strict';
+  const slides = document.querySelectorAll('.slide');
+  const dots   = document.querySelectorAll('.dot');
+  const counter = document.querySelector('.slide-counter');
+  let current = 0;
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    dots[current]?.classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+    dots[current]?.classList.add('active');
+    if (counter) counter.textContent = `${current + 1} / ${slides.length}`;
+    document.querySelectorAll('[data-chrome-num]').forEach(el => {
+      el.textContent = `${current + 1} / ${slides.length}`;
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1); }
+    if (e.key === 'n' || e.key === 'N') toggleNotes();
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End')  show(slides.length - 1);
+  });
+
+  dots.forEach((dot, i) => dot.addEventListener('click', () => show(i)));
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive: true});
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) show(dx < 0 ? current + 1 : current - 1);
+  }, {passive: true});
+
+  function toggleNotes() {
+    document.querySelectorAll('.speaker-notes').forEach(n => n.classList.toggle('visible'));
+  }
+
+  show(0);
+})();
+</script>
+</body>
+</html>

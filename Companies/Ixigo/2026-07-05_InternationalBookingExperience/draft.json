@@ -1,0 +1,367 @@
+{
+  "title": "The AI-Native International Travel Architecture: Giving Ixigo's Hyper-Personalization Promise Concrete Product Form",
+  "audience": "Ixigo hiring panel — Senior PM case study review",
+  "assignment_type": "case_study",
+  "sections": [
+    {
+      "id": "s1",
+      "type": "executive_summary",
+      "heading": "Ixigo's international problem is an algorithm gap, not a feature gap — and the fix is a ranking layer, not a chatbot",
+      "content": "Ixigo's search and ranking engine was built and tuned for domestic rail and price-sensitive flight search. That engine is wrong by design for international discovery, where the Indian traveler's real question isn't 'what's the cheapest fare' but 'can I actually get in, and will I mess this up.' The result: Indian travelers discover international trips on Instagram, research visa and forex questions on Google, and book on MakeMyTrip — which has bolted on a visa portal (via its Atlys investment) and a forex card (TripMoney) as static features. Ixigo loses these bookings not on price or reach, but on trust and completeness at the exact moment of an international booking decision. The recommendation is not to copy MMT's features. It is to build a system that aligns with the direction management has signaled on its Q2 FY26 earnings call — a 'hyper-personalization' pillar — and give the ranking-layer interpretation of that pillar concrete architectural form: an international intent-ranking model that treats visa friction, forex risk, and first-time-traveler trust signals as ranking inputs, not as separate features. This is buildable in two tracks that are deliberately different in kind, not just sequence: a 4-week rules-based Bangkok visa-alert (a small, focused build on existing notification infrastructure — not the AI investment itself) and a 16-week full ranking/classifier architecture starting in Dubai (fastest regulatory path), which is where the real ML investment sits. Together they capture a market growing at 11.4% CAGR. The business case holds even under a conservative GMV-multiplier assumption, for reasons detailed in the business case section — the market-timing argument does not depend on the upside case.",
+      "supporting_data": [
+        "India outbound travel market: $23-35B, growing at 11.4% CAGR",
+        "Ixigo Q2 FY26 management guidance: international flight bookings growing faster than domestic",
+        "MakeMyTrip's visa/forex features are third-party integrations (Atlys, TripMoney), not a personalization layer",
+        "Thailand removed visa-free entry for Indians (Thai Cabinet, May 19, 2026) — 2.13-2.5M annual Bangkok travelers newly affected",
+        "$36.5M of Ixigo's Prosus funding is earmarked for AI-driven platform development"
+      ],
+      "citations": [
+        { "claim": "India outbound travel market $23-35B, 11.4% CAGR", "source": "Insight Synthesizer Insight 6 / research Q5", "url": null },
+        { "claim": "Ixigo management describes hyper-personalization as forward guidance, not shipped capability", "source": "Insight Synthesizer Insight 1 / Q4 earnings call analysis", "url": null },
+        { "claim": "MakeMyTrip visa/forex features are partnership integrations, not native personalization", "source": "Insight Synthesizer Insight 3 / research Q1, Q6", "url": null },
+        { "claim": "Thailand visa-free removal for Indians, May 2026", "source": "Insight Synthesizer Insight 4 / research Q2, Q6", "url": null },
+        { "claim": "$36.5M earmarked for AI platform development", "source": "Company context / Prosus funding announcement, Oct 2025", "url": null }
+      ],
+      "slide_notes": "Open with the reframe, not the problem. The panel has read a dozen submissions that say 'add visa help and a chatbot' — I want the first sentence to signal this is different: it's an algorithm diagnosis. State the thesis in one breath: wrong algorithm, not missing features. Then immediately ground it in something concrete they'll recognize — Ixigo's own earnings call language — to show I did real research, not generic AI framing. Close on the two-track rollout number so they know this isn't hand-wavy; there's a build plan. Transition: 'Let's start with why the current algorithm fails international travelers specifically.'",
+      "is_assumption": false
+    },
+    {
+      "id": "s2",
+      "type": "problem",
+      "heading": "A $23-35B market growing at 11.4% is being served by a search algorithm trained for a different problem entirely",
+      "content": "Indian outbound international travel is a $23-35B market and growing at 11.4% CAGR — faster than domestic rail, and, per Ixigo's own investor guidance, faster than Ixigo's domestic flight business too. Ixigo has real distribution advantages here: 480M annual active users across ixigo, ConfirmTkt, and AbhiBus, acquired cheaply through its dominant railway app. But distribution isn't the bottleneck — relevance is. Ixigo's ranking and recommendation logic was built for a domestic traveler whose primary variable is price and whose trust in the transaction is already established (same currency, same documents, home turf). International discovery inverts this: the first-time international traveler's primary anxiety is not 'is this the cheapest fare' but 'can I get a visa, will my card get declined, am I about to make an expensive mistake.' Feeding that traveler a price-ranked list of Bangkok flights, the way Ixigo would rank a Delhi-Mumbai search, is solving the wrong problem. It's a plausible reason international searches on ixigo convert to a booking on MakeMyTrip instead: MMT's Atlys-powered visa assistant and TripMoney forex card, however bolted-on, address the actual point of hesitation.",
+      "supporting_data": [
+        "480M annual active users across ixigo, ConfirmTkt, AbhiBus",
+        "International flight bookings growing faster than domestic (Ixigo Q2 FY26 investor guidance)",
+        "MakeMyTrip: 60% OTA market share; Ixigo: 7-9% (clustered with Cleartrip, EaseMyTrip, Yatra)",
+        "Bangkok: 2.13-2.5M annual Indian visitors — highest-volume of the three target corridors"
+      ],
+      "citations": [
+        { "claim": "480M annual active users", "source": "Company Memory / investor reports", "url": null },
+        { "claim": "International bookings outgrowing domestic per Ixigo's own guidance", "source": "Insight Synthesizer Insight 6 / research Q5", "url": null },
+        { "claim": "MakeMyTrip 60% market share vs Ixigo 7-9%", "source": "Company context / market research", "url": null },
+        { "claim": "Bangkok 2.13-2.5M annual Indian visitors", "source": "Insight Synthesizer Insight 4-5 / research Q5", "url": null }
+      ],
+      "slide_notes": "This slide's job is to prove I understand WHY the problem exists, not just describe symptoms. The key line: distribution isn't the bottleneck, relevance is. Ixigo already has the users — 480M of them. The panel needs to see I'm diagnosing an algorithm problem, because that's the whole hiring signal here. Don't spend time on MMT's features yet — that's next slide. Transition: 'So what would it actually mean to fix the algorithm, not the features?'",
+      "is_assumption": false
+    },
+    {
+      "id": "s3",
+      "type": "insight",
+      "heading": "MakeMyTrip's visa and forex tools are not the moat to copy — they're proof of what to turn into ranking signals",
+      "content": "It's tempting to read the competitive gap as a feature list: MMT has a visa assistant, a forex card, a destination guide — Ixigo doesn't. That reading leads to the wrong recommendation (build a visa portal, build a forex card, catch up on features). Look closer and MMT's advantage isn't algorithmic sophistication — it's a partnership relationship. Its visa product runs on an exclusive-leaning investment in Atlys; its forex card is TripMoney. These are static integrations bolted onto a standard booking flow, not an adaptive personalization layer. No Indian OTA — including MMT — runs ranking sophistication comparable to what Airbnb or Booking.com deploy globally, where an invisible ranking/embeddings layer (not a chat surface) drives the overwhelming majority of conversion. This is the whitespace: the three features MMT has bolted on (visa, forex, destination guidance) map exactly onto the three highest-confidence Indian pain points (visa anxiety, DCC/forex confusion, first-timer trust deficit). Ixigo doesn't need to bolt on the same three features slower. It needs to make visa-friction, forex-decline-risk, and trust-deficit signals into inputs for a single ranking and orchestration engine — surfacing visa-easy destinations higher for a first-time traveler, re-ranking payment methods by predicted decline risk, and timing guidance to the exact moment of uncertainty. That is the leapfrog: MMT solved these as separate static features; Ixigo can solve them as one adaptive system.",
+      "supporting_data": [
+        "MMT's visa product runs through an Atlys investment relationship — a 2-3 month structural head start, not a design gap",
+        "Airbnb's ranking/embeddings layer is credited with driving the large majority of platform conversions",
+        "Booking.com runs ~150 ML models underneath a chat UI that gets the press but isn't where the ML investment sits",
+        "No Indian OTA (including MMT) has disclosed ranking sophistication comparable to Airbnb/Booking.com"
+      ],
+      "citations": [
+        { "claim": "MMT-Atlys partnership relationship, 2-3 month head start", "source": "Insight Synthesizer Insight 3 / cross-file connection Q1+Q6", "url": null },
+        { "claim": "Airbnb embeddings-based ranking drives majority of conversions", "source": "Insight Synthesizer Insight 2 / research Q3", "url": null },
+        { "claim": "Booking.com ~150 ML models operating underneath chat UI", "source": "Insight Synthesizer Insight 2 / research Q3 (company-disclosed figure, not independently audited)", "url": null },
+        { "claim": "No Indian OTA matches Airbnb/Booking.com ranking sophistication", "source": "Insight Synthesizer Insight 3 / research Q3", "url": null }
+      ],
+      "slide_notes": "This is the slide that separates a senior answer from a junior one. Junior answer: 'copy MMT's visa and forex features.' Senior answer: 'MMT's features are evidence of the pain point, not the solution to copy.' Say explicitly: I could recommend feature parity, but that's copying MMT's least defensible layer while ignoring the layer that actually matters. Then pivot to Airbnb/Booking.com as the proof that ranking, not chat, is where value lives globally. Transition: 'Here's what that ranking-first architecture looks like end to end.'",
+      "is_assumption": false
+    },
+    {
+      "id": "s4",
+      "type": "recommendation",
+      "heading": "The AI-native vision: a personalization layer that knows a traveler is 'international-curious' before they type a query",
+      "content": "The product paradigm is this: AI is the layer beneath the search box, not a box you type into. Today, Ixigo's app treats every user identically until they search — the interface is a blank canvas waiting for input. An AI-native version reads signals that already exist in Ixigo's data (repeated domestic flight searches with unusual date flexibility, browsing patterns on cross-sell placements, app engagement patterns typical of first-time travelers with a valid passport but no international booking history) and uses them to shift what the home screen and search results surface — before the user asks anything. If a user is flagged as international-curious, destination recommendations get re-ranked by a visa-friction-adjusted feasibility score for their specific passport, not just by price. If a user searches Bangkok flights the week Thailand's visa policy changes, the system doesn't wait for them to find a help article — it surfaces the new e-visa requirement inline, ranked at the top of relevant content, the moment relevance peaks. Ixigo's own Q2 FY26 earnings call gestures at this direction in words: 'hyper-personalization: using deep travel data to deliver predictive, preemptive experiences, knowing what the user wants before they ask.' That language is vague enough to support more than one reading, and it's worth being explicit about which one this case is betting on. It could mean the conversational layer Ixigo has already shipped (the ChatGPT app, voice agents, 90% of chat automated) — a smarter chatbot, not a ranking architecture. This case bets on the ranking-layer interpretation instead, not because the earnings call proves it, but because the global evidence is one-sided: at Airbnb and Booking.com, the value of personalization sits in the invisible ranking/embeddings layer, not the chat surface that gets the press (see next section). If management's actual intent turns out to be narrower — chat-only personalization — this architecture is still the more defensible bet, because it's where comparable companies have demonstrated the value actually accrues. This case gives that broader interpretation of the promise a concrete architecture instead of leaving it as a roadmap slide.",
+      "supporting_data": [
+        "Ixigo Q2 FY26 earnings call: management describes 'hyper-personalization... knowing what the user wants before they ask' as a strategic pillar (language is directional, not a specific product commitment)",
+        "Ixigo's only AI shipped at scale today is conversational: ChatGPT native app (June 2026), 90% of customer chat automated, voice agents",
+        "No public evidence of live product-layer ranking/recommendation ML at Ixigo beyond conversational and customer-service AI (combined confidence ~0.6, absence-of-evidence from two independent research angles)"
+      ],
+      "citations": [
+        { "claim": "Ixigo management's 'hyper-personalization' quote from Q2 FY26 earnings", "source": "Insight Synthesizer Insight 1 / research Q4 (confidence 0.40-0.50 that this refers to a product-layer ranking system rather than conversational features)", "url": null },
+        { "claim": "Ixigo ChatGPT app launched June 2026, 90% chat automation", "source": "Company context / press releases", "url": null }
+      ],
+      "slide_notes": "This is the core AI-native vision slide — the one the panel will judge hardest against the 'not a chatbot' constraint. Say out loud: 'the chat interface Ixigo shipped in June is the surface layer — what I'm proposing sits underneath it and would exist even if the chat app didn't.' Use the visa-alert example concretely so it doesn't sound abstract. Be upfront that the earnings-call quote is directional, not a confirmed spec — 'hyper-personalization' could just as easily mean a smarter chatbot, since that's literally what they've shipped. My case for the ranking-layer reading rests on the Airbnb/Booking.com evidence, not on over-reading a vague quote. That's a more defensible answer if a panelist who knows Ixigo's roadmap pushes back. Transition: 'Let's walk this through all five stages of the journey.'",
+      "is_assumption": false
+    },
+    {
+      "id": "s5",
+      "type": "recommendation",
+      "heading": "Journey design: every stage's job is 'reduce the cost of not knowing' — the system should surface signal proactively, not wait to be asked",
+      "content": "Mapping the first-time Indian international traveler's job at each of the five journey stages shows a consistent pattern: the current product (Ixigo's and competitors') answers uncertainty with static content the user must go find. The AI-native version inverts this — the system surfaces the relevant signal, ranked and timed to the specific uncertainty, without the user asking. Discovery: the job is 'help me pick somewhere I won't regret and can actually get into.' Today, discovery is price-driven fare alerts with no visa-difficulty signal. AI-native: destinations get ranked partly by a visa-friction-adjusted feasibility score for that user's passport and travel history — a ranking signal, not a filter the user has to apply. Research/Info: the job is 'tell me what I don't know I don't know' — Bangkok's new e-visa cash-proof requirement, dynamic currency conversion (DCC) traps, cultural norms. Today this lives in static FAQ/insurance content. AI-native: the system proactively surfaces the Bangkok-specific requirement the moment a Bangkok search happens, not buried in a help center. Booking: the job is 'don't let me get this wrong on payment, dates, or documents.' Today it's a standard checkout with a convenience fee and no guidance. AI-native: payment methods get re-ranked by predicted decline risk, and a DCC-decline nudge appears at the exact checkout step where first-time travelers historically get tricked into a worse exchange rate. Pre-Travel: the job is 'get my documents and money sorted without becoming an expert.' Today, insurance is offered standalone with no visa/forex integration. AI-native: visa status tracking and forex pre-load reminders become one orchestrated workflow instead of two things the user must remember separately. During Travel: the job is 'have my back if something goes wrong somewhere unfamiliar.' Today, this is flight-status tracking only. AI-native: the same disruption-tracking infrastructure extends into proactive rebooking-option pre-computation (the industry-standard IROPs pattern), localized for an India-outbound context where the traveler has fewer fallback options and less local knowledge than a domestic disruption would present. Note on the funnel comparison above: the claim that international booking requires more steps than domestic (visa status, forex/DCC decisions, document checks layered onto a standard flow) is a structural inference from the nature of these requirements, not an audited side-by-side comparison of Ixigo's actual domestic and international checkout flows — a live UX audit of ixigo.com is a recommended pre-work item before build, and would either confirm or sharpen exactly which steps are added.",
+      "supporting_data": [
+        "JTBD framework applied across all 5 journey stages (Insight Synthesizer)",
+        "IROPs (irregular operations) proactive rebooking pattern is an established airline/OTA practice globally",
+        "Three India-specific pain points addressed with distinct mechanisms: visa-friction ranking (discovery), DCC-decline nudge (booking), proactive visa/forex orchestration (pre-travel)"
+      ],
+      "citations": [
+        { "claim": "JTBD stage mapping and current-state friction per stage", "source": "Insight Synthesizer / JTBD Framework Analysis", "url": null },
+        { "claim": "IROPs proactive rebooking as global pattern", "source": "Insight Synthesizer Insight 5 / research Q3", "url": null }
+      ],
+      "slide_notes": "This slide covers success criteria 2 (full journey), 3 (India specificity), and 9 (funnel changes) in one structure — say that explicitly if asked. Walk through the five stages briskly, spend the most time on Booking and Pre-Travel since those are where the India-specific mechanisms are sharpest. Each stage should sound like a specific product decision, not a UX platitude — if I catch myself saying 'we'll personalize this,' stop and say what actually changes in the ranking or ordering. Flag the funnel-diff claim as inference, not an audited finding, if asked 'did you actually check the app' — better to own that than get caught presenting inference as fact. Transition: 'Now let's get concrete about what's actually happening under the hood.'",
+      "is_assumption": false
+    },
+    {
+      "id": "s6",
+      "type": "insight",
+      "heading": "The algorithm layer: an international intent model, a personalization layer, and a proactive trigger system — three components, not one model",
+      "content": "Concretely, this requires three connected components, not a single AI feature. First, an international-intent classifier: a model trained on existing Ixigo behavioral signals (domestic search patterns with unusual flexibility, cross-sell click patterns, passport-validity signals from KYC data, prior insurance purchases) that scores each user's likelihood of being 'international-curious' and, if so, estimates first-time vs. experienced-traveler status. This score feeds the home-screen and search re-ranking. Second, a destination and content re-ranker: instead of ranking Bangkok, Dubai, and Singapore flight results purely on price (the domestic-trained model's default), the re-ranker adds visa-friction-adjusted feasibility, forex-decline risk for the user's card type, and destination-specific trust signals (e.g., surfacing Dubai above Bangkok for a first-timer during the exact window Thailand's visa rules are in flux) as additional ranking features — the same staged approach Airbnb uses (base signals, then personalization signals, then context signals, each A/B-tested for conversion lift before the next layer ships). Third, a proactive trigger system: an event-driven layer that watches for state changes — a visa policy update, a price drop on a route the user searched, a visa application status change — and pushes a ranked, timed notification, rather than waiting for the user to check. This is the layer that makes the Bangkok visa-alert feature possible without waiting for the full architecture: the trigger system can ship narrow (Bangkok policy alerts only) while the intent classifier and re-ranker are still being built. None of these three components requires a conversational interface to work — a chat UI could optionally sit on top of the trigger system as one notification channel, but the system delivers its value through what the user sees ranked and when they're notified, which is the concrete definition of 'algorithm layer' this case answers to success criterion #4.",
+      "supporting_data": [
+        "Staged rollout template modeled on Airbnb's approach: base signals to personalization signals to context signals, each measured by A/B-tested conversion lift",
+        "Three-component architecture: intent classifier, re-ranker, proactive trigger system",
+        "Trigger system is the shared infrastructure behind both the fast-track Bangkok feature and the full architecture"
+      ],
+      "citations": [
+        { "claim": "Airbnb's staged feature rollout methodology (base to personalization to context signals)", "source": "Insight Synthesizer Insight 2 / research Q3", "url": null }
+      ],
+      "slide_notes": "This is the slide that answers 'show me you understand algorithms, not just UX.' Be precise about what's a model versus what's a rules-based trigger — panel may probe this. The intent classifier is the hardest ML component (needs real behavioral data and probably 3-6 months of data collection before it's reliable); the trigger system is closer to an event-driven rules engine with notification ranking, which is why it can ship in 4 weeks. Say that distinction out loud, it shows engineering judgment. Transition: 'Now — why should Ixigo prioritize building this at all, right now?'",
+      "is_assumption": false
+    },
+    {
+      "id": "s7",
+      "type": "recommendation",
+      "heading": "Business case: this is a GMV mix-shift play, not a cost-parity play — and Ixigo's existing moat is irrelevant to it",
+      "content": "It's tempting to justify this investment using Ixigo's core competitive advantage — its low customer-acquisition cost via the dominant railway app. That would be the wrong argument. Low CAC helps Ixigo win users cheaply; it does nothing to close the trust and conversion gap at the point of an international booking decision, which is a completely different problem. The right argument is GMV mix-shift: Ixigo already wins the high-volume, low-margin domestic acquisition game. International bookings carry higher GMV per booking than domestic rail or short-haul flights — capturing even a modest share shift from the 480M-user domestic base into international bookings moves real revenue, not because Ixigo would be spending more to compete, but because it would be converting an acquisition advantage it already has into a margin advantage it doesn't yet have. The size of that multiplier is genuinely uncertain, so the case is built to survive being wrong about it: at a conservative 1.3-1.5x multiplier (international AOV modestly above domestic, the floor of what's plausible for any international vs. domestic travel booking), the mix-shift argument still holds directionally — a share shift into higher-value bookings is still a net-positive trade even at the low end. At a base case of ~2x, the opportunity is materially larger. At the upside case of 3x (in line with general travel-industry patterns for international vs. domestic AOV), it's larger still. The 'fund now' recommendation does not require the upside case to be true — it requires only that international AOV exceeds domestic by any meaningful margin, which is a much lower bar and one this case is comfortable defending even before Ixigo's actual booking-level financials are available to confirm the precise multiple. Even at parity (1x) — the true downside scenario, which the underlying data makes unlikely but not impossible — the market-timing argument still holds, because the case for now is not solely a GMV-multiplier argument: it also rests on Ixigo's own investor guidance already showing international bookings outgrowing domestic (a volume trend, independent of AOV), and on Thailand's dated visa-policy trigger, which is a forcing function regardless of how the GMV math resolves. Why now, specifically: three forcing functions converge. First, Ixigo's own investor guidance already shows international bookings outgrowing domestic — the trend is underway, not hypothetical. Second, Thailand's May 2026 visa-free removal for Indians is a live, dated, news-worthy pain point hitting the single highest-volume corridor (Bangkok, 2.13-2.5M annual travelers) at the exact moment this case is being written — the market has never been more receptive to a visa-guidance feature than it is this quarter. Third, MMT's Atlys-powered visa advantage represents a 2-3 month structural head start today — though this framing needs a caveat: if the MMT-Atlys relationship is exclusive or investment-linked (plausible, since it's described as a preferential partnership, not a standard vendor contract), Ixigo may not be able to close this gap by simply negotiating a comparable deal with the same partner. In that scenario, the recommended path is to pursue an alternative visa-tech provider (VFS Global's direct API, or a similar platform such as Stamp) or lean on the government e-visa API path directly (see Key Recommendation #4 and Section 6 architecture), rather than waiting for Atlys availability. Fourth, and unaddressed if left implicit: MMT is not static while Ixigo builds. MMT already has the Atlys data relationship live, which means it could plausibly ship its own proactive visa-alert notification for Bangkok faster than Ixigo's 4-week track, since it wouldn't need to build the data partnership first. If that happens, Ixigo's differentiation cannot be 'we noticed the visa news first' — it has to be the ranking/personalization layer underneath, which MMT's bolt-on integration model does not have and is structurally slower for MMT to build than to notify. The fast-track Bangkok feature is therefore not primarily a speed bet against MMT on notifications; it's a visible market-commitment signal while the real differentiator — the full architecture — is being built. The $36.5M already earmarked from the Prosus round for AI-platform development is the funding vehicle; this case is the argument for where a meaningful share of it should go.",
+      "supporting_data": [
+        "India outbound market: $23-35B, 11.4% CAGR, growing faster than domestic segments",
+        "GMV-multiplier sensitivity: conservative 1.3-1.5x, base ~2x, upside 3x — recommendation holds directionally even at the conservative end; market-timing case does not depend on the multiplier alone",
+        "MMT's Atlys partnership represents a 2-3 month head start today; exclusivity risk means this may require a different-partner or government-API path rather than a comparable Atlys-style deal",
+        "Competitive response risk: MMT could ship a visa-alert notification faster than Ixigo's 4-week track since it already has the data partnership; Ixigo's durable differentiator is the ranking layer, not notification speed",
+        "$36.5M already earmarked for AI-driven platform development from Oct 2025 Prosus investment"
+      ],
+      "citations": [
+        { "claim": "India outbound market $23-35B, 11.4% CAGR", "source": "Insight Synthesizer Insight 6 / research Q5", "url": null },
+        { "claim": "International GMV per booking multiplier: sensitivity range 1.3x-3x, base case ~2x", "source": "Case Builder estimate with sensitivity analysis — see assumptions_register A7 (confidence 0.5, ungrounded)", "url": null },
+        { "claim": "MMT 2-3 month structural head start via Atlys, possible exclusivity", "source": "Insight Synthesizer Insight 3, cross-file connection Q1+Q6", "url": null },
+        { "claim": "$36.5M earmarked for AI platform development", "source": "Company context / Prosus announcement", "url": null }
+      ],
+      "slide_notes": "This is the business-judgment slide — the panel explicitly wants to see a prioritization call, not just a design. Open by naming and rejecting the tempting-but-wrong argument (low CAC) before making the right one (GMV mix-shift) — that move itself signals seniority. Then immediately show the sensitivity range unprompted — conservative/base/upside — and state plainly that the recommendation survives the conservative case. That preempts the single most likely 'where's that number from' question. Land hard on the three forcing functions, especially Bangkok. On MMT: acknowledge two things a sharp interviewer will ask — (1) is Atlys exclusive, and (2) what stops MMT from shipping their own visa alert while we build. Answer both directly rather than waiting to be asked. Transition: 'Here's how we'd know if it's working.'",
+      "is_assumption": true
+    },
+    {
+      "id": "s8",
+      "type": "metrics",
+      "heading": "Metrics: ranking quality offline, conversion lift online, task completion over NPS — imported from global practice because Ixigo has none of this today",
+      "content": "Ixigo has no public evidence of A/B-tested conversion measurement or drift monitoring for any AI feature it has shipped — this is a real gap, not a nitpick, and the metrics framework for this case has to be imported from global best practice rather than extended from internal precedent. Three layers of measurement, matching the three architecture components. Pre-launch, offline: ranking quality is measured with AUC and NDCG on held-out historical search data before any re-ranked results reach a live user — this is how Ixigo would know the visa-friction-adjusted ranking is actually better before risking conversion on it. Launch, online: predicted click-through rate (pCTR) and predicted conversion rate (pCVR) per ranking layer, measured through staged A/B tests exactly as Airbnb rolls out base-signal, then personalization-signal, then context-signal features — each layer ships only after the prior layer shows a measurable conversion lift, not on a fixed calendar. Business impact: booking conversion lift on the Bangkok/Dubai/Singapore corridors specifically, plus GMV per international booking and international share of total GMV, tracked against the pre-launch baseline. For user-facing success, task completion rate (did the user complete the international booking without abandoning at the visa or payment step) is the right measure — not NPS, which is a lagging, noisy proxy that won't isolate whether this specific intervention worked. Ongoing monitoring, not just launch-day: ranking models degrade silently over time as travel patterns, visa rules, and user behavior shift — Airbnb and Booking.com both treat drift detection as a standing operational requirement. For Ixigo this means a recurring (monthly, at minimum) recheck of ranking-model accuracy against fresh outcome data, with an explicit alert threshold for when a corridor's model needs retraining (e.g., after a regulatory change like Bangkok's).",
+      "supporting_data": [
+        "No public evidence of Ixigo disclosing A/B-testing or drift monitoring for any shipped AI feature",
+        "Airbnb/Booking.com treat staged A/B-tested rollout and continuous drift detection as mandatory operating discipline",
+        "Recommendation systems are documented to degrade in performance over time, often failing silently, absent monitoring"
+      ],
+      "citations": [
+        { "claim": "No public disclosure of A/B testing or drift monitoring at Ixigo", "source": "Insight Synthesizer Insight 7 / research Q4", "url": null },
+        { "claim": "Airbnb/Booking.com staged A/B rollout and drift monitoring discipline", "source": "Insight Synthesizer Insight 7 / research Q3, citing Arize AI cross-industry framework", "url": null }
+      ],
+      "slide_notes": "This slide directly defends against the 'weak metrics' red flag from hiring_signal.md. Say explicitly: I'm not extending Ixigo's current metrics practice because there isn't one to extend — this has to be built alongside the product, as a discipline, not a launch checklist. Name AUC/NDCG and pCTR/pCVR specifically; a panel member with a data background will notice if I only say 'we'll A/B test it.' Land on task completion rate over NPS as a deliberate choice, not an oversight. Transition: 'Given all this, how would we actually sequence the rollout?'",
+      "is_assumption": false
+    },
+    {
+      "id": "s9",
+      "type": "recommendation",
+      "heading": "Rollout: two tracks, not two phases — a 4-week Bangkok visa-alert ships fast while the 16-week full architecture starts in Dubai",
+      "content": "There's a real tension in how to sequence this, and the strongest version of this case resolves it explicitly rather than picking one logic and hiding the other. Pure feasibility says launch in Dubai first: visa-on-arrival, no partner integration required, a 4-6 week MVP. Pure urgency says launch in Bangkok first: the visa shock is happening now, in the highest-volume corridor, and Thailand's e-visa system is unusually API-ready this year as the government unifies its ETA and e-Visa platforms. Treating these as competing options and picking one is a mistake — but it's equally a mistake to present them as two equivalent, fully parallel efforts without naming what actually makes that possible. The two tracks are different in kind, not just in timeline, and that difference is what makes running them concurrently credible rather than a scope-management illusion. Track 1 (4 weeks): ship the narrow proactive Bangkok visa-alert feature. This is explicitly NOT part of the AI/ML build — it is a rules-based trigger (watch for Thailand visa-policy state, push a ranked notification) built on Ixigo's existing notification infrastructure, requiring roughly one backend engineer and one product engineer for the sprint. It does not require the intent classifier or the re-ranker to exist first. Track 2 (16 weeks): this is the actual AI investment — the intent classifier, re-ranker, and generalized trigger system that the $36.5M is earmarked against. It starts with Dubai because its regulatory simplicity (visa-on-arrival, no partner dependency) makes it the fastest corridor to validate the full system end-to-end, and it requires the ML/data engineering bench (the team Ixigo does not yet have proof of having built product-layer ML with, per the near-zero existing personalization infrastructure this case starts from). Bangkok and Singapore follow at roughly 8-12 and 12-16 weeks respectively, sequenced by increasing partnership/regulatory complexity. Because Track 1 is a small, separate, rules-based build rather than a slice of the same ML architecture, it does not compete for the same specialized ML engineering capacity that Track 2 needs — the two tracks can genuinely run concurrently without one starving the other of the same scarce skill set. By the time Track 2 reaches Bangkok, Track 1's narrow feature is already live there, generating real conversion data that de-risks the full rollout, and doubling as a visible market-commitment signal while the harder architecture is being built. This is the rollout rationale success criterion #8 is asking for: not 'phase 1 then phase 2,' but two tracks with genuinely different staffing and technical profiles, explicitly reconciled rather than glossed over.",
+      "supporting_data": [
+        "Track 1: Bangkok visa-alert, 4 weeks, rules-based notification trigger on existing infrastructure — staffed by ~1 backend + 1 product engineer, NOT the ML/AI build",
+        "Track 2: Full ML architecture (intent classifier, re-ranker, trigger system), Dubai first (4-6 week MVP), then Bangkok (8-12 weeks), then Singapore (12-16 weeks) — this is where the $36.5M AI investment and ML/data engineering bench are actually needed",
+        "Feasibility ranking driven by regulatory/partnership complexity: Dubai (visa-on-arrival, no partner) < Bangkok (government API) < Singapore (agent-mediated)",
+        "Staffing rationale for genuine parallelism: Track 1 and Track 2 draw on different skill sets (notification/backend engineering vs. ML/data engineering), so they do not compete for the same scarce capacity"
+      ],
+      "citations": [
+        { "claim": "Dubai/Bangkok/Singapore feasibility sequencing and timelines", "source": "Insight Synthesizer Insight 5 / research Q6", "url": null },
+        { "claim": "Thailand's ETA and e-Visa systems unifying into one API-ready platform in 2026", "source": "Insight Synthesizer Insight 4 / research Q6", "url": null },
+        { "claim": "Track 1 staffing estimate (1 backend + 1 product engineer)", "source": "Case Builder estimate — not sourced from Ixigo org data; reasoned from feature scope", "url": null }
+      ],
+      "slide_notes": "This is the slide most likely to get a 'but why not just do X first' question, and now also 'who builds Track 1 while Track 2 also starts' — preempt both by naming the staffing distinction myself. The key move: Track 1 is NOT a slice of the AI build, it's a small rules-based feature on existing infra, which is exactly why it doesn't compete with Track 2 for ML talent. If a panelist pushes on whether these are truly parallel or just relabeled sequential work, the answer is: they're parallel because they need different skill sets, not because I've declared them parallel. Make sure the panel hears that Track 1 de-risks Track 2's Bangkok leg AND buys visible market commitment against MMT's head start. Transition: 'Every recommendation this size has real tradeoffs — here are the ones I'd flag myself rather than wait to be asked.'",
+      "is_assumption": false
+    },
+    {
+      "id": "s10",
+      "type": "tradeoffs",
+      "heading": "Three tradeoffs worth naming before the panel asks: build vs. partner, personalization vs. privacy, India-specific vs. global architecture",
+      "content": "Build vs. partner on visa and forex data: the architecture assumes Ixigo can source visa-requirement and e-visa-status data natively, but MMT's approach shows a partnership (Atlys-style) can be faster to a working visa layer even if less differentiated long-term. The recommendation is to negotiate a visa-data partnership in parallel with building the ranking layer — using the partner as a data source that feeds the proprietary ranking model, not as a bolted-on separate feature the way MMT uses it. This closes the partnership gap without abandoning the architectural differentiation — with one caveat worth stating plainly: if the MMT-Atlys relationship turns out to be exclusive or investment-linked rather than a standard vendor contract, Ixigo cannot assume it can simply negotiate a comparable deal with Atlys itself on a similar timeline. In that case, the fallback is not to wait for Atlys to become available, but to pursue an alternative visa-tech provider — VFS Global's direct API or a comparable platform such as Stamp — or to build directly against the destination government's e-visa API where one exists (Thailand's unifying ETA/e-Visa platform is the clearest example). This is why Track 1's Bangkok feature is scoped to not depend on any partnership at all: it can run on publicly available government e-visa status data alone, which sidesteps the exclusivity risk entirely for the most urgent corridor. Personalization depth vs. privacy and trust: an intent classifier that infers 'international-curious, first-time traveler' from behavioral signals is powerful, but it is also exactly the kind of inference that can feel invasive if surfaced clumsily (a user who has never searched international travel suddenly seeing Bangkok visa content might feel surveilled rather than helped). The mitigation is to surface personalization as improved relevance (better-ranked results) rather than as visible profiling (no 'because you're a first-time traveler' messaging) — the system should feel like the product got smarter, not like it's watching. India-specific architecture vs. global reusability: everything in this design is tuned to Indian passport rules, INR-forex dynamics, and Bangkok/Dubai/Singapore corridors specifically. That's the right call for a first build — Ixigo's international expansion (Trenes.com acquisition in Spain, Singapore subsidiary) will eventually need this to generalize to other passport/corridor combinations, but over-engineering for that now would slow the India-outbound build without a validated need. The recommendation explicitly scopes this as an India-outbound-first build with generalizable components (the re-ranker and trigger system are corridor-agnostic in design even though the initial signals are India-specific), deferring true multi-market generalization until the India build proves the model.",
+      "supporting_data": [
+        "Build-vs-partner resolved as: partner for data sourcing, build the ranking layer on top",
+        "Exclusivity fallback: if Atlys is unavailable or exclusive, pursue VFS Global API or a comparable platform (e.g., Stamp), or the destination government's e-visa API directly",
+        "Privacy mitigation: personalization surfaces as relevance, not visible profiling",
+        "Scope discipline: India-outbound-first, corridor-agnostic components, defer multi-market generalization"
+      ],
+      "citations": [
+        { "claim": "MMT's Atlys partnership as faster-but-less-differentiated approach, possibly exclusive/investment-linked", "source": "Insight Synthesizer Insight 3 / research Q1, Q6", "url": null },
+        { "claim": "Ixigo's Trenes.com acquisition and Singapore subsidiary signal broader international ambitions", "source": "Company context / recent news", "url": null }
+      ],
+      "slide_notes": "Panels reward candidates who surface their own tradeoffs unprompted — this slide exists so I'm not caught flat-footed in Q&A. Say the privacy point carefully: the risk isn't the data use, it's how it's surfaced to the user. If asked to pick one tradeoff as the riskiest, I'd say build-vs-partner, because the partnership timeline is outside Ixigo's control — and I'd volunteer the exclusivity risk myself: if Atlys is spoken for, the fallback is VFS Global or the government API directly, not waiting. Transition: 'To summarize the recommendation and the ask.'",
+      "is_assumption": false
+    },
+    {
+      "id": "s11",
+      "type": "risks",
+      "heading": "What would make this recommendation wrong, and how we'd know early",
+      "content": "Five risks are worth stating plainly rather than discovering in execution. First, the intent classifier may not have enough reliable behavioral signal to work well at launch — Ixigo's domestic-heavy data may not cleanly predict international intent, especially for genuinely first-time travelers with no prior travel-adjacent behavior to read. Mitigation: launch the re-ranker with a smaller, higher-confidence feature set (declared destination interest, explicit search behavior) before adding inferred behavioral signals, and validate the classifier's precision offline before it touches a live ranking. Second, the Bangkok-first urgency argument has a shelf life — if Thailand's visa policy stabilizes or reverses before the Track 1 feature ships, the sharpest 'why now' data point weakens. Mitigation: the 4-week timeline is deliberately fast precisely to capture the current news-cycle relevance; if delayed past one quarter, the case for Bangkok-first urgency should be re-evaluated against whatever the acute pain point is at that time. Third, the visa/forex partnership negotiation (the build-vs-partner tradeoff) could take longer than MMT's 2-3 month head start suggests, especially if the Atlys relationship is exclusive or investment-linked rather than a standard vendor contract Ixigo could replicate. Mitigation: scope Track 1 (Bangkok) to not require a new partnership at all — it can launch on publicly available government e-visa status information alone, decoupling the urgent win from partnership-negotiation risk; for Track 2, pursue VFS Global or a comparable alternative provider if Atlys is confirmed unavailable. Fourth, the underlying assumption that international GMV per booking runs meaningfully higher than domestic is a directional estimate, not an audited number from Ixigo's disclosed financials — the business case is built to survive this: it holds directionally even at a conservative 1.3-1.5x multiplier, and the market-timing argument (investor guidance plus the Bangkok trigger) does not depend on the multiplier at all. Fifth, MMT is not a static competitor while Ixigo builds — it already has the Atlys data relationship live and could plausibly ship its own proactive Bangkok visa-alert notification faster than Ixigo's 4-week track, since it wouldn't need to build the data partnership first. Mitigation: don't compete on notification speed; the fast-track Bangkok feature buys visible market commitment while the durable differentiator — the ranking/personalization layer MMT's bolt-on model doesn't have — is what the 16-week architecture is actually for.",
+      "supporting_data": [
+        "Risk 1: cold-start problem for intent classifier — mitigated by explicit-signal-first launch sequencing",
+        "Risk 2: Bangkok urgency has a time-bound shelf life tied to the current news cycle",
+        "Risk 3: partnership negotiation timeline uncertain, possible Atlys exclusivity — Track 1 scoped to not depend on it; Track 2 fallback is VFS Global or comparable provider",
+        "Risk 4: GMV multiple is a directional estimate; business case built to hold even at the conservative end of the sensitivity range",
+        "Risk 5: MMT competitive response — MMT has a head start and could ship a visa-alert notification before Ixigo's fast-track; mitigation is competing on the ranking layer, not notification speed"
+      ],
+      "citations": [
+        { "claim": "No confirmed internal Ixigo visa/forex partnership pipeline status", "source": "Insight Synthesizer assumptions register A3 / research Q6", "url": null }
+      ],
+      "slide_notes": "This slide is where I show I can pressure-test my own recommendation, which is exactly what Devil's Advocate will do anyway — better I surface it first. Keep this tight, five risks, one mitigation each, no new information. If time is short in the actual presentation this can be cut to the top three (classifier cold-start, GMV estimate, MMT competitive response) since those are the ones most likely to get probed. Transition: none needed — this leads into close.",
+      "is_assumption": false
+    },
+    {
+      "id": "s12",
+      "type": "recommendation",
+      "heading": "The ask: fund the ranking/personalization architecture as the concrete form of Ixigo's own stated AI strategy",
+      "content": "Ixigo's own Q2 FY26 earnings call named 'hyper-personalization: knowing what the user wants before they ask' as a strategic pillar, and $36.5M is already earmarked for AI-platform development. This case aligns with the direction management has signaled, betting on the ranking-layer interpretation of that pillar because the global evidence shows that's where the value sits — not because the earnings call spelled out this exact architecture. What's missing is not intent or funding — it's a concrete architecture and a sequencing decision, both of which this case provides. Ship the narrow, rules-based Bangkok visa-alert in four weeks to capture a live, dated, high-volume pain point while the market's attention is on it. In parallel, build the full international intent-classifier, re-ranker, and trigger-system architecture starting in Dubai, reaching Bangkok and then Singapore over the following four months. Measure it the way Airbnb and Booking.com measure ranking systems — offline ranking quality before launch, staged conversion-lift A/B tests per layer, and standing drift monitoring after launch — because Ixigo has no existing practice to fall back on and needs to build the discipline alongside the product. The business case is GMV mix-shift, not cost parity: converting an acquisition advantage Ixigo already has into a margin advantage it doesn't yet have, in a market growing faster than the domestic business that funds it. This is not a chatbot. It's the ranking and orchestration layer that makes Ixigo's international product feel, for the first time, like it understands what an Indian traveler going abroad for the first time is actually afraid of.",
+      "supporting_data": [
+        "Two-track rollout: 4-week Bangkok visa alert + 16-week full architecture (Dubai-first)",
+        "$36.5M already earmarked — the funding question is resolved, the architecture question is not",
+        "Business case: GMV mix-shift on a market outgrowing Ixigo's domestic core"
+      ],
+      "citations": [
+        { "claim": "$36.5M earmarked for AI-driven platform development", "source": "Company context / Prosus announcement", "url": null }
+      ],
+      "slide_notes": "Close strong and specific — no hedging, no 'in conclusion.' Restate the two-track plan once more because repetition at the close is what people remember. End on the last line verbatim if possible: it's the one sentence that ties AI-native, India-specificity, and the not-a-chatbot constraint together in a single image. Pause after this slide for questions.",
+      "is_assumption": false
+    }
+  ],
+  "appendix_sections": [
+    {
+      "id": "a1",
+      "type": "supporting_data",
+      "heading": "Market sizing detail — India outbound travel (Bangkok, Dubai, Singapore corridors)",
+      "content": "India outbound international travel is estimated at $23-35B in total market size, growing at approximately 11.4% CAGR. The OTA-addressable portion of this market is estimated at roughly $8-12B nationally. Corridor-level detail: Bangkok receives an estimated 2.13-2.5M Indian visitors annually, the highest volume of the three target corridors, and has shown 17-22% YoY growth in recent years (though this growth rate may partly reflect post-pandemic recovery rather than a durable structural trend — treat with caution beyond a 1-2 year horizon). Dubai receives an estimated 2.2M Indian visitors annually. Corridor-level OTA market share is assumed to mirror the national online-booking-channel share of approximately 81.74%, though this is an extrapolation, not corridor-specific data — actual OTA penetration could vary meaningfully by corridor and should be validated before finalizing GMV projections.",
+      "supporting_data": [
+        "$23-35B total India outbound market, 11.4% CAGR",
+        "$8-12B estimated OTA-addressable market nationally",
+        "Bangkok: 2.13-2.5M annual Indian visitors, 17-22% recent YoY growth",
+        "Dubai: ~2.2M annual Indian visitors",
+        "National OTA/online booking channel share: ~81.74% (applied as a corridor-level proxy, not corridor-specific data)"
+      ],
+      "citations": [
+        { "claim": "India outbound market $23-35B, 11.4% CAGR", "source": "Insight Synthesizer / research Q5", "url": null },
+        { "claim": "Bangkok and Dubai visitor volumes and growth rates", "source": "Insight Synthesizer Insight 4-5 / research Q5", "url": null },
+        { "claim": "National OTA share ~81.74% applied as corridor proxy", "source": "Insight Synthesizer assumptions register A2 / research Q5", "url": null }
+      ],
+      "slide_notes": null
+    },
+    {
+      "id": "a2",
+      "type": "competitor_analysis",
+      "heading": "Competitive detail — how MakeMyTrip's visa/forex stack actually works",
+      "content": "MakeMyTrip's visa-assistance product is powered through an investment/partnership relationship with Atlys, a visa-tech provider — this is a preferential commercial relationship, not an MMT-built capability, and represents an estimated 2-3 month structural head start that a competitor would need to close via its own partnership negotiation, not purely through product design. MMT's forex offering runs through TripMoney, a forex card and currency product. Both are integrated into MMT's standard booking flow as discrete features/upsells rather than as inputs into a ranking or personalization system — there is no public evidence MMT uses visa-friction or forex-risk signals to alter what results or content a user sees before they actively seek out the visa or forex product. This is the structural basis for this case's core claim: MMT's advantage is a partnership and feature-availability advantage, not an algorithmic one, which is exactly the kind of advantage a ranking-layer approach can overtake even without matching MMT's exact partnerships on day one.",
+      "supporting_data": [
+        "MMT visa product powered by Atlys partnership/investment",
+        "MMT forex product: TripMoney forex card",
+        "Both integrated as standard features/upsells, not personalization/ranking inputs"
+      ],
+      "citations": [
+        { "claim": "MMT-Atlys partnership structure and estimated head start", "source": "Insight Synthesizer Insight 3 / research Q1, Q6", "url": null },
+        { "claim": "TripMoney forex card as MMT's forex product", "source": "Research Q1", "url": null }
+      ],
+      "slide_notes": null
+    },
+    {
+      "id": "a3",
+      "type": "framework_detail",
+      "heading": "Global AI-native pattern evidence — Airbnb, Booking.com, Google Flights/Hopper, Delta",
+      "content": "Airbnb's search ranking, built on embeddings-based personalization, is credited by the company with driving the substantial majority of platform conversions — this is the strongest available evidence that ranking, not chat, is where AI-native value concentrates in travel/marketplace products. Booking.com discloses running approximately 150 machine learning models in production, primarily in ranking and recommendation, operating underneath a chat interface that receives more public/press attention than the ranking layer itself. Google Flights and Hopper apply predictive models to price and itinerary ranking (Hopper's claimed prediction accuracy is a company-reported figure, not independently audited, and should be treated as directional). Delta's 'Concierge' AI product is presented publicly as chat-shaped today; the company's proactive/orchestration ambitions for it are described as a future goal rather than a current, shipped capability — reinforcing that even airlines investing heavily in AI are still building toward the orchestration layer this case proposes, not already operating it at scale.",
+      "supporting_data": [
+        "Airbnb: embeddings-based ranking drives large majority of platform conversions",
+        "Booking.com: ~150 ML models in production, primarily ranking/recommendation",
+        "Hopper: company-claimed prediction accuracy figures, not independently audited",
+        "Delta Concierge: chat-shaped today; proactive orchestration described as future goal"
+      ],
+      "citations": [
+        { "claim": "Airbnb ranking/conversion figures", "source": "Research Q3, confidence 0.9", "url": null },
+        { "claim": "Booking.com ~150 ML models", "source": "Research Q3, confidence 0.65-0.85 (company-disclosed)", "url": null },
+        { "claim": "Hopper prediction accuracy claims", "source": "Research Q3, confidence 0.3-0.5, flagged as marketing claim", "url": null },
+        { "claim": "Delta Concierge chat-shaped with future orchestration ambitions", "source": "Research Q3, confidence 0.55-0.7", "url": null }
+      ],
+      "slide_notes": null
+    },
+    {
+      "id": "a4",
+      "type": "assumptions_detail",
+      "heading": "Full assumptions register with confidence and falsifiers",
+      "content": "See assumptions_register in this document for the full list with confidence scores and falsifiers. Key items to highlight: the claim that Ixigo has no live product-layer AI personalization today is a moderate-confidence inference (0.55-0.65) from absence of public evidence across two independent research angles, not a confirmed fact — it is presented in the main deck as the most likely current state, with the caveat that Ixigo may have undisclosed internal capability. Similarly, the domestic-vs-international funnel comparison (success criterion #9) is a reasoned inference rather than a directly audited comparison, since no research source directly audited Ixigo's live domestic booking funnel step-by-step.",
+      "supporting_data": [],
+      "citations": [],
+      "slide_notes": null
+    },
+    {
+      "id": "a5",
+      "type": "methodology",
+      "heading": "Research methodology and source basis",
+      "content": "This case was built from: (1) Ixigo company context sourced from NSE filings, investor announcements, and press releases (high confidence, 0.85-0.9); (2) seven bounded research questions covering Ixigo's current international product state, Indian traveler pain points, global AI-native travel examples, market sizing, and rollout feasibility constraints; (3) an insight synthesis pass that cross-referenced findings across research questions to resolve tensions (notably the Bangkok-urgency-vs-Dubai-feasibility sequencing question) and flag corroborating vs. conflicting evidence. No primary user research (interviews, surveys) was conducted for this assignment — pain-point evidence is drawn from documented industry sources, app store review patterns, and analogous global research, not from direct interviews with Indian international travelers. This is a case-study-appropriate methodology given assignment constraints, but any real-world execution of this recommendation should validate the India-specific pain point prevalence (what % of bookers actually experience each friction point, and where in the funnel they drop off) with direct user research before finalizing feature scope.",
+      "supporting_data": [],
+      "citations": [],
+      "slide_notes": null
+    }
+  ],
+  "assumptions_register": [
+    {
+      "assumption": "Ixigo has no live product-layer AI personalization or ranking system today (search, recommendations) beyond conversational and customer-service AI",
+      "rationale": "Derived from two independent absence-of-evidence findings — Q1's research found no evidence of an AI itinerary builder, and Q4's earnings-call review found personalization described only as forward guidance, not a shipped capability. These independently corroborate each other.",
+      "confidence": 0.6,
+      "falsifier": "Ixigo discloses (via tech blog, investor deck, or product changelog) an existing ML-based search ranking or recommendation system with specifics comparable to Airbnb/Booking.com's disclosed architecture",
+      "source_type": "ungrounded"
+    },
+    {
+      "assumption": "Corridor-level OTA market share for Bangkok, Dubai, and Singapore mirrors the national ~81.74% OTA/online booking channel share",
+      "rationale": "No corridor-specific booking-channel data was available; national average applied as a proxy for GMV estimation purposes",
+      "confidence": 0.4,
+      "falsifier": "Corridor-specific booking channel data becomes available showing materially different OTA penetration in any of the three corridors",
+      "source_type": "ungrounded"
+    },
+    {
+      "assumption": "Ixigo does not currently have an active visa-tech or forex-tech partnership (e.g., with Atlys, VFS Global, or BookMyForex) in negotiation or already in place",
+      "rationale": "Research found no public evidence of such a partnership, but explicitly could not confirm or rule out an undisclosed internal negotiation",
+      "confidence": 0.5,
+      "falsifier": "Ixigo announces, or is confirmed to have already signed, a visa/forex partnership not surfaced in public search results",
+      "source_type": "ungrounded"
+    },
+    {
+      "assumption": "The domestic Ixigo booking funnel is meaningfully simpler than what an international funnel requires, given added visa/forex/trust steps",
+      "rationale": "Reasoned inference based on the nature of international travel requirements; no direct side-by-side audit of Ixigo's domestic funnel was conducted",
+      "confidence": 0.7,
+      "falsifier": "A direct UX audit of Ixigo's domestic funnel shows comparable complexity and step count to what's proposed for the international funnel",
+      "source_type": "ungrounded"
+    },
+    {
+      "assumption": "Bangkok, Dubai, and Singapore corridor growth rates (17-22% YoY observed) will continue at similar rates through the proposed rollout window",
+      "rationale": "Recent observed growth may partly reflect post-pandemic recovery rather than a durable structural trend",
+      "confidence": 0.5,
+      "falsifier": "Next 1-2 years of corridor-level visitor data shows growth reverting to low-single-digit rates",
+      "source_type": "ungrounded"
+    },
+    {
+      "assumption": "Indian first-time-traveler cultural-anxiety concerns (e.g., Dubai dress code, Singapore behavioral rules) are addressable via in-app AI guidance rather than requiring deeper destination-side intervention",
+      "rationale": "Assumes the anxiety is primarily an information gap the app can close, based on pattern-matching to visa/forex anxiety (which is information-based)",
+      "confidence": 0.6,
+      "falsifier": "User testing shows travelers don't act on in-app cultural guidance regardless of timing/personalization quality, indicating the anxiety is experiential rather than informational",
+      "source_type": "ungrounded"
+    },
+    {
+      "assumption": "International bookings carry higher GMV per booking than domestic bookings on Ixigo, with a plausible range of 1.3x (conservative) to 2x (base case) to 3x (upside), rather than a single fixed 2-3x point estimate",
+      "rationale": "Directional inference from general travel-industry knowledge that international flights/hotels carry higher average transaction values than domestic rail/short-haul flights; not derived from Ixigo's own disclosed booking-level financials, which are not broken out at this granularity publicly. Revised after Devil's Advocate review to present as a sensitivity range rather than a single point estimate, since the original 2-3x framing was load-bearing for business-case magnitude without being stress-tested downward. The business case (s7) is explicitly built to hold directionally even at the conservative 1.3-1.5x end, and the market-timing argument (investor guidance + Bangkok trigger) is structured to not depend on this multiplier at all.",
+      "confidence": 0.5,
+      "falsifier": "Ixigo discloses booking-level GMV data showing international and domestic AOV are at or below parity (1x), which would undercut even the conservative case",
+      "source_type": "ungrounded"
+    },
+    {
+      "assumption": "An international-intent classifier can be built from Ixigo's existing behavioral data (domestic search patterns, cross-sell clicks, KYC passport-validity signals) with sufficient accuracy to be useful at launch",
+      "rationale": "Standard pattern in personalization systems (inferring intent from adjacent behavior), but Ixigo's specific data has not been audited for this purpose",
+      "confidence": 0.55,
+      "falsifier": "An offline evaluation of the classifier against historical data shows precision/recall too low to usefully re-rank results without excessive false positives",
+      "source_type": "ungrounded"
+    }
+  ],
+  "metadata": {
+    "version": 2,
+    "created": "2026-07-05T00:00:00Z",
+    "assignment_type": "case_study",
+    "word_count_estimate": 5300,
+    "checker_loop": 1
+  }
+}

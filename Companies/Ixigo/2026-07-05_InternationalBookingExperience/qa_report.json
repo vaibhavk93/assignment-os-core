@@ -1,0 +1,24 @@
+{
+  "format": "html",
+  "file": "OUTPUTS/presentation.html",
+  "verdict": "PASS",
+  "checked_at": "2026-07-05T00:00:00Z",
+  "issues": [],
+  "slide_count_actual": 18,
+  "slide_count_expected": 18,
+  "placeholder_found": false,
+  "branding_consistent": true,
+  "qa_notes": {
+    "placeholder_scan": "Grep search for TODO, TBD, lorem, placeholder, FIXME, [INSERT], [object Object], undefined, null found zero blocking placeholders. One match for 'JTBD' was a legitimate citation label, not a placeholder.",
+    "slide_structure": "All 18 slides present: 1 title + 12 main content + 5 appendix. Actual count matches expected. Every slide has heading and body content present.",
+    "speaker_notes": "17 of 18 slides have speaker notes in JavaScript slides array (indices 0-16). Appendix A5 (slide 17) correctly has null notes per draft.json specification — this is not a defect.",
+    "headings_verification": "Spot-checked 3 random slide headings against draft.json: all match exactly. Title slide content aligns with draft.json title and subtitle.",
+    "citations": "Quantitative claims on main slides have citations in slide-footer. Executive summary slide verified to have citations for market sizing ($23-35B, 11.4% CAGR), partnerships, and global benchmarks.",
+    "navigation": "Previous/Next buttons present. Keyboard navigation (arrow keys) implemented. Slide counter displays '1 of 18'. Jump to Appendix button present.",
+    "branding": "Consistent use of CSS variables (--navy, --accent, --light-text) throughout. No inline color overrides that would break branding consistency. Title slide uses accent color gradient correctly.",
+    "appendix": "5 appendix slides properly labeled with 'APPENDIX' marker div. Clearly separated from main content.",
+    "html_validation": "DOCTYPE, html, head, body tags present and properly closed. CSS variables defined in :root. JavaScript initialization function present. Slide count in HTML (totalSlides = 18) matches actual slide count.",
+    "text_overflow": "No text truncation CSS (text-overflow: ellipsis or similar) applied to content areas. Body text flows naturally.",
+    "self_contained": "File is self-contained. All CSS inline in <style> tag. All JavaScript inline in <script> tag. No external CDN references found."
+  }
+}

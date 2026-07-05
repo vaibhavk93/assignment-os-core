@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ixigo — Full Deck Builder v2 Implementation</title>
+<style>
+:root {
+  /* Brand — Ixigo #EC5B24 */
+  --color-primary: #EC5B24;
+  --color-background: #1B1B1B;
+  --color-surface: rgba(255,255,255,0.06);
+  --color-surface-strong: rgba(255,255,255,0.12);
+  --color-text-primary: #FFFFFF;
+  --color-text-muted: rgba(255,255,255,0.55);
+  --color-border: rgba(255,255,255,0.10);
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+
+  --text-title: clamp(1.375rem, 2.8vw + 0.5rem, 2.25rem);
+  --text-subtitle: clamp(1rem, 1.8vw + 0.3rem, 1.5rem);
+  --text-body: clamp(0.875rem, 1.4vw + 0.25rem, 1.125rem);
+  --text-small: clamp(0.625rem, 0.8vw + 0.15rem, 0.75rem);
+  --text-stat: clamp(2rem, 5vw + 0.5rem, 4rem);
+
+  --text-chrome: clamp(7px, 0.55vw + 4px, 9px);
+  --chrome-h: 32px;
+  --chrome-f: 28px;
+
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  overflow: hidden;
+}
+
+.deck {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+}
+
+.slides-container {
+  width: 100%;
+  height: calc(100vh - 60px);
+  height: calc(100dvh - 60px);
+  overflow: hidden;
+}
+
+.slide {
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.slide.active { display: flex; }
+
+.slide-chrome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-8);
+  height: var(--chrome-h);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.chrome-company {
+  font-size: var(--text-chrome);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.85;
+}
+.chrome-project {
+  font-size: var(--text-chrome);
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slide-content {
+  flex: 1;
+  padding: var(--space-4) var(--space-8);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.slide-chrome-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-8);
+  height: var(--chrome-f);
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
+}
+.chrome-creator, .chrome-slide-num, .chrome-date {
+  font-size: var(--text-chrome);
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+.chrome-slide-num { opacity: 0.7; }
+
+.chrome-cover { border-bottom: none; background: transparent; }
+.chrome-company-cover { font-size: calc(var(--text-chrome) * 1.4); opacity: 1; }
+.chrome-assignment-type {
+  font-size: var(--text-chrome);
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.slide-heading {
+  font-size: var(--text-title);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-primary);
+}
+.slide-body { font-size: var(--text-body); line-height: 1.65; }
+.slide-body ul { list-style: none; padding: 0; margin: 0; }
+.slide-body li {
+  padding: var(--space-1) 0 var(--space-1) var(--space-4);
+  position: relative;
+  margin-bottom: var(--space-1);
+}
+.slide-body li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.slide-footnote {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  margin-top: auto;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+.slide-cover .slide-content {
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.cover-accent {
+  width: 48px;
+  height: 4px;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+.cover-title {
+  font-size: clamp(1.75rem, 4vw + 0.5rem, 3rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--color-text-primary);
+  max-width: 70%;
+}
+.cover-subtitle {
+  font-size: var(--text-subtitle);
+  color: var(--color-text-muted);
+  max-width: 60%;
+  line-height: 1.4;
+}
+.cover-meta {
+  font-size: var(--text-body);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+.exec-cards {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.exec-card {
+  flex: 1;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.exec-card:first-child { border-left: 3px solid var(--color-primary); }
+.exec-card-label {
+  font-size: var(--text-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+}
+.exec-card-content {
+  font-size: var(--text-small);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.infographic-cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+}
+.cluster-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--space-1);
+}
+.cluster-num {
+  font-size: var(--text-stat);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+.cluster-lbl {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  text-align: center;
+  max-width: 100px;
+}
+.cluster-divider {
+  width: 1px; height: 48px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+.infographic-ring {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--color-primary) calc(var(--pct) * 1%),
+    var(--color-surface) 0
+  );
+  display: flex; align-items: center; justify-content: center;
+  position: relative; flex-shrink: 0;
+}
+.infographic-ring::after {
+  content: '';
+  width: 64px; height: 64px;
+  background: var(--color-background);
+  border-radius: 50%;
+  position: absolute;
+}
+.ring-value {
+  position: relative; z-index: 1;
+  font-size: var(--text-body); font-weight: 700;
+  color: var(--color-text-primary);
+}
+.ring-label {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+  max-width: 120px; text-align: center;
+}
+
+.insight-layout {
+  display: flex;
+  gap: var(--space-6);
+  flex: 1;
+  min-height: 0;
+  align-items: flex-start;
+}
+.insight-evidence { flex: 1; }
+.insight-callout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.infographic-chain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: nowrap;
+  overflow: hidden;
+  margin: var(--space-2) 0;
+}
+.chain-step {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-small);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+.chain-step.chain-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+.chain-arrow {
+  color: var(--color-primary);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.comparison-grid {
+  display: flex;
+  gap: var(--space-3);
+  flex: 1;
+  min-height: 0;
+}
+.comparison-col {
+  flex: 1;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.comparison-chosen { border-left: 3px solid var(--color-primary); }
+.comparison-rejected { opacity: 0.7; }
+.comparison-label {
+  font-size: var(--text-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+}
+.comparison-rejected .comparison-label { color: var(--color-text-muted); }
+.comparison-verdict {
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-strong);
+  border-radius: 4px;
+  font-size: var(--text-small);
+  color: var(--color-text-primary);
+  border-left: 3px solid var(--color-primary);
+  flex-shrink: 0;
+}
+
+.infographic-ba {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-3);
+  flex: 1;
+  min-height: 0;
+}
+.ba-col {
+  flex: 1;
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+.ba-after { border-color: var(--color-primary); }
+.ba-tag {
+  font-size: var(--text-small); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
+.ba-tag-good { color: var(--color-primary); }
+.ba-list {
+  list-style: none; padding: 0; margin: 0;
+  font-size: var(--text-small); color: var(--color-text-primary);
+  flex: 1;
+}
+.ba-list li { padding: var(--space-1) 0; }
+.ba-list li::before { content: "· "; color: var(--color-text-muted); }
+.ba-metric {
+  font-size: var(--text-body); font-weight: 700;
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--color-border);
+}
+.ba-metric-bad { color: var(--color-text-muted); }
+.ba-metric-good { color: var(--color-primary); }
+.ba-arrow {
+  font-size: var(--text-subtitle); color: var(--color-primary);
+  align-self: center; flex-shrink: 0;
+}
+
+.rec-tag {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--text-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 2px var(--space-2);
+  border-radius: 3px;
+  margin-bottom: var(--space-2);
+}
+
+.speaker-notes {
+  display: none;
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  background: rgba(0,0,0,0.6);
+  padding: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+.speaker-notes.visible { display: block; }
+
+nav.dot-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--color-background);
+  border-top: 1px solid var(--color-border);
+  z-index: 100;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--color-border);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: background var(--duration-fast) var(--easing-default),
+              transform var(--duration-fast) var(--easing-default);
+}
+.dot.active {
+  background: var(--color-primary);
+  transform: scale(1.35);
+}
+.dot:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.slide-counter {
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+  margin-left: var(--space-3);
+}
+
+@media print {
+  .deck { height: auto; overflow: visible; }
+  .slides-container { height: auto; overflow: visible; }
+  .slide {
+    display: flex !important;
+    page-break-after: always;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  .slide-chrome-header, .slide-chrome-footer { display: flex !important; }
+  .dot-nav, .slide-counter { display: none !important; }
+  .speaker-notes { display: block !important; }
+}
+</style>
+</head>
+<body>
+<main>
+<div class="deck" role="main">
+  <div class="slides-container">
+
+    <div class="slide slide-cover active" data-index="0">
+      <header class="slide-chrome-header chrome-cover" role="banner">
+        <span class="chrome-company chrome-company-cover">IXIGO</span>
+        <span class="chrome-assignment-type">Senior PM — Full Deck v2 Demo</span>
+      </header>
+      <div class="slide-content">
+        <div class="cover-accent"></div>
+        <h1 class="cover-title">Deck Builder v2 — From Planning to Rendering</h1>
+        <p class="cover-subtitle">Understanding the two-phase architecture and how planning decisions drive rendering output</p>
+        <p class="cover-meta">Vaibhav Kumawat &nbsp;·&nbsp; July 2026</p>
+      </div>
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>1 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">v2 is not a rewrite — it's a planning layer on top of the unchanged v1 renderer. Every CSS rule, every HTML template, every JS function is byte-identical to v1 except two spots: the rec-tag override and two new patterns.</aside>
+    </div>
+
+    <div class="slide slide-exec-summary" data-index="1">
+      <header class="slide-chrome-header" role="banner">
+        <span class="chrome-company">IXIGO</span>
+        <span class="chrome-project">Deck Builder v2</span>
+      </header>
+      <div class="slide-content">
+        <h2 class="slide-heading">v2 separates decision-making (Phase 1: Planning) from decision-implementation (Phase 2: Rendering)</h2>
+        <div class="exec-cards">
+          <div class="exec-card">
+            <div class="exec-card-label">Phase 1: Planning</div>
+            <div class="exec-card-content">Understanding → Planning → Storytelling → Slide Planning → Visual Planning. Produces enriched draft.json with narrative arcs, modes, and per-slide blueprints.</div>
+          </div>
+          <div class="exec-card">
+            <div class="exec-card-label">Phase 2: Rendering</div>
+            <div class="exec-card-content">Brand lookup → Rendering → QA. Reads draft.json + references/rendering.md only. Unchanged from v1 except mode-aware rec-tag and two new patterns.</div>
+          </div>
+          <div class="exec-card">
+            <div class="exec-card-label">Payoff</div>
+            <div class="exec-card-content">Backward compatible. Planners can pre-decide everything without touching rendering logic. Formatters inherit richer data without rewriting their code.</div>
+          </div>
+        </div>
+        <div class="infographic-cluster">
+          <div class="cluster-item">
+            <span class="cluster-num">6</span>
+            <span class="cluster-lbl">Reference files (new)</span>
+          </div>
+          <div class="cluster-divider"></div>
+          <div class="cluster-item">
+            <span class="cluster-num">1</span>
+            <span class="cluster-lbl">File the Formatter reads</span>
+          </div>
+          <div class="cluster-divider"></div>
+          <div class="cluster-item">
+            <span class="cluster-num">100%</span>
+            <span class="cluster-lbl">v1 CSS/HTML/JS intact</span>
+          </div>
+        </div>
+      </div>
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>2 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">Not a breaking change. v1 draft.json files render identically. The Formatter falls back to v1 logic if planning fields are absent. Planning is entirely optional from the Formatter's perspective.</aside>
+    </div>
+
+    <div class="slide slide-insight" data-index="2">
+      <header class="slide-chrome-header" role="banner">
+        <span class="chrome-company">IXIGO</span>
+        <span class="chrome-project">Deck Builder v2</span>
+      </header>
+      <div class="slide-content">
+        <h2 class="slide-heading">Planning layer adds six capabilities — narrative arcs, presentation modes, and per-slide blueprints — without touching rendering</h2>
+        <div class="insight-layout">
+          <div class="insight-evidence">
+            <div class="slide-body">
+              <ul>
+                <li>Storytelling Engine: 7 narrative arcs (problem-to-decision, hypothesis-first, MECE exploration) mapped onto the 12 existing slide types</li>
+                <li>Presentation Modes: 10 modes (interview_assignment, product_strategy, consulting, executive/product/leadership review, technical, research, board, investor) — each tunes visual density, appendix depth, recommendation tag text, communication style</li>
+                <li>Slide Planning: per-slide blueprint schema — explicit slide_type, visual_type, visual_pattern assignments before rendering</li>
+                <li>Visual Planning: routing table that maps each slide's data to a pattern (stat ring, cluster, chain, matrix, bar, before/after, table, funnel)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="insight-callout">
+            <div class="infographic-ring" style="--pct: 0">
+              <span class="ring-value">2</span>
+            </div>
+            <p class="ring-label">New infographic patterns (Table, Funnel)</p>
+          </div>
+        </div>
+        <p class="slide-footnote">All six reference files live in `.claude/skills/deck-builder/references/`. Formatter reads exactly one: rendering.md. The five planning files are for Planner use only.</p>
+      </div>
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>3 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">Formatter never reads storytelling-engine.md, presentation-modes.md, slide-planning.md, visual-planning.md, or understanding-and-planning.md. Planning produces decisions; rendering implements them. Separation of concerns.</aside>
+    </div>
+
+    <div class="slide slide-comparison" data-index="3">
+      <header class="slide-chrome-header" role="banner">
+        <span class="chrome-company">IXIGO</span>
+        <span class="chrome-project">Deck Builder v2</span>
+      </header>
+      <div class="slide-content">
+        <h2 class="slide-heading">v1 rendered early and guessed; v2 plans first and implements decisions</h2>
+        <div class="infographic-chain">
+          <div class="chain-step">Brief</div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-step">Plan</div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-step chain-active">Decide visual strategy</div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-step">Implement</div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-step">Output</div>
+        </div>
+        <div class="comparison-grid">
+          <div class="comparison-col comparison-rejected">
+            <div class="comparison-label">v1 Approach</div>
+            <div class="slide-body">
+              <ul>
+                <li>Brief arrives → Renderer starts immediately</li>
+                <li>Renderer makes on-the-fly decisions: which pattern fits this data? how should this layout stack?</li>
+                <li>No planning artifact; decisions embedded in rendering code</li>
+                <li>Hard to preview structure before building</li>
+              </ul>
+            </div>
+          </div>
+          <div class="comparison-col comparison-chosen">
+            <div class="comparison-label">v2 Approach</div>
+            <div class="slide-body">
+              <ul>
+                <li>Brief arrives → Planning produces draft.json with all decisions pre-made</li>
+                <li>Renderer reads decisions off draft.json and implements them</li>
+                <li>Planning artifact (draft.json) is human-readable and auditable</li>
+                <li>Full deck structure visible before rendering starts</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="comparison-verdict">Not a rewrite. The renderer itself is unchanged. Only the *input* to the renderer is richer. v1 draft.json still works.</div>
+      </div>
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>4 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">This is why backward compatibility is trivial. The Formatter's code has no branches to delete, no if-statements to simplify. It's the exact same Formatter reading a superset of the old draft.json schema.</aside>
+    </div>
+
+    <div class="slide slide-recommendation" data-index="4">
+      <header class="slide-chrome-header" role="banner">
+        <span class="chrome-company">IXIGO</span>
+        <span class="chrome-project">Deck Builder v2</span>
+      </header>
+      <div class="slide-content">
+        <div class="rec-tag">v2 Advantage</div>
+        <h2 class="slide-heading">Use v2 when you need structured planning; use v1 fallbacks when you just want to render</h2>
+        <div class="infographic-ba">
+          <div class="ba-col">
+            <div class="ba-tag">Without Planning</div>
+            <ul class="ba-list">
+              <li>Pass draft.json with only meta + slides (v1 schema)</li>
+              <li>Renderer applies embedded fallback logic</li>
+              <li>Fast, minimal input</li>
+              <li>Same output as v1</li>
+            </ul>
+            <div class="ba-metric ba-metric-bad">No pre-planned structure</div>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-col ba-after">
+            <div class="ba-tag ba-tag-good">With Planning</div>
+            <ul class="ba-list">
+              <li>Run all six planning phases</li>
+              <li>Enriched draft.json with understanding, mode, narrative, blueprints, visuals</li>
+              <li>Formatter implements pre-made decisions</li>
+              <li>Auditable, intentional, replicable</li>
+            </ul>
+            <div class="ba-metric ba-metric-good">Structured, deliberate output</div>
+          </div>
+        </div>
+      </div>
+      <footer class="slide-chrome-footer" role="contentinfo">
+        <span class="chrome-creator">Vaibhav Kumawat</span>
+        <span class="chrome-slide-num" data-chrome-num>5 / 5</span>
+        <span class="chrome-date">July 2026</span>
+      </footer>
+      <aside class="speaker-notes" aria-hidden="true">The sampled HTML decks we built earlier (5-slide Ixigo, 5-slide Paytm) prove the v2 rendering works. Both used only references/rendering.md — no planning phase at all. Formatting succeeded with v1 approach.</aside>
+    </div>
+
+  </div>
+  <nav class="dot-nav" aria-label="Slide navigation">
+    <button class="dot active" aria-label="Go to slide 1"></button>
+    <button class="dot" aria-label="Go to slide 2"></button>
+    <button class="dot" aria-label="Go to slide 3"></button>
+    <button class="dot" aria-label="Go to slide 4"></button>
+    <button class="dot" aria-label="Go to slide 5"></button>
+    <span class="slide-counter" aria-live="polite">1 / 5</span>
+  </nav>
+</div>
+</main>
+
+<script>
+(function() {
+  'use strict';
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  const counter = document.querySelector('.slide-counter');
+  let current = 0;
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    dots[current]?.classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+    dots[current]?.classList.add('active');
+    if (counter) counter.textContent = `${current + 1} / ${slides.length}`;
+    document.querySelectorAll('[data-chrome-num]').forEach(el => {
+      el.textContent = `${current + 1} / ${slides.length}`;
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1); }
+    if (e.key === 'n' || e.key === 'N') toggleNotes();
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End')  show(slides.length - 1);
+  });
+
+  dots.forEach((dot, i) => dot.addEventListener('click', () => show(i)));
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive: true});
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) show(dx < 0 ? current + 1 : current - 1);
+  }, {passive: true});
+
+  function toggleNotes() {
+    document.querySelectorAll('.speaker-notes').forEach(n => n.classList.toggle('visible'));
+  }
+
+  show(0);
+})();
+</script>
+</body>
+</html>
