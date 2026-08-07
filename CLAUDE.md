@@ -64,8 +64,11 @@ Optional, opt-in via `/output-select`: Executive Review pass (skip by default �
 
 ## Critical Rules (enforce always)
 
+The first two are **enforced in code**, not on the honour system: a `PreToolUse` hook in `.claude/settings.json` runs `Global/scripts/gate_check.py` on every agent call and denies the ones below before the agent spawns.
+
 - **Formatter gate:** never runs unless `check_report.json.verdict == "PASS"`. Non-negotiable.
 - **Loop cap:** `state.json.loop_count` reaching 2 on a Checker FAIL → surface HITL immediately, never a third auto-loop.
+- **Deliberate override:** set `"gate_override": "<reason>"` in the assignment's `state.json` to bypass either gate. Requires opening the file and writing a reason, so it can't be tripped by accident. Clear it once you're past the exception.
 - **Research expansion:** never run an extra research pass without explicit user approval.
 - **Media efficiency:** check `MEDIA_REGISTRY.json` → `.meta.json` first; re-analyze the image only if `analysis_confidence != "high"` or the summary can't answer the question.
 - **INPUT.md is immutable** once written by `intake-intent`.

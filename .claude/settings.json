@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR:-$PWD}/Global/scripts/gate_check.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking pipeline gates"
+          }
+        ]
+      }
+    ]
+  }
+}
