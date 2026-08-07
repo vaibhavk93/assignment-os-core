@@ -2,20 +2,17 @@
 
 ## What This Is
 
-An Assignment Operating System for interview assignments. Every assignment runs through a multi-agent pipeline that identifies the hiring signal, researches evidence, builds a recommendation, quality-gates it, and produces delivery-ready output.
+An Assignment Operating System for interview assignments. Every assignment runs through a 7-stage pipeline that identifies the hiring signal, researches evidence, builds a recommendation, quality-gates it, and produces delivery-ready output.
 
-**Optimization target:** Interview success (hiring signal coverage) — not output aesthetics.
+**Optimization target:** Interview success (hiring signal coverage) — not output aesthetics. `/debrief` after each real interview is what actually measures this; run it every time.
 
 ---
 
-## Session Start Ritual (do this every session)
+## Session Start Ritual
 
-1. Read `state.json` in the most recently active assignment folder (if any)
-2. If `state.json.status == "active"`:
-   - Load `Companies/<Company>/Company_Memory.md`
-   - Load `Companies/<Company>/<Assignment>/workspace/intent.md`
-   - Show user: current stage, what's pending, loop count
-3. If no active assignment: greet user and suggest `/assignment-new <Company>`
+1. Read `state.json` in the most recently active assignment folder (if any).
+2. If `status == "active"` → load `Companies/<Company>/Company_Memory.md` + `workspace/intent.md`, show stage/pending/loop_count.
+3. No active assignment → greet and suggest `/assignment-new <Company>`.
 
 ---
 
@@ -23,119 +20,92 @@ An Assignment Operating System for interview assignments. Every assignment runs 
 
 ```
 Assignment OS/
-  CLAUDE.md                    ← this file (project brain)
+  CLAUDE.md
+  HANDOFF.md                   ← where we left off (current state only)
   .claude/
-    agents/                    ← agent definition files
-    commands/                  ← slash command definitions
-    settings.json              ← hooks
-  Documents/                   ← architecture, PRD, agent contracts
+    agents/                    ← 7 pipeline agents
+    commands/                  ← 8 slash commands
+    skills/                    ← 6 knowledge packs (progressive disclosure — read on demand)
+  Documents/
+    AGENT_CONTRACTS.md         ← per-agent contracts (build spec)
+    PRD.md
+    archive/                   ← superseded specs, kept for reference only
   Global/
-    skills/                    ← reusable knowledge packs (loaded into agent prompts)
-    memory/                    ← global learnings across all assignments
-  Companies/
-    <Company>/
-      MEDIA_REGISTRY.json      ← index of all media for this company
-      media/                   ← screenshots, PDFs, recordings (timestamped)
-      Company_Memory.md        ← reusable company knowledge
-      <Assignment>/
-        INPUT.md               ← immutable: assignment text, refs, constraints
-        WORKSPACE.md           ← human-readable merged view (auto-generated)
-        workspace/             ← machine-readable section files (what agents read)
-        OUTPUTS/               ← final deliverables
-        MEMORY.md              ← reusable learnings from this assignment
-        state.json             ← pipeline state, loop count, checkpoint
+    memory/                    ← cross-assignment learnings
+    scripts/                   ← pptx_builder.py etc.
+  Companies/<Company>/
+    MEDIA_REGISTRY.json
+    media/
+    Company_Memory.md
+    <Assignment>/
+      INPUT.md                 ← immutable
+      workspace/                ← machine-readable, agent I/O
+      WORKSPACE.md             ← human-reading only, regenerated on demand by /assignment-status
+      OUTPUTS/
+      MEMORY.md                ← learnings + /debrief outcome
+      state.json
 ```
 
 ---
 
+## The Pipeline (7 stages)
+
+| # | Agent | Merges (history) | Reads → Writes |
+|---|---|---|---|
+| 1 | `intake-intent` | Intake + Hiring Signal + Intent | user input → `INPUT.md`, `workspace/intent.md` |
+| 2 | `research-planner` | Classifier + Context Builder + Research Planner | `intent.md` → `context.md`, `research_plan.md` |
+| 3 | `research-executor` | (unchanged, parallel) | one question → `research_<qid>.md` |
+| 4 | `case-builder` | Insight Synthesizer + Case Builder | `research_*.md` → `draft.json` |
+| 5 | `devils-advocate` | (unchanged) | draft → `devils_advocate.md` |
+| 6 | `strict-checker` | (unchanged) | draft → `check_report.json` (PASS/FAIL gate) |
+| 7 | `formatter` | Formatter + Visual QA | `draft.json` → `OUTPUTS/*`, self-checked |
+
+Optional, opt-in via `/output-select`: Executive Review pass (skip by default — only worth it for genuinely executive audiences).
+
 ## Critical Rules (enforce always)
 
-### Context contracts
-Every agent reads ONLY the workspace/ section files listed in its contract (see `Documents/AGENT_CONTRACTS.md`). **Agents never load full WORKSPACE.md** — it is for human reading only. If an agent asks to read a file outside its contract, refuse and redirect it to the correct files.
-
-### Single writer
-**Only Workspace Manager writes to workspace/ section files.** All other agents return their output as content to Workspace Manager, which writes it and regenerates WORKSPACE.md. Never let two agents write to the same workspace file.
-
-### Formatter gate
-**Formatter never runs unless `check_report.json.verdict == "PASS"`.** This is non-negotiable.
-
-### Loop cap
-Track `state.json.loop_count`. If it reaches 2 on a Checker FAIL, surface HITL immediately — never auto-loop a third time.
-
-### Research expansion
-**Never run an additional research pass without explicit user approval.** Always ask first.
-
-### Media efficiency
-When agents need visual context, always check `MEDIA_REGISTRY.json` → `.meta.json` first. Re-analyze the actual image only if `analysis_confidence != "high"` OR the question cannot be answered from `analysis_summary`.
+- **Formatter gate:** never runs unless `check_report.json.verdict == "PASS"`. Non-negotiable.
+- **Loop cap:** `state.json.loop_count` reaching 2 on a Checker FAIL → surface HITL immediately, never a third auto-loop.
+- **Research expansion:** never run an extra research pass without explicit user approval.
+- **Media efficiency:** check `MEDIA_REGISTRY.json` → `.meta.json` first; re-analyze the image only if `analysis_confidence != "high"` or the summary can't answer the question.
+- **INPUT.md is immutable** once written by `intake-intent`.
 
 ---
 
-## Available Slash Commands
+## Slash Commands
 
 | Command | Purpose |
 |---|---|
-| `/assignment-new [Company]` | Start a new assignment (creates folder structure, runs pipeline) |
-| `/assignment-continue` | Resume paused/failed assignment from last checkpoint |
-| `/assignment-status` | Show current stage, artifacts created, loop count |
-| `/media-add [filepath]` | Process and register a new media file into the company registry |
-| `/research-approve` | Approve an additional research pass (HITL gate) |
-| `/intent-confirm` | Confirm or edit the Intent Contract (HITL gate) |
-| `/output-select` | Choose output formats before Formatter runs (HITL gate) |
+| `/assignment-new [Company]` | Start a new assignment |
+| `/assignment-continue` | Resume from last checkpoint |
+| `/assignment-status` | Show stage/loop/pending; regenerates WORKSPACE.md |
+| `/media-add [filepath]` | Register a media file |
+| `/intent-confirm` | HITL — confirm/edit Intent Contract |
+| `/output-select` | HITL — choose output format(s), opt into exec review |
+| `/debrief [assignment]` | Record real interview outcome — closes the feedback loop |
+| `/handover` | Rewrite HANDOFF.md before ending a session |
 
 ---
 
-## Agent Overview (pipeline order)
+## Skills (`.claude/skills/`, loaded on demand)
 
-| # | Agent | File | Purpose |
-|---|---|---|---|
-| 0 | Orchestrator | slash commands | Drives pipeline, manages state, HITL routing |
-| 1 | Media Analysis | `agents/media-analysis.md` | Analyzes + registers media files |
-| 2 | Intake | `agents/intake.md` | Writes INPUT.md from user input |
-| 3 | Workspace Manager | `agents/workspace-manager.md` | Only agent that writes workspace/ files |
-| 4 | Hiring Signal Analyzer | `agents/hiring-signal-analyzer.md` | Identifies what company is actually testing |
-| 5 | Intent Agent | `agents/intent-agent.md` | Writes Intent Contract |
-| 6 | Classifier | `agents/classifier.md` | Selects pipeline template + skip/emphasis |
-| 7 | Context Builder | `agents/context-builder.md` | Builds company/product context |
-| 8 | Research Planner | `agents/research-planner.md` | Decomposes intent into research questions |
-| 9 | Research Executor | `agents/research-executor.md` | Executes one bounded research question |
-| 10 | Insight Synthesizer | `agents/insight-synthesizer.md` | Turns findings into insights |
-| 11 | Case Builder | `agents/case-builder.md` | Builds draft.json + assumptions |
-| 12 | Devil's Advocate | `agents/devils-advocate.md` | Challenges the recommendation |
-| 13 | Strict Checker | `agents/strict-checker.md` | Quality gate — PASS/FAIL |
-| 14 | Executive Reviewer | `agents/executive-reviewer.md` | Advisory executive lens |
-| 15 | Formatter | `agents/formatter.md` | Renders to PPTX/DOCX/HTML |
-| 16 | Visual QA | `agents/visual-qa.md` | Bug-hunts formatted output |
-
----
-
-## Skills (knowledge packs — loaded into agent prompts)
-
-| File | Used by |
+| Skill | Used by |
 |---|---|
-| `Global/skills/hiring-signal-patterns.md` | Hiring Signal Analyzer, Devil's Advocate, Exec Reviewer, Case Builder |
-| `Global/skills/assignment-type-templates.md` | Classifier, Research Planner |
-| `Global/skills/pm-frameworks.md` | Intent Agent, Research Planner, Insight Synthesizer, Case Builder |
-| `Global/skills/writing-style.md` | Case Builder |
-| `Global/skills/presentation-style.md` | Case Builder, Formatter |
-| `Global/skills/research-heuristics.md` | Research Planner, Context Builder, Research Executor |
-| `Global/skills/checker-rubrics.md` | Strict Checker |
-| `Global/skills/brand-templates.md` | Formatter |
+| `hiring-signal-patterns` | intake-intent, case-builder, devils-advocate, strict-checker |
+| `pm-frameworks` | intake-intent, research-planner, case-builder |
+| `checker-rubrics` | strict-checker |
+| `research-heuristics` | research-planner, research-executor |
+| `assignment-type-templates` | research-planner, strict-checker |
+| `deck-builder` | case-builder (structure), formatter (rendering) |
 
 ---
 
 ## State Management
 
-`state.json` is the source of truth for pipeline state. After every stage, update it. Key fields:
-- `current_stage` — what just completed
-- `loop_count` — how many Checker correction loops have run
-- `status` — active | complete | paused | failed
-- `hitl_nudge_count` — retrospective nudges sent
+`state.json` fields: `current_stage`, `loop_count`, `status` (active\|complete\|paused\|failed), `selected_outputs`, `optional_stages`, `outcome` (pending\|advanced\|rejected — set by `/debrief`).
 
 ---
 
 ## Architecture Reference
 
-Full specs in `Documents/`:
-- `ARCHITECTURE.md` — system design
-- `PRD.md` — product requirements
-- `AGENT_CONTRACTS.md` — per-agent input/output schemas and guardrails
+`Documents/AGENT_CONTRACTS.md` — full per-agent contracts (build spec). `Documents/PRD.md` — product requirements. `Documents/archive/` — superseded 17-stage architecture, kept for history only, do not treat as current.
