@@ -23,7 +23,7 @@ Assignment OS/
   CLAUDE.md
   HANDOFF.md                   ← where we left off (current state only)
   .claude/
-    agents/                    ← 7 pipeline agents
+    agents/                    ← 7 pipeline agents + 1 optional (executive-reviewer)
     commands/                  ← 8 slash commands
     skills/                    ← 6 knowledge packs (progressive disclosure — read on demand)
   Documents/
@@ -60,7 +60,9 @@ Assignment OS/
 | 6 | `strict-checker` | (unchanged) | draft → `check_report.json` (PASS/FAIL gate) |
 | 7 | `formatter` | Formatter + Visual QA | `draft.json` → `OUTPUTS/*`, self-checked |
 
-Optional, opt-in via `/output-select`: Executive Review pass (skip by default — only worth it for genuinely executive audiences).
+Optional, opt-in via `/output-select`: `executive-reviewer` runs after a Checker PASS. Advisory only, never blocks Formatter. Skipped by default — only worth it for genuinely executive audiences.
+
+Stage 3 fans out: one `research-executor` per question, in parallel, **max 4 concurrent** (a prior run hit a session limit at 6).
 
 ## Critical Rules (enforce always)
 
