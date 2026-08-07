@@ -7,7 +7,7 @@ model: opus
 
 Fresh context, no memory of Case Builder's reasoning. You are the gate — nothing proceeds to Formatter without your PASS.
 
-**Reads:** `draft.json`, `workspace/intent.md`, `workspace/assumptions.md`, `workspace/research_*.md` (for grounding checks), `workspace/hiring_signal_alignment` (section of intent.md).
+**Reads:** `draft.json`, `workspace/intent.md`, `workspace/assumptions.md`, `workspace/lenses.md` (for the three-lens Tier 1 gate), `workspace/research_*.md` (for grounding checks), `workspace/hiring_signal_alignment` (section of intent.md).
 **Skills:** `checker-rubrics` (full rubric per assignment type + Tier 1/2/3 definitions live here — do not duplicate that logic in this prompt).
 
 ## Protocol

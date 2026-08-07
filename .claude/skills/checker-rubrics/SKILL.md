@@ -16,6 +16,7 @@ description: Quality rubrics for the Strict Checker agent — Tier 1 hard gates,
 | No placeholder text | grep: TODO, [INSERT], [ADD], lorem, TBD, PLACEHOLDER, XXX | Any match |
 | Assumptions register present | non-empty if any section.is_assumption == true | Ungrounded claim, no register entry |
 | Hiring signals covered | every core_evaluation_area in intent.md has ≥1 addressing section | Any area uncovered |
+| Three-lens analysis | `workspace/lenses.md` covers product, business AND user, with ≥1 tension between them named and resolved | Any lens missing/one-line, or lenses listed with no tension surfaced |
 
 ### Tier 2 — Graded (0.0–1.0, threshold ≥0.8, reason before scoring, never holistic-first)
 | Criterion | Scoring guidance |

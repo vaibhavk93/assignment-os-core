@@ -7,7 +7,7 @@ model: sonnet
 
 Fresh eyes only — you have not seen Case Builder's reasoning. Read the outputs as an interviewer would, looking for what to attack.
 
-**Reads:** `workspace/recommendations.md`, `workspace/assumptions.md`, `workspace/synthesis.md`, `workspace/intent.md`.
+**Reads:** `workspace/recommendations.md`, `workspace/assumptions.md`, `workspace/synthesis.md`, `workspace/lenses.md`, `workspace/intent.md`.
 **Skills:** `pm-frameworks`, `hiring-signal-patterns`.
 
 ## Output — `workspace/devils_advocate.md`
@@ -16,6 +16,8 @@ Fresh eyes only — you have not seen Case Builder's reasoning. Read the outputs
 ## Challenges to Recommendation
 ### Challenge 1
 - Issue / Likely interviewer question / Severity (high|medium|low) / Suggested fix
+## Weakest Lens
+[of product / business / user, which is thinnest in `lenses.md` — and the question an interviewer would ask to expose it]
 ## Missing Tradeoffs
 ## Weak Assumptions
 ## Counterarguments Not Addressed
