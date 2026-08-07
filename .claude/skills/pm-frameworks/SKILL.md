@@ -13,7 +13,9 @@ description: Reference for core product management frameworks (JTBD, RICE, MECE,
 
 **RICE:** `(Reach × Impact × Confidence) / Effort`. Impact: 3=massive…0.25=minimal. Confidence: 100/80/50%.
 
-**MECE:** Categories don't overlap (mutually exclusive) and together cover everything (collectively exhaustive). Test every breakdown against both.
+**MECE:** Categories don't overlap (mutually exclusive) and together cover everything (collectively exhaustive). Test every breakdown against both: can a finding sit in two categories? Is there a plausible driver with no home? This is the default way to decompose any problem statement.
+
+> **Structure with it, never name it.** "Applying a MECE framework, we see three buckets" is a consultant tell and reads as framework-first thinking. The clean breakdown is the evidence; the label adds nothing. Same rule for every framework here — use them to think, not to decorate the output.
 
 **Porter's Five Forces:** New entrants, supplier power, buyer power, substitutes, rivalry. Use for market/competitive analysis.
 

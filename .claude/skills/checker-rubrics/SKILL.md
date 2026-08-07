@@ -17,6 +17,8 @@ description: Quality rubrics for the Strict Checker agent — Tier 1 hard gates,
 | Assumptions register present | non-empty if any section.is_assumption == true | Ungrounded claim, no register entry |
 | Hiring signals covered | every core_evaluation_area in intent.md has ≥1 addressing section | Any area uncovered |
 | Three-lens analysis | `workspace/lenses.md` covers product, business AND user, with ≥1 tension between them named and resolved | Any lens missing/one-line, or lenses listed with no tension surfaced |
+| Problem breakdown is MECE | The draft's structure splits the problem into non-overlapping parts that together cover it | A driver sits in two sections, or a plausible driver has no section |
+| PM voice, not consultant voice | grep draft.json for: MECE, three-pronged, workstream, value pool, unlock value, enablement, synergies, holistic, best-in-class, "the organization should" — and for framework names announced in prose | Any match. Naming the framework is a FAIL, not a credit — structure is shown by the breakdown, not the label |
 
 ### Tier 2 — Graded (0.0–1.0, threshold ≥0.8, reason before scoring, never holistic-first)
 | Criterion | Scoring guidance |
@@ -41,7 +43,7 @@ description: Quality rubrics for the Strict Checker agent — Tier 1 hard gates,
 
 **metrics_analytics:** Tier1 +[metrics tree, ≥3 ranked hypotheses, data sources per hypothesis, next steps]. Tier2: hypothesis precision, instrumentation awareness. Vague hypothesis → route case_builder: "must be testable — not 'users are confused'".
 
-**case_study:** Tier1 +[framework applied explicitly, options evaluated not just one path, tradeoffs acknowledged]. Tier2: framework rigor (MECE), business impact quantification.
+**case_study:** Tier1 +[options evaluated not just one path, tradeoffs acknowledged]. Tier2: structural rigor (is the breakdown genuinely non-overlapping and complete — judge the structure, never reward naming the framework), business impact quantification.
 
 ## Loop Detection
 `draft.json` hash matches prior attempt → skip re-scoring, output `{verdict: FAIL, routing: {route_to: hitl, reason: "not converging"}}` immediately.

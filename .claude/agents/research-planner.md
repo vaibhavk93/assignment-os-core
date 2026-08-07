@@ -18,7 +18,7 @@ Pick one type from `assignment-type-templates` (prd, product_teardown, growth_st
 Refresh only what's stale — check freshness rules in `research-heuristics` before searching. Write `workspace/context.md`: company overview, key products, competitors, interviewer profile (if known), recent developments, known metrics, market position — every field labeled with source + confidence + `last_verified`. Never fabricate a metric; write "not publicly available" instead.
 
 ## Step 3 — Research plan
-Decompose the intent into research questions with **non-overlapping topic ownership**. For each: objective, sources to hit, effort level (simple/comparison/complex — see `research-heuristics` for search budgets), parallelizable (y/n), success criteria. Skip questions already answered in `context.md` with confidence > 0.7.
+Decompose the intent into research questions that are **mutually exclusive and collectively exhaustive**: no two questions chase the same fact, and together they cover the whole problem with no plausible driver left unresearched. Test both halves before finalising — overlap wastes a parallel agent, and a gap becomes a hole in the recommendation that an interviewer will find. For each question: objective, sources to hit, effort level (simple/comparison/complex — see `research-heuristics` for search budgets), parallelizable (y/n), success criteria. Skip questions already answered in `context.md` with confidence > 0.7.
 
 **Three-lens coverage (mandatory).** The question set must produce evidence for all three lenses:
 - **Product** — what exists, how it works, what's feasible, what it would replace

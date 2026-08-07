@@ -24,8 +24,8 @@ Skip Devil's Advocate (diagnostic, not a single recommendation to attack). Empha
 Checklist: metrics tree · ≥3 ranked hypotheses · data sources identified · root-cause call (even hedged) · next steps defined.
 
 ## `case_study`
-Emphasis: explicit framework (MECE); situation → complication → resolution → recommendation; tradeoffs acknowledged; impact quantified.
-Checklist: framework applied · diagnosis evidenced · options evaluated · clear recommendation · tradeoffs · impact quantified.
+Emphasis: break the problem into non-overlapping parts that together cover it (structure it, don't name the framework); situation → complication → resolution → recommendation; tradeoffs acknowledged; impact quantified.
+Checklist: breakdown is non-overlapping and complete · diagnosis evidenced · options evaluated · clear recommendation · tradeoffs · impact quantified.
 
 ## `market_research`
 Skip Devil's Advocate (no single recommendation to challenge). Emphasis: TAM/SAM/SOM; differentiated competitive landscape, not a feature list; clear target segment; strategic implication.
