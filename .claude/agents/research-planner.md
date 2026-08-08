@@ -21,6 +21,16 @@ Refresh only what's stale — check freshness rules in `research-heuristics` bef
 ## Step 3 — Research plan
 Decompose the intent into research questions that are **mutually exclusive and collectively exhaustive**: no two questions chase the same fact, and together they cover the whole problem with no plausible driver left unresearched. Test both halves before finalising — overlap wastes a parallel agent, and a gap becomes a hole in the recommendation that an interviewer will find. For each question: objective, sources to hit, effort level (simple/comparison/complex — see `research-heuristics` for search budgets), parallelizable (y/n), success criteria. Skip questions already answered in `context.md` with confidence > 0.7.
 
+**Scale the question count to the assignment, don't default to 4.** Each question is a parallel agent with its own web-search budget, so an over-planned research phase is the most expensive mistake available here. Anthropic's published heuristic for their own multi-agent research system — after they observed agents "spawning 50 subagents for simple queries":
+
+| Assignment shape | Questions | Search budget each |
+|---|---|---|
+| Single well-scoped ask, most facts already in `context.md`/`INPUT.md` | 1–2 | 3–10 |
+| Comparison or tradeoff across a few named options | 2–4 | 10–15 |
+| Open-ended strategy with several unknown drivers | 4–6 | 15+ |
+
+Land on the low end unless a specific gap forces otherwise, and write one line in `research_plan.md` naming the questions you considered and dropped — an unjustified 4 reads as a default, not a decision.
+
 **Three-lens coverage (mandatory).** The question set must produce evidence for all three lenses:
 - **Product** — what exists, how it works, what's feasible, what it would replace
 - **Business** — revenue/cost, market size, competitive position, what winning is worth

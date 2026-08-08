@@ -69,6 +69,12 @@ Stage 3 fans out: one `research-executor` per question, in parallel, **max 4 con
 
 Stage 5 fans out too: 5 personas, batched **4 then 1** (`founder`, `engineer`, `compliance`, `ai_smell`, then `peer_pm`) to stay under the same 4-concurrent cap. If budget forces four, drop `peer_pm` — it judges how the case reads, not whether it's right.
 
+## Agent return values
+
+Every agent's real output is the **file it writes**. Its return message is a receipt, not a report: emit the JSON in that agent's `## Returns` block and nothing else — no prose summary, no restating what's already in the file, no markdown tables. The orchestrator reads the file when it needs detail. A subagent that narrates its work back pays for the same content twice.
+
+---
+
 ## Critical Rules (enforce always)
 
 The first two are **enforced in code**, not on the honour system: a `PreToolUse` hook in `.claude/settings.json` runs `Global/scripts/gate_check.py` on every agent call and denies the ones below before the agent spawns.
