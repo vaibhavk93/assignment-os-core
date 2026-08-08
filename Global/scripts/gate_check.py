@@ -68,22 +68,30 @@ def read_int(d, key):
 
 
 def active_assignment(state_paths):
-    """Newest *unfinished* assignment -> (dir, state). Plain mtime would pick a `complete`
-    assignment the moment /debrief touches its state.json, gating the live run against the
-    wrong folder's check_report.json. Returns None if nothing is readable."""
-    candidates = []
+    """Newest *unfinished* assignment -> (dir, state, live_dirs). Plain mtime would pick a
+    `complete` assignment the moment /debrief touches its state.json, gating the live run against
+    the wrong folder's check_report.json. Returns None if nothing is readable.
+
+    `live_dirs` holds every folder whose status is exactly `active`. Two of those means mtime is
+    picking between genuine claimants, and a silent wrong pick gates an agent against another
+    assignment's artifacts -- the caller denies instead. `paused`/`failed` folders stay eligible
+    for selection but never trigger that, since they are dormant rather than competing."""
+    candidates, live_dirs = [], []
     for p in state_paths:
         try:
             state = json.load(open(p))
         except Exception:
             continue
-        if str(state.get("status") or "").lower() in DONE:
+        status = str(state.get("status") or "").lower()
+        if status in DONE:
             continue
+        if status == "active":
+            live_dirs.append(os.path.dirname(p))
         candidates.append((os.path.getmtime(p), os.path.dirname(p), state))
     if not candidates:
         return None
     _, adir, state = max(candidates, key=lambda c: c[0])
-    return adir, state
+    return adir, state, sorted(live_dirs)
 
 
 def main():
@@ -99,11 +107,22 @@ def main():
     found = active_assignment(glob.glob(os.path.join(ROOT, "Companies", "*", "*", "state.json")))
     if not found:
         allow()
-    adir, state = found
+    adir, state, live_dirs = found
 
     override = str(state.get("gate_override") or "").strip()
     if override:
         allow()
+
+    # Ambiguity is a hard stop, not a tiebreak. With two assignments claiming `active`, mtime
+    # picks between real claimants and every gate below then reads the wrong folder's
+    # check_report.json and research files -- silently, and in the direction of passing.
+    if len(live_dirs) > 1:
+        deny('Gate blocked: %d assignments are marked "active" (%s), so there is no single live '
+             "assignment to gate against. Whichever was touched most recently would win on mtime "
+             "and every check below would read the wrong folder. Set the ones you are not working "
+             'on to "paused" or "complete" in their state.json. To proceed anyway, set '
+             '"gate_override": "<reason>" in the assignment you actually mean.'
+             % (len(live_dirs), ", ".join(os.path.basename(d) for d in live_dirs)))
 
     if agent == "formatter":
         report = os.path.join(adir, "check_report.json")
@@ -216,15 +235,29 @@ def selftest():
         debriefed = mk("debriefed", "complete", 9000)   # newest by mtime, but finished
         # The regression this guards: /debrief touches a completed assignment, whose state.json
         # then wins on mtime alone and gates the live run against the wrong check_report.json.
-        adir, state = active_assignment([live, debriefed])
+        adir, state, live_dirs = active_assignment([live, debriefed])
         assert os.path.basename(adir) == "live", adir
         assert state["status"] == "active"
+        assert len(live_dirs) == 1, live_dirs        # one claimant -> unambiguous
         # Nothing unfinished -> caller falls through to allow(), never gates on a stale folder.
         assert active_assignment([debriefed]) is None
         # Unreadable state.json is skipped, not fatal (hook must fail open).
         bad = os.path.join(tmp, "bad_state.json")
         open(bad, "w").write("{not json")
         assert os.path.basename(active_assignment([bad, live])[0]) == "live"
+
+        # Two live assignments must be reported as ambiguous, not silently tiebroken on mtime.
+        # The regression this guards: running two applications in the same week gates every
+        # agent against whichever folder was touched last, in the direction of passing.
+        second = mk("second_live", "active", 5000)
+        _, _, two = active_assignment([live, second, debriefed])
+        assert len(two) == 2, two
+        assert [os.path.basename(d) for d in two] == ["live", "second_live"]
+        # A dormant assignment is eligible for selection but never counts as a rival claimant.
+        paused = mk("paused_one", "paused", 6000)
+        adir3, _, live3 = active_assignment([live, paused, debriefed])
+        assert len(live3) == 1, live3                     # only `active` counts toward ambiguity
+        assert os.path.basename(adir3) == "paused_one"    # newest still wins selection
 
         # Loop cap reads whichever counter is higher. The regression this guards: state.json's
         # loop_count is hand-maintained and in practice stays 0, so trusting it alone let the
