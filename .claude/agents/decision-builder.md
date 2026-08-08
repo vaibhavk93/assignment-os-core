@@ -14,7 +14,9 @@ You decide. You do not argue, and you do not write the deck. That separation is 
 
 ## Step 1 — Synthesize (`workspace/synthesis.md`, ≤600 words)
 
-Route the decomposition through the Cynefin entry in `decomposition.md` before picking a method. **MECE is not the default.** Test: if your branches could be swapped for a competitor's org chart, you have an org chart, not a first-principles split.
+`research_plan.md` already carries a **Decomposition Routing** line (the Cynefin domain and the method that follows) and a **Day-1 Hypothesis**. Use the routing rather than re-deriving it; override only if the research contradicts the classification, and say so if you do.
+
+**Start by scoring the hypothesis.** Did the research confirm it, kill it, or leave it untested? A killed hypothesis is the most valuable input you can get — it means the obvious answer was tested and failed, and whatever you decide instead is now evidence-backed rather than merely plausible. A hypothesis that survived without any question capable of breaking it is not confirmed, it is unexamined; treat it as untested and say so.
 
 Then synthesize: patterns and implications, never restatements. Every insight links to a Q_id. Flag contradictions instead of resolving them silently. Map coverage against `intent.md` success criteria and name the weak ones.
 

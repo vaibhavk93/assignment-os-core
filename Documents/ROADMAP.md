@@ -28,7 +28,7 @@ Case-Based Reasoning solved this in 1994: the **index vocabulary** is the finite
 |---|---|---|
 | **0** | Seed `Global/library/` with canon; rebuild `pm-frameworks` as a router | ✅ **done** (`65d96de`) |
 | **1** | New stage `decision-builder`; shrink `case-builder` to argue-only | ✅ **done** |
-| **2** | Scope: day-1 hypothesis + Cynefin routing (planner); ~~elimination gate (checker)~~ **pulled into Phase 1**; attack-the-elimination (panel) | ⬜ next — 2 of 3 items remain |
+| **2** | Scope: day-1 hypothesis + Cynefin routing (planner); ~~elimination gate (checker)~~ **shipped in Phase 1**; attack-the-elimination (panel) | ✅ **done** |
 | **3** | Retrieval — library surfaced at intake / planning / decision | ⬜ |
 | **4** | `/retro` proposes candidates; human promotes | ⬜ **blocked on `/debrief`** |
 | **5** | Anti-rot — cap, version, demote, expire, footprint-prune | ⬜ defer until library is large |
