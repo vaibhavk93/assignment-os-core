@@ -32,7 +32,9 @@ Assignment OS/
     archive/                   ← superseded specs, kept for reference only
   Global/
     candidate/VOICE.md         ← candidate voice profile, cross-assignment
-    memory/                    ← cross-assignment learnings
+    library/                   ← reasoning assets. INDEX.md is the only always-loaded file;
+                                 bodies load on trigger match. Seeded canon + (later) extracted
+                                 patterns, each tagged tier + status.
     scripts/                   ← pptx_builder.py etc.
   Companies/<Company>/
     MEDIA_REGISTRY.json
@@ -112,7 +114,7 @@ The first two are **enforced in code**, not on the honour system: a `PreToolUse`
 | Skill | Used by |
 |---|---|
 | `hiring-signal-patterns` | intake-intent, case-builder, panel-reviewer, strict-checker |
-| `pm-frameworks` | intake-intent, research-planner, case-builder |
+| `pm-frameworks` | intake-intent, research-planner, case-builder — **a router into `Global/library/`, not a glossary**. Match a trigger in `INDEX.md`, load only that body. |
 | `checker-rubrics` | strict-checker |
 | `research-heuristics` | research-planner, research-executor |
 | `assignment-type-templates` | research-planner, strict-checker |
