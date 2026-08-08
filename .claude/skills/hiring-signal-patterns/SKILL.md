@@ -1,6 +1,6 @@
 ---
 name: hiring-signal-patterns
-description: Use when identifying what a company is actually evaluating in an interview assignment, calibrating seniority expectations, or challenging a draft from an interviewer's perspective. Used by intake-intent, case-builder, devils-advocate, strict-checker.
+description: Use when identifying what a company is actually evaluating in an interview assignment, calibrating seniority expectations, or challenging a draft from an interviewer's perspective. Used by intake-intent, case-builder, panel-reviewer, strict-checker.
 ---
 
 # Hiring Signal Patterns

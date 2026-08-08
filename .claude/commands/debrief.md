@@ -4,7 +4,7 @@ description: Record the real interview outcome after the fact — the only step 
 
 Assignment path from `$ARGUMENTS`, or the most recently completed one if not given.
 
-1. Ask the user: did the candidate advance? (advanced/rejected/pending). What did the interviewer actually ask, versus what `interview_qa.md`/the draft predicted? Any direct feedback received?
+1. Ask the user: did the candidate advance? (advanced/rejected/pending). What did the interviewer actually ask, versus what `OUTPUTS/interview_prep.md` (if it was run) or the draft predicted? Any direct feedback received?
 2. Update `state.json`: `"outcome": "advanced|rejected|pending"`.
 3. Append to that assignment's `MEMORY.md`:
 ```markdown

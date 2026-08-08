@@ -46,7 +46,7 @@ Search `[Company] brand colors hex` before writing anything. Never default to ge
 ```
 Never hardcode hex or px font sizes in elements — always the tokens above.
 
-**No scrolling, ever.** Content that doesn't fit gets cut, not scrolled. Max per slide: 1 heading (argument), 5 bullets, 1 visual element, 1 footnote.
+**No scrolling, ever.** Content that doesn't fit gets cut, not scrolled. Max per slide: 1 heading (argument), 5 bullets, 1 visual element, 1 footnote. Word-level caps (bullet length, slide body total, sentence length) live in `voice-and-brevity` — they are what make 5 bullets actually fit.
 
 **Chrome (every slide):** thin header (company name, brand color, uppercase | project name, muted) + footer (your name | slide N/total | date). 9px max, metadata not content. Appendix slides show "APPENDIX A1" instead of project name.
 
@@ -79,5 +79,6 @@ No accent lines under headings. No decorative card-edge color bars. No prev/next
 - [ ] All sizes use `var(--text-*)` tokens
 - [ ] Headings are arguments, not topics
 - [ ] ≤5 bullets/slide, brand colors applied, dot count = slide count
+- [ ] No sentence over 25 words, no bullet over 16, no core slide over 80 body words (`voice-and-brevity`)
 - [ ] No placeholder text, file opens standalone with no console errors
 - [ ] Print-to-PDF actually contains one page per slide, not just the active slide (check `@media print` overrides `display: none`)

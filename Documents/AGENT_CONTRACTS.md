@@ -14,7 +14,7 @@ Superseded: v0.1 defined 17 agents. Merged down to 7 because (a) research on mul
 | `research-planner` | Classifier, Context Builder, Research Planner | Classification is a ~5-line decision that was its own agent; context-building and planning both consume `intent.md` and produce planning artifacts. Merging removes 2 handoffs. |
 | `research-executor` | — | Unchanged. Proven: parallel instances, strict topic ownership, this was the highest-value stage in the one real run. |
 | `case-builder` | Insight Synthesizer, Case Builder | Synthesis existed only to feed Case Builder immediately after; no other consumer needed the intermediate file as a stable artifact. |
-| `devils-advocate` | — | Unchanged. Proven: caught 3 high-severity issues before Checker in the one real run. Fresh-context requirement preserved. |
+| `panel-reviewer` | Replaces `devils-advocate` | Five stakeholder personas (founder, engineer, compliance, peer_pm, ai_smell), one per instance, batched 4 then 1. The single-lens version caught 3 high-severity issues before Checker in the one real run; the panel widens that to stakes a single interviewer lens misses. Fresh-context requirement preserved. |
 | `strict-checker` | — | Unchanged. The gate. Rubric already strong (see `checker-rubrics` skill). |
 | `formatter` | Formatter, Visual QA | Visual QA existed only to bug-hunt Formatter's own output one step later — folded into a self-check pass in the same agent. |
 
@@ -36,7 +36,7 @@ Full detail (model, tools, exact output schema, guardrails, failure modes) lives
 - `.claude/agents/research-planner.md` — model: sonnet. Writes `workspace/context.md`, `workspace/research_plan.md`, updates `Company_Memory.md`.
 - `.claude/agents/research-executor.md` — model: sonnet (haiku for simple lookups). Writes `workspace/research_<qid>.md`. One instance per question, run in parallel.
 - `.claude/agents/case-builder.md` — model: sonnet. Writes `draft.json`, `workspace/recommendations.md`, `workspace/assumptions.md`, `workspace/tradeoffs.md`, `workspace/synthesis.md`.
-- `.claude/agents/devils-advocate.md` — model: sonnet, fresh context. Writes `workspace/devils_advocate.md`.
+- `.claude/agents/panel-reviewer.md` — model: sonnet, fresh context, one persona per instance. Writes `workspace/panel_<persona>.md`.
 - `.claude/agents/strict-checker.md` — model: opus, fresh context. Writes `check_report.json`. Gates `formatter`.
 - `.claude/agents/formatter.md` — model: haiku. Writes `OUTPUTS/*`, `qa_report.json`.
 

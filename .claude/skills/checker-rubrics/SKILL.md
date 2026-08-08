@@ -28,8 +28,11 @@ description: Quality rubrics for the Strict Checker agent — Tier 1 hard gates,
 | Grounding/faithfulness | sample 5 claims, verify against research_*.md; score = verified/sampled |
 | Insight quality | 1.0=every insight has implication; 0.8=most; <0.6=mostly restatement |
 | Internal consistency | 1.0=fully consistent; 0.5=minor issues; 0.0=contradictions |
+| Readability | Count sentences over 25 words, bullets over 16, core slides over 80 body words (`voice-and-brevity`). 0 violations=1.0; 1=0.8; 2=0.6; ≥3=0.3 |
+| Candidate voice | Read `Global/candidate/VOICE.md`. Start 1.0, −0.2 per hit on the `voice-and-brevity` blocklist, −0.2 if the register is off (overselling, self-praise, hedge stacks). Tier 1 already greps the consultant list — do not double-count those hits here |
+| Memorability | The recall test in `voice-and-brevity`: one named concept (≤4 words, ≥2 appearances), one hero number (cited), one one-sentence-describable visual. All three=1.0; two=0.6; ≤one=0.2 |
 
-**Length-neutral:** concise+correct ≥ verbose+correct.
+**Length-neutral:** concise+correct ≥ verbose+correct. The three rows above penalize length only where it costs clarity — never score a short draft down for being short.
 
 ### Tier 3 — Qualitative (advisory, doesn't block): tone fit for audience, brand/format conventions, slide count vs constraint.
 

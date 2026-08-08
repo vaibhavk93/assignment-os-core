@@ -154,7 +154,7 @@ Result: technically competent submissions that miss evaluation criteria; wasted 
 - Emits Assumptions Register: every ungrounded claim labeled with rationale, confidence, falsifier
 - Receives emphasis flags from Classifier via context contract
 
-### FR14 — Devil's Advocate
+### FR14 — Panel Review (replaces Devil's Advocate)
 - Fresh context, different instance from Case Builder
 - Challenges draft: weaknesses, missing tradeoffs, likely interviewer objections
 - One pass only; Case Builder does one revision pass
@@ -257,9 +257,9 @@ Result: technically competent submissions that miss evaluation criteria; wasted 
 | `workspace/research_<qid>.md` | Markdown | Workspace Manager | Insight Synthesizer |
 | `workspace/synthesis.md` | Markdown | Workspace Manager | Case Builder |
 | `workspace/assumptions.md` | Markdown | Workspace Manager | Checker |
-| `workspace/recommendations.md` | Markdown | Workspace Manager | Devil's Advocate, Exec Reviewer |
+| `workspace/recommendations.md` | Markdown | Workspace Manager | panel-reviewer, Exec Reviewer |
 | `workspace/tradeoffs.md` | Markdown | Workspace Manager | Checker |
-| `workspace/devils_advocate.md` | Markdown | Workspace Manager | Case Builder (revision pass) |
+| `workspace/panel_<persona>.md` | Markdown | Workspace Manager | Case Builder (revision pass), interview-prep |
 | `workspace/executive_review.md` | Markdown | Workspace Manager | Final Review |
 | `draft.json` | JSON | Case Builder | Checker, Formatter |
 | `check_report.json` | JSON | Strict Checker | Orchestrator |

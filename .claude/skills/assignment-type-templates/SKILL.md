@@ -5,7 +5,7 @@ description: 10 assignment-type templates with case-builder emphasis, optional-s
 
 # Assignment Type Templates
 
-Every assignment runs the same 7-stage pipeline (intake-intent → research-planner → research-executor(s) → case-builder → devils-advocate → strict-checker → formatter). These templates only set **emphasis** for Case Builder and whether the two optional stages apply: Devil's Advocate (default ON, skip only where noted) and Executive Review (default OFF — opt in via `/output-select` when the audience is genuinely executive).
+Every assignment runs the same 7-stage pipeline (intake-intent → research-planner → research-executor(s) → case-builder → panel-reviewer → strict-checker → formatter). These templates only set **emphasis** for Case Builder and which optional stages apply: panel review (default ON, skip only where noted), Executive Review (default OFF — opt in via `/output-select` when the audience is genuinely executive), and Interview Prep (default OFF — opt in via `/interview-prep` once an interview is actually scheduled).
 
 ## `prd`
 Case Builder emphasis: lead with quantified success metrics; requirements, edge cases, integration considerations, rollout, risks; must-haves vs nice-to-haves separated; engineering-effort aware.
@@ -20,7 +20,7 @@ Emphasis: diagnose current state (AARRR leak point) before solutions; highest-le
 Checklist: diagnosis with evidence · leverage lever identified · experiments proposed · north star defined · prioritization rationale · realistic phasing.
 
 ## `metrics_analytics`
-Skip Devil's Advocate (diagnostic, not a single recommendation to attack). Emphasis: metrics tree first; ranked hypotheses; data source per hypothesis; instrumentation gaps; next steps.
+Skip the panel review (diagnostic, not a single recommendation to attack). Emphasis: metrics tree first; ranked hypotheses; data source per hypothesis; instrumentation gaps; next steps.
 Checklist: metrics tree · ≥3 ranked hypotheses · data sources identified · root-cause call (even hedged) · next steps defined.
 
 ## `case_study`
@@ -28,7 +28,7 @@ Emphasis: break the problem into non-overlapping parts that together cover it (s
 Checklist: breakdown is non-overlapping and complete · diagnosis evidenced · options evaluated · clear recommendation · tradeoffs · impact quantified.
 
 ## `market_research`
-Skip Devil's Advocate (no single recommendation to challenge). Emphasis: TAM/SAM/SOM; differentiated competitive landscape, not a feature list; clear target segment; strategic implication.
+Skip the panel review (no single recommendation to challenge). Emphasis: TAM/SAM/SOM; differentiated competitive landscape, not a feature list; clear target segment; strategic implication.
 Checklist: market size with methodology · structured landscape · differentiation · segment defined · strategic implication.
 
 ## `technical_architecture`
@@ -36,7 +36,7 @@ Emphasis: scope/constraints first; key components + interactions; scalability/re
 Checklist: scope defined · components identified · tradeoffs documented · scalability considered · phasing.
 
 ## `exec_memo`
-Skip Devil's Advocate (format is too brief for a full challenge pass). Emphasis: recommendation in the first paragraph; max conciseness; explicit ask; impact before implementation detail.
+Skip the panel review (format is too brief for a full challenge pass). Emphasis: recommendation in the first paragraph; max conciseness; explicit ask; impact before implementation detail.
 Checklist: recommendation stated first · impact quantified · clear ask · MECE logic · 1–2 pages.
 
 ## `pricing_strategy`

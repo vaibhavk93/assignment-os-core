@@ -31,6 +31,7 @@ Assignment OS/
     PRD.md
     archive/                   ← superseded specs, kept for reference only
   Global/
+    candidate/VOICE.md         ← candidate voice profile, cross-assignment
     memory/                    ← cross-assignment learnings
     scripts/                   ← pptx_builder.py etc.
   Companies/<Company>/
@@ -56,13 +57,17 @@ Assignment OS/
 | 2 | `research-planner` | Classifier + Context Builder + Research Planner | `intent.md` → `context.md`, `research_plan.md` |
 | 3 | `research-executor` | (unchanged, parallel) | one question → `research_<qid>.md` |
 | 4 | `case-builder` | Insight Synthesizer + Case Builder | `research_*.md` → `draft.json` |
-| 5 | `devils-advocate` | (unchanged) | draft → `devils_advocate.md` |
+| 5 | `panel-reviewer` | replaces Devil's Advocate — 5 stakeholder personas | draft → `panel_<persona>.md` |
 | 6 | `strict-checker` | (unchanged) | draft → `check_report.json` (PASS/FAIL gate) |
 | 7 | `formatter` | Formatter + Visual QA | `draft.json` → `OUTPUTS/*`, self-checked |
 
-Optional, opt-in via `/output-select`: `executive-reviewer` runs after a Checker PASS. Advisory only, never blocks Formatter. Skipped by default — only worth it for genuinely executive audiences.
+Optional, opt-in, both advisory and non-blocking, both skipped by default:
+- `executive-reviewer` (via `/output-select`) runs after a Checker PASS — only worth it for genuinely executive audiences.
+- `interview-prep` (via `/interview-prep`) runs after Formatter, whenever an interview is actually scheduled — including on an assignment already marked `complete`. Reads the finished draft, writes `OUTPUTS/interview_prep.md`, re-runs nothing. Off by default because it's an opus-tier read of every artifact, and most submissions never get shortlisted.
 
 Stage 3 fans out: one `research-executor` per question, in parallel, **max 4 concurrent** (a prior run hit a session limit at 6).
+
+Stage 5 fans out too: 5 personas, batched **4 then 1** (`founder`, `engineer`, `compliance`, `ai_smell`, then `peer_pm`) to stay under the same 4-concurrent cap. If budget forces four, drop `peer_pm` — it judges how the case reads, not whether it's right.
 
 ## Critical Rules (enforce always)
 
@@ -88,6 +93,7 @@ The first two are **enforced in code**, not on the honour system: a `PreToolUse`
 | `/media-add [filepath]` | Register a media file |
 | `/intent-confirm` | HITL — confirm/edit Intent Contract |
 | `/output-select` | HITL — choose output format(s), opt into exec review |
+| `/interview-prep` | Opt-in — rehearsal kit for an assignment that got an interview |
 | `/debrief [assignment]` | Record real interview outcome — closes the feedback loop |
 | `/handover` | Rewrite HANDOFF.md before ending a session |
 
@@ -97,12 +103,13 @@ The first two are **enforced in code**, not on the honour system: a `PreToolUse`
 
 | Skill | Used by |
 |---|---|
-| `hiring-signal-patterns` | intake-intent, case-builder, devils-advocate, strict-checker |
+| `hiring-signal-patterns` | intake-intent, case-builder, panel-reviewer, strict-checker |
 | `pm-frameworks` | intake-intent, research-planner, case-builder |
 | `checker-rubrics` | strict-checker |
 | `research-heuristics` | research-planner, research-executor |
 | `assignment-type-templates` | research-planner, strict-checker |
 | `deck-builder` | case-builder (structure), formatter (rendering) |
+| `voice-and-brevity` | case-builder (write-time limits), strict-checker (enforcement via `checker-rubrics`) |
 
 ---
 
