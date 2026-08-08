@@ -21,7 +21,7 @@ import os
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-GATED = ("formatter", "strict-checker", "research-planner", "case-builder")
+GATED = ("formatter", "strict-checker", "research-planner", "decision-builder", "case-builder")
 DONE = ("complete",)
 
 
@@ -138,26 +138,50 @@ def main():
                      '"evidence_contract": {"status": "resolved"} in state.json. To bypass '
                      'deliberately, set "gate_override": "<reason>" in state.json.')
 
-    if agent == "case-builder":
-        # Same rule as the Formatter gate, one link earlier in the chain:
-        #   intent.md -> research_plan.md -> research_<qid>.md -> draft.json
+    if agent in ("decision-builder", "case-builder"):
+        # Same rule as the Formatter gate, earlier in the chain:
+        #   intent.md -> research_plan.md -> research_<qid>.md -> decision.md -> draft.json
         # Each stage's output is evidence about the input it read. Rewinding to
         # research-planner regenerates the plan and silently leaves the old answers behind,
-        # so case-builder would synthesise evidence gathered for questions no longer asked.
+        # so a later stage would reason over evidence gathered for questions no longer asked.
+        # Both stages check the shared upstream links: case-builder can be invoked directly
+        # after a rewind without decision-builder re-running, which would otherwise skip them.
+        label = "Decision Builder" if agent == "decision-builder" else "Case Builder"
         ws = os.path.join(adir, "workspace")
         intent = os.path.join(ws, "intent.md")
         plan = os.path.join(ws, "research_plan.md")
         if os.path.exists(plan) and is_stale(plan, intent):
-            deny("Case Builder blocked: research_plan.md predates intent.md, so the plan "
-                 "decomposes an intent that has since changed. Re-run research-planner. If the "
-                 'intent edit was cosmetic, set "gate_override": "<reason>" in state.json.')
+            deny("%s blocked: research_plan.md predates intent.md, so the plan decomposes an "
+                 "intent that has since changed. Re-run research-planner. If the intent edit was "
+                 'cosmetic, set "gate_override": "<reason>" in state.json.' % label)
         answers = [p for p in glob.glob(os.path.join(ws, "research_*.md"))
                    if os.path.basename(p) != "research_plan.md"]
         stale = stale_against(plan, answers)
         if stale:
-            deny("Case Builder blocked: %s predate research_plan.md, so they answer an older "
-                 "version of the plan. Re-run research-executor for those questions. If the plan "
-                 'edit did not change them, set "gate_override": "<reason>" in state.json.'
+            deny("%s blocked: %s predate research_plan.md, so they answer an older version of "
+                 "the plan. Re-run research-executor for those questions. If the plan edit did "
+                 'not change them, set "gate_override": "<reason>" in state.json.'
+                 % (label, ", ".join(stale)))
+
+    if agent == "case-builder":
+        # The link decision-builder added. An argument built on a decision that predates the
+        # research it supposedly weighed is the failure this whole stage exists to prevent.
+        ws = os.path.join(adir, "workspace")
+        decision = os.path.join(ws, "decision.md")
+        if not os.path.exists(decision):
+            deny("Case Builder blocked: no workspace/decision.md. decision-builder runs first — "
+                 "it generates the option set and records what each elimination killed. Building "
+                 "the argument first is what produces rejected alternatives written as "
+                 'after-the-fact justification. To bypass, set "gate_override": "<reason>".')
+        answers = [p for p in glob.glob(os.path.join(ws, "research_*.md"))
+                   if os.path.basename(p) != "research_plan.md"]
+        # Inverse direction from the checks above: there the answers are the evidence and the
+        # plan is the source; here decision.md is the evidence and each answer is the source.
+        stale = sorted(os.path.basename(a) for a in answers if is_stale(decision, a))
+        if stale:
+            deny("Case Builder blocked: %s postdate decision.md, so the decision was made without "
+                 "evidence that has since changed. Re-run decision-builder. If the new findings "
+                 'do not affect the decision, set "gate_override": "<reason>" in state.json.'
                  % ", ".join(stale))
 
     if agent == "strict-checker":
@@ -244,6 +268,22 @@ def selftest():
         assert stale_against(plan, answers) == ["research_q2.md"]   # names just what's stale
         os.utime(intent, (9000, 9000))                    # intent edited after planning
         assert is_stale(plan, intent) is True
+
+        # The decision.md link, which runs in the INVERSE direction from the checks above:
+        # there the answers are evidence and the plan is the source; here decision.md is the
+        # evidence and each answer is the source. Getting this backwards passes every normal
+        # run and silently never fires, which is why it is asserted in both directions.
+        os.utime(q1, (3000, 3000)); os.utime(q2, (3000, 3000))
+        decision = mkf("decision.md", 6000)                # decided after reading both answers
+        answers = [p for p in glob.glob(os.path.join(ws, "research_*.md"))
+                   if os.path.basename(p) not in ("research_plan.md", "decision.md")]
+        fresh = sorted(os.path.basename(a) for a in answers if is_stale(decision, a))
+        assert fresh == [], fresh                          # normal order -> decision is current
+        os.utime(q2, (7000, 7000))                         # q2 re-run after the decision
+        stale = sorted(os.path.basename(a) for a in answers if is_stale(decision, a))
+        assert stale == ["research_q2.md"], stale          # decision predates new evidence
+        # And the inverse must NOT fire here: q2 postdating the decision is not the plan check.
+        assert stale_against(decision, answers) == ["research_q1.md"]
     print("gate_check selftest: ok")
 
 

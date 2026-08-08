@@ -2,7 +2,7 @@
 
 ## What This Is
 
-An Assignment Operating System for interview assignments. Every assignment runs through a 7-stage pipeline that identifies the hiring signal, researches evidence, builds a recommendation, quality-gates it, and produces delivery-ready output.
+An Assignment Operating System for interview assignments. Every assignment runs through an 8-stage pipeline that identifies the hiring signal, researches evidence, decides between real alternatives, argues the case, quality-gates it, and produces delivery-ready output.
 
 **Optimization target:** Interview success (hiring signal coverage) — not output aesthetics. `/debrief` after each real interview is what actually measures this; run it every time.
 
@@ -23,7 +23,7 @@ Assignment OS/
   CLAUDE.md
   HANDOFF.md                   ← where we left off (current state only)
   .claude/
-    agents/                    ← 7 pipeline agents + 1 optional (executive-reviewer)
+    agents/                    ← 8 pipeline agents + 2 optional (executive-reviewer, interview-prep)
     commands/                  ← 8 slash commands
     skills/                    ← 6 knowledge packs (progressive disclosure — read on demand)
   Documents/
@@ -58,10 +58,13 @@ Assignment OS/
 | 1 | `intake-intent` | Intake + Hiring Signal + Intent | user input → `INPUT.md`, `workspace/intent.md`, `workspace/evidence_contract.md` |
 | 2 | `research-planner` | Classifier + Context Builder + Research Planner | `intent.md` → `context.md`, `research_plan.md` |
 | 3 | `research-executor` | (unchanged, parallel) | one question → `research_<qid>.md` |
-| 4 | `case-builder` | Insight Synthesizer + Case Builder | `research_*.md` → `draft.json` |
-| 5 | `panel-reviewer` | replaces Devil's Advocate — 5 stakeholder personas | draft → `panel_<persona>.md` |
-| 6 | `strict-checker` | (unchanged) | draft → `check_report.json` (PASS/FAIL gate) |
-| 7 | `formatter` | Formatter + Visual QA | `draft.json` → `OUTPUTS/*`, self-checked |
+| 4 | `decision-builder` | **new** — the Decide step, split out of Case Builder | `research_*.md` → `synthesis.md`, `lenses.md`, `decision.md`, `tradeoffs.md` |
+| 5 | `case-builder` | shrunk to argue-only | `decision.md` → `draft.json`, `recommendations.md`, `assumptions.md` |
+| 6 | `panel-reviewer` | replaces Devil's Advocate — 5 stakeholder personas | draft → `panel_<persona>.md` |
+| 7 | `strict-checker` | (unchanged) | draft → `check_report.json` (PASS/FAIL gate) |
+| 8 | `formatter` | Formatter + Visual QA | `draft.json` → `OUTPUTS/*`, self-checked |
+
+**Why 4 and 5 are separate agents:** an agent that already knows which recommendation it is about to defend cannot neutrally eliminate the alternatives — it reverse-engineers the rejects into justification. That is not hypothetical: StockFox's `tradeoffs.md` `rejected_alternative` entries were written after the decision, so the options were never real candidates. Same reasoning that makes `panel-reviewer` fresh-context, one stage earlier. Rationale in `Documents/ROADMAP.md` — do not re-argue it.
 
 Optional, opt-in, both advisory and non-blocking, both skipped by default:
 - `executive-reviewer` (via `/output-select`) runs after a Checker PASS — only worth it for genuinely executive audiences.
@@ -82,8 +85,9 @@ Every agent's real output is the **file it writes**. Its return message is a rec
 The first two are **enforced in code**, not on the honour system: a `PreToolUse` hook in `.claude/settings.json` runs `Global/scripts/gate_check.py` on every agent call and denies the ones below before the agent spawns.
 
 - **Evidence gate:** `research-planner` never runs while `workspace/evidence_contract.md` exists and `state.json.evidence_contract.status != "resolved"`. Written by `intake-intent`, resolved row-by-row at `/intent-confirm`. Every row ends `supplied` or `waived`, and a waived row's consequence is carried verbatim into the deliverable's assumptions. Researching around an artifact nobody looked at is how a 0.4-confidence assumption ends up under the lead recommendation.
-- **Freshness (applies to every gate below):** each stage's output is *evidence about the input it read*. Rewinding regenerates an input and silently strands the outputs derived from it. Gates therefore compare mtimes along the chain `intent.md → research_plan.md → research_<qid>.md → draft.json → check_report.json`, and refuse to trust anything older than its own source. There is no dirty-flag bookkeeping to maintain — the filesystem already records what changed, which is why this can't drift the way a hand-written dependency map does.
-- **Case Builder gate:** blocked when `research_plan.md` predates `intent.md`, or when any `research_<qid>.md` predates `research_plan.md` — the denial names exactly which questions to re-run.
+- **Freshness (applies to every gate below):** each stage's output is *evidence about the input it read*. Rewinding regenerates an input and silently strands the outputs derived from it. Gates therefore compare mtimes along the chain `intent.md → research_plan.md → research_<qid>.md → decision.md → draft.json → check_report.json`, and refuse to trust anything older than its own source. There is no dirty-flag bookkeeping to maintain — the filesystem already records what changed, which is why this can't drift the way a hand-written dependency map does.
+- **Decision Builder + Case Builder gate:** both blocked when `research_plan.md` predates `intent.md`, or when any `research_<qid>.md` predates `research_plan.md` — the denial names exactly which questions to re-run. Both check it, because `case-builder` can be invoked directly after a rewind without `decision-builder` re-running.
+- **Case Builder gate (additional):** blocked when `workspace/decision.md` is absent, or when any `research_<qid>.md` postdates it. Arguing before deciding is what produces rejected alternatives written as after-the-fact justification.
 - **Formatter gate:** never runs unless `check_report.json.verdict == "PASS"` **and** that report is at least as new as `draft.json`. Non-negotiable.
 - **Loop cap:** `state.json.loop_count` reaching 2 on a Checker FAIL → surface HITL immediately, never a third auto-loop.
 - **Deliberate override:** set `"gate_override": "<reason>"` in the assignment's `state.json` to bypass either gate. Requires opening the file and writing a reason, so it can't be tripped by accident. Clear it once you're past the exception.
@@ -114,7 +118,7 @@ The first two are **enforced in code**, not on the honour system: a `PreToolUse`
 | Skill | Used by |
 |---|---|
 | `hiring-signal-patterns` | intake-intent, case-builder, panel-reviewer, strict-checker |
-| `pm-frameworks` | intake-intent, research-planner, case-builder — **a router into `Global/library/`, not a glossary**. Match a trigger in `INDEX.md`, load only that body. |
+| `pm-frameworks` | intake-intent, research-planner, **decision-builder** — **a router into `Global/library/`, not a glossary**. Match a trigger in `INDEX.md`, load only that body. The Decomposition, Elimination and Feasibility sections exist for `decision-builder`. |
 | `checker-rubrics` | strict-checker |
 | `research-heuristics` | research-planner, research-executor |
 | `assignment-type-templates` | research-planner, strict-checker |

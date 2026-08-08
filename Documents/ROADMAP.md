@@ -27,8 +27,8 @@ Case-Based Reasoning solved this in 1994: the **index vocabulary** is the finite
 | Phase | What | Status |
 |---|---|---|
 | **0** | Seed `Global/library/` with canon; rebuild `pm-frameworks` as a router | ✅ **done** (`65d96de`) |
-| **1** | New stage `decision-builder`; shrink `case-builder` to argue-only | ⬜ next |
-| **2** | Scope: day-1 hypothesis + Cynefin routing (planner); elimination gate (checker); attack-the-elimination (panel) | ⬜ |
+| **1** | New stage `decision-builder`; shrink `case-builder` to argue-only | ✅ **done** |
+| **2** | Scope: day-1 hypothesis + Cynefin routing (planner); ~~elimination gate (checker)~~ **pulled into Phase 1**; attack-the-elimination (panel) | ⬜ next — 2 of 3 items remain |
 | **3** | Retrieval — library surfaced at intake / planning / decision | ⬜ |
 | **4** | `/retro` proposes candidates; human promotes | ⬜ **blocked on `/debrief`** |
 | **5** | Anti-rot — cap, version, demote, expire, footprint-prune | ⬜ defer until library is large |
@@ -55,7 +55,7 @@ Two independent analyses converged on the same seam — that's the justification
 
 `case-builder` **shrinks** to argue-only, so the net cost is below the ~50k/run a new stage implies.
 
-**Phase 2's checker gate is not optional** — without a Tier 1 gate asking *"was elimination real or rationalised?"*, the new stage degenerates into theatre.
+**Phase 2's checker gate is not optional** — without a Tier 1 gate asking *"was elimination real or rationalised?"*, the new stage degenerates into theatre. **Therefore it shipped inside Phase 1, not Phase 2.** `checker-rubrics` now carries three Tier 1 rows: elimination was real (≥2 live candidates, each killed by a named hard constraint, never by a comparative score), the decision carries a falsifying test with a threshold, and the breakdown holds without requiring MECE. Phase 2 keeps the other two items: day-1 hypothesis + Cynefin routing in the planner, and attack-the-elimination in the panel.
 
 ---
 

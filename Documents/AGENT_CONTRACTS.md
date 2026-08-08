@@ -1,6 +1,6 @@
-# Assignment OS — Agent Contracts (v0.2 — 7-stage pipeline)
+# Assignment OS — Agent Contracts (v0.3 — 8-stage pipeline)
 
-> Build specification for the 7 agents in `.claude/agents/`. The prompt files there are the executable version of these contracts — this doc explains the *why* behind merges and cuts; the agent files are the source of truth for exact behavior.
+> Build specification for the 8 pipeline agents in `.claude/agents/` (plus 2 optional: `executive-reviewer`, `interview-prep`). The prompt files there are the executable version of these contracts — this doc explains the *why* behind merges and cuts; the agent files are the source of truth for exact behavior.
 
 Superseded: v0.1 defined 17 agents. Merged down to 7 because (a) research on multi-agent systems shows each extra stage costs tokens roughly linearly while adding a lossy handoff, and (b) the one real run (Ixigo, see `Companies/Ixigo/.../MEMORY.md`) showed which stages carried their weight and which were ceremony. Full v0.1 text is in `Documents/archive/AGENT_CONTRACTS_v0.1.md` for reference.
 
@@ -13,7 +13,8 @@ Superseded: v0.1 defined 17 agents. Merged down to 7 because (a) research on mul
 | `intake-intent` | Intake, Hiring Signal Analyzer, Intent Agent | All three read only `INPUT.md`-level content and write one contract. No reason to hand off between them — it's one reasoning chain. |
 | `research-planner` | Classifier, Context Builder, Research Planner | Classification is a ~5-line decision that was its own agent; context-building and planning both consume `intent.md` and produce planning artifacts. Merging removes 2 handoffs. |
 | `research-executor` | — | Unchanged. Proven: parallel instances, strict topic ownership, this was the highest-value stage in the one real run. |
-| `case-builder` | Insight Synthesizer, Case Builder | Synthesis existed only to feed Case Builder immediately after; no other consumer needed the intermediate file as a stable artifact. |
+| `decision-builder` | **new stage** (Phase 1) | Splits the Decide step out of Case Builder. An agent that knows which recommendation it is about to defend cannot neutrally eliminate the alternatives — it reverse-engineers the rejects into justification. Evidence: StockFox's `tradeoffs.md` `rejected_alternative` entries were written after the decision, so the options were never real candidates. Same fresh-context principle that governs `panel-reviewer`, applied one stage earlier. Full rationale in `Documents/ROADMAP.md`. |
+| `case-builder` | Insight Synthesizer, Case Builder — then **shrunk to argue-only** (Phase 1) | Synthesis existed only to feed Case Builder immediately after; no other consumer needed the intermediate file as a stable artifact. Phase 1 moved synthesis, lenses and tradeoffs to `decision-builder`, leaving Case Builder to argue a decision it did not make. This shrink is what keeps the net cost of the new stage below the ~50k/run a new stage would otherwise imply. |
 | `panel-reviewer` | Replaces `devils-advocate` | Five stakeholder personas (founder, engineer, compliance, peer_pm, ai_smell), one per instance, batched 4 then 1. The single-lens version caught 3 high-severity issues before Checker in the one real run; the panel widens that to stakes a single interviewer lens misses. Fresh-context requirement preserved. |
 | `strict-checker` | — | Unchanged. The gate. Rubric already strong (see `checker-rubrics` skill). |
 | `formatter` | Formatter, Visual QA | Visual QA existed only to bug-hunt Formatter's own output one step later — folded into a self-check pass in the same agent. |
@@ -35,7 +36,8 @@ Full detail (model, tools, exact output schema, guardrails, failure modes) lives
 - `.claude/agents/intake-intent.md` — model: opus. Writes `INPUT.md`, `workspace/intent.md`.
 - `.claude/agents/research-planner.md` — model: sonnet. Writes `workspace/context.md`, `workspace/research_plan.md`, updates `Company_Memory.md`.
 - `.claude/agents/research-executor.md` — model: sonnet (haiku for simple lookups). Writes `workspace/research_<qid>.md`. One instance per question, run in parallel.
-- `.claude/agents/case-builder.md` — model: sonnet. Writes `draft.json`, `workspace/recommendations.md`, `workspace/assumptions.md`, `workspace/tradeoffs.md`, `workspace/synthesis.md`.
+- `.claude/agents/decision-builder.md` — model: opus. Writes `workspace/synthesis.md`, `workspace/lenses.md`, `workspace/decision.md`, `workspace/tradeoffs.md`. Opus because a wrong elimination poisons everything downstream and nothing before Phase 2's attack-the-elimination reviews the option set.
+- `.claude/agents/case-builder.md` — model: sonnet. Writes `draft.json`, `workspace/recommendations.md`, `workspace/assumptions.md`.
 - `.claude/agents/panel-reviewer.md` — model: sonnet, fresh context, one persona per instance. Writes `workspace/panel_<persona>.md`.
 - `.claude/agents/strict-checker.md` — model: opus, fresh context. Writes `check_report.json`. Gates `formatter`.
 - `.claude/agents/formatter.md` — model: haiku. Writes `OUTPUTS/*`, `qa_report.json`.
