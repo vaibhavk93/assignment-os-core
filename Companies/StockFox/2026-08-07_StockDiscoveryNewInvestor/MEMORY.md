@@ -54,3 +54,21 @@ Claimed: this is a **case_study/presentation hybrid** testing (a) whether the ca
 - Q2 research died twice on API errors before completing. Re-running a single failed question in isolation worked; the plan's parallel independence is what made that cheap.
 - The critique pass caught three high-severity internal contradictions the build pass did not see, including one — a composite score banned pre-click while the Scorecard shows one post-click — that a founder who knows their own product would catch in seconds. Fresh-context critique earned its keep here.
 - **This run predates the 8-stage pipeline.** There was no `decision-builder`: options were never formally generated or eliminated, and `tradeoffs.md` was written after the decision as justification. That specific observation is what motivated Roadmap Phase 1.
+
+---
+
+## `ai_smell` audit (run 2026-08-08, post-submission)
+
+First time this check has ever run on any deliverable this system produced. Verdict: *"hire with reservations — a fast reader hits two real tells before slide 5, but the assumptions slide reads unmistakably human."*
+
+**Confirmed real — the deck violates the candidate's own voice file, twice:**
+- Slide 1: `"Zero-candidate isn't one stall. It's three."`
+- Slide 4: `"Not a formatting choice—it's regulatory"`
+
+Both are the escalating-rhetoric pattern banned at `Global/candidate/VOICE.md:35`, and the second also dash-splices. **The Checker passed the deck anyway**, because its Tier 1 voice gate only grepped consultant vocabulary and never read `VOICE.md`. Fixed: a new Tier 1 row now checks the draft against `VOICE.md` directly. Both patterns verified to grep-match the shipped deck.
+
+**Also real, lower severity:** the four tradeoff rows on slide 8 are grammatically identical (`Cost: X. Rejected: Y. Reason: Z.` ×4) — a template shape, not how someone writes under time pressure. And on-slide sourcing is inconsistent: slide 11 carries a confidence line, the highest-drama numbers on slides 2 and 5 carry nothing.
+
+**Retracted — reviewer false positive, caused by the orchestrator.** The high-severity finding was that the FCA / SEC RFI / Robinhood / Miller-Cowan citations traced to no research artifact, "the classic shape of a model backfilling authority." They all trace: FCA and Robinhood to `research_q4.md`, Miller/Cowan to `research_q2.md`. The reviewer was given `context.md` but not the `research_q*.md` files, so it could not have found them. Its reasoning was correct on the evidence it held. **Lesson for future panel runs: a reviewer auditing citations must be given the research files, or its strongest finding will be an artifact of the read list.**
+
+**Strongest proof of human authorship, quoted:** `"Both guardrails assume Explore-specific instrumentation exists; verify with StockFox's data team before shipping."` — an openly unclosed loop on a metrics slide, which a confident narrator does not volunteer.
