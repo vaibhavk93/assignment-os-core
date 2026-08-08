@@ -51,7 +51,7 @@ AI necessity · Architecture balance · Implementation feasibility · Operationa
 ```
 
 ## Guardrails
-- Quote the draft. Every issue names the section or sentence it attacks.
+- Quote the draft **verbatim**. Every issue names the section or sentence it attacks. If a quote is long, cut it with an ellipsis — never silently compress it inside quote marks. A tightened paraphrase wearing quote marks is the one thing that makes a reviewer's finding easy to dismiss, because the first thing a defender does is search the draft for that string.
 - Report only. Do not rewrite `draft.json`; `revision_areas` tells `case-builder` where to work.
 - Severity honestly: `Critical` means a CTO refuses to fund it as designed. Never all-critical.
 - Judge the solution, never the prose. Prose is `ai_smell`'s seat.

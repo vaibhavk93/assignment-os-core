@@ -72,3 +72,13 @@ Both are the escalating-rhetoric pattern banned at `Global/candidate/VOICE.md:35
 **Retracted — reviewer false positive, caused by the orchestrator.** The high-severity finding was that the FCA / SEC RFI / Robinhood / Miller-Cowan citations traced to no research artifact, "the classic shape of a model backfilling authority." They all trace: FCA and Robinhood to `research_q4.md`, Miller/Cowan to `research_q2.md`. The reviewer was given `context.md` but not the `research_q*.md` files, so it could not have found them. Its reasoning was correct on the evidence it held. **Lesson for future panel runs: a reviewer auditing citations must be given the research files, or its strongest finding will be an artifact of the read list.**
 
 **Strongest proof of human authorship, quoted:** `"Both guardrails assume Explore-specific instrumentation exists; verify with StockFox's data team before shipping."` — an openly unclosed loop on a metrics slide, which a confident narrator does not volunteer.
+
+## `ai-justification` review (run 2026-08-08, diagnostic — first run of this stage)
+
+**Verdict: Earns its place.** 5 AI components, 2 flagged, **0 critical**. Full report in `workspace/ai_justification.md`.
+
+Sharpest finding — Appendix A calls future rail personalisation a *"cold-start recommender"* when the decision space is 4–5 rails and one categorical signal. That is a lookup, not a model. The risk is not today's design but that the language greenlights a training pipeline, drift monitoring and model versioning for a five-way choice. Fix: ship a weighted-rule reorder, drop the "recommender" framing until usage data shows the heuristic underperforms.
+
+Most useful output came from the mandatory "what is genuinely justified" section: **the strongest AI decision in the deck is a negative one** — withholding the composite score pre-click because SEBI's broadened "opinion on securities" definition makes a scored surface a licensing problem, not just a UX one. Choosing rules over a model exactly where a model is legally dangerous is the sharpest available answer to "should AI do this."
+
+**Reviewer discipline defect, fixed in the agent:** one matrix cell quoted `"profitable 5yrs, sorted alphabetically"`; the draft actually says *"Profitable every year for 5 years, sorted alphabetically."* Substance faithful, but a compression wearing quote marks is trivially dismissed by anyone who searches the draft for the string. Guardrail now requires verbatim quoting with ellipsis for cuts.
