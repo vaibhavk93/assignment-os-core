@@ -322,5 +322,28 @@ def main():
     print(f"Placeholders found: {placeholders_found}")
 
 
+def selftest():
+    """python3 pptx_builder.py --selftest — guards the schema coupling to draft.json.
+
+    This script was written against a schema case-builder never emitted (`action_title`,
+    `bullets`), so it silently rendered blank headings and crashed on `content` being a
+    list. Nothing caught it. These asserts fail the moment the reader and the real
+    draft.json disagree again."""
+    real = {"heading": "New investors stall at three points.",
+            "content": ["Zero-candidate isn't one problem.", "It's three."]}
+    assert get_heading(real) == "New investors stall at three points."
+    assert get_bullets(real) == real["content"]          # list content must pass through
+    # Legacy/alternate shape still works, so an older draft.json doesn't break the build.
+    assert get_heading({"action_title": "X"}) == "X"
+    assert get_bullets({"bullets": ["a"]}) == ["a"]
+    assert get_bullets({"content": "one\ntwo"}) == ["one", "two"]   # str content splits
+    # Absent fields degrade to empty, never raise — a missing section must not kill a deck.
+    assert get_heading({}) == "" and get_bullets({}) == []
+    print("pptx_builder selftest: ok")
+
+
 if __name__ == '__main__':
-    main()
+    if '--selftest' in sys.argv:
+        selftest()
+    else:
+        main()

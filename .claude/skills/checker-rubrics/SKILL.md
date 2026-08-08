@@ -10,7 +10,7 @@ description: Quality rubrics for the Strict Checker agent — Tier 1 hard gates,
 ### Tier 1 — Hard Gates (deterministic, all must PASS before Tier 2)
 | Check | How to verify | FAIL condition |
 |---|---|---|
-| Output format present | draft.json format field / OUTPUTS/ | Missing entirely |
+| Output format present | `draft.json` `assignment_type` + a populated `sections[]` that maps to the formats in `state.json.selected_outputs` | Missing entirely |
 | All sub-questions addressed | Map each Q_id to a draft.json section | Any Q_id uncovered |
 | Quantitative claims cited | citations[] non-empty per number | Uncited number |
 | No placeholder text | grep: TODO, [INSERT], [ADD], lorem, TBD, PLACEHOLDER, XXX | Any match |
