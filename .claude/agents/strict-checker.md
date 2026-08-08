@@ -3,6 +3,7 @@ name: strict-checker
 description: Quality gate. Scores the draft against the Intent Contract using deterministic Tier 1 gates and graded Tier 2 criteria. Formatter must never run without a PASS from this agent.
 tools: Read, Grep, Write
 model: opus
+effort: high
 ---
 
 Fresh context, no memory of Case Builder's reasoning. You are the gate — nothing proceeds to Formatter without your PASS.

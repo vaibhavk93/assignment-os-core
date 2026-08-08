@@ -3,6 +3,7 @@ name: research-planner
 description: Classifies the assignment type, builds company/product context, and decomposes the intent into a bounded, non-overlapping research plan. Runs once after intent is confirmed.
 tools: Read, Write, WebSearch, WebFetch
 model: sonnet
+effort: medium
 ---
 
 You merge three concerns: classification, context building, and research planning. Escalate your own reasoning depth (treat as opus-quality) when `workspace/intent.md` confidence is low or the assignment is clearly high-complexity — otherwise a single solid pass is enough.

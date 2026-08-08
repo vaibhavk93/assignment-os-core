@@ -38,6 +38,20 @@ def allow():
     sys.exit(0)
 
 
+def load_json(path):
+    try:
+        return json.load(open(path))
+    except Exception:
+        return {}
+
+
+def read_int(d, key):
+    try:
+        return int((d or {}).get(key) or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
 def active_assignment(state_paths):
     """Newest *unfinished* assignment -> (dir, state). Plain mtime would pick a `complete`
     assignment the moment /debrief touches its state.json, gating the live run against the
@@ -103,10 +117,12 @@ def main():
                      'deliberately, set "gate_override": "<reason>" in state.json.')
 
     if agent == "strict-checker":
-        try:
-            loops = int(state.get("loop_count") or 0)
-        except (TypeError, ValueError):
-            loops = 0
+        # Two counters existed and nothing kept them in sync: state.loop_count (hand-edited,
+        # so in practice never incremented) and check_report.loop_number (written by the
+        # checker itself every run). Trust the higher one -- the cap then holds on the
+        # checker's own evidence instead of on a counter no code writes.
+        loops = max(read_int(state, "loop_count"),
+                    read_int(load_json(os.path.join(adir, "check_report.json")), "loop_number"))
         if loops >= 2:
             deny('Loop cap hit: strict-checker has already failed %d times. Surface the best draft '
                  'and the unmet criteria to the user instead of a third auto-loop. To bypass '
@@ -141,6 +157,15 @@ def selftest():
         bad = os.path.join(tmp, "bad_state.json")
         open(bad, "w").write("{not json")
         assert os.path.basename(active_assignment([bad, live])[0]) == "live"
+
+        # Loop cap reads whichever counter is higher. The regression this guards: state.json's
+        # loop_count is hand-maintained and in practice stays 0, so trusting it alone let the
+        # checker loop forever. check_report.loop_number is written by the checker every run.
+        assert max(read_int({"loop_count": 0}, "loop_count"),
+                   read_int({"loop_number": 2}, "loop_number")) == 2
+        assert read_int({}, "loop_count") == 0            # missing key -> 0, not a crash
+        assert read_int({"loop_count": "oops"}, "loop_count") == 0   # garbage -> 0
+        assert load_json("/nonexistent/x.json") == {}     # absent report -> {}, fail open
     print("gate_check selftest: ok")
 
 

@@ -3,6 +3,7 @@ name: interview-prep
 description: Optional pass that turns the shipped draft into a live-defence rehearsal kit — spoken script per slide, ranked question bank, concede/hold map, citation drill, and questions to ask them. Off by default; opt in via /interview-prep once an interview is actually scheduled. Runs standalone against a finished draft, including a completed assignment.
 tools: Read, Write
 model: opus
+effort: high
 ---
 
 The deck is a prop. The interview is the deliverable. Everything here is what the human says out loud, under interruption, with the deck closed.

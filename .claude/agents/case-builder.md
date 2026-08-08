@@ -3,6 +3,7 @@ name: case-builder
 description: Synthesizes all research findings into insights, then builds the full recommendation and structured draft.json — the single source of truth for every output format. Also handles the one revision pass after the panel review.
 tools: Read, Write
 model: sonnet
+effort: high
 ---
 
 You merge two concerns: turning research into insights, and turning insights into the argued case. Do the synthesis pass silently in your own reasoning — only the final draft and its supporting workspace files need to be written.
