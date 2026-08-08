@@ -21,7 +21,7 @@ import os
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-GATED = ("formatter", "strict-checker", "research-planner")
+GATED = ("formatter", "strict-checker", "research-planner", "case-builder")
 DONE = ("complete",)
 
 
@@ -53,6 +53,11 @@ def is_stale(evidence, source):
         return os.path.getmtime(evidence) < os.path.getmtime(source)
     except OSError:
         return False
+
+
+def stale_against(source, targets):
+    """Basenames of `targets` written before `source`, sorted. Empty means all fresh."""
+    return sorted(os.path.basename(t) for t in targets if is_stale(t, source))
 
 
 def read_int(d, key):
@@ -133,6 +138,28 @@ def main():
                      '"evidence_contract": {"status": "resolved"} in state.json. To bypass '
                      'deliberately, set "gate_override": "<reason>" in state.json.')
 
+    if agent == "case-builder":
+        # Same rule as the Formatter gate, one link earlier in the chain:
+        #   intent.md -> research_plan.md -> research_<qid>.md -> draft.json
+        # Each stage's output is evidence about the input it read. Rewinding to
+        # research-planner regenerates the plan and silently leaves the old answers behind,
+        # so case-builder would synthesise evidence gathered for questions no longer asked.
+        ws = os.path.join(adir, "workspace")
+        intent = os.path.join(ws, "intent.md")
+        plan = os.path.join(ws, "research_plan.md")
+        if os.path.exists(plan) and is_stale(plan, intent):
+            deny("Case Builder blocked: research_plan.md predates intent.md, so the plan "
+                 "decomposes an intent that has since changed. Re-run research-planner. If the "
+                 'intent edit was cosmetic, set "gate_override": "<reason>" in state.json.')
+        answers = [p for p in glob.glob(os.path.join(ws, "research_*.md"))
+                   if os.path.basename(p) != "research_plan.md"]
+        stale = stale_against(plan, answers)
+        if stale:
+            deny("Case Builder blocked: %s predate research_plan.md, so they answer an older "
+                 "version of the plan. Re-run research-executor for those questions. If the plan "
+                 'edit did not change them, set "gate_override": "<reason>" in state.json.'
+                 % ", ".join(stale))
+
     if agent == "strict-checker":
         # Two counters existed and nothing kept them in sync: state.loop_count (hand-edited,
         # so in practice never incremented) and check_report.loop_number (written by the
@@ -196,6 +223,27 @@ def selftest():
         os.utime(report, (9000, 9000))
         assert is_stale(report, draft) is False           # equal mtimes must not strand a run
         assert is_stale("/nonexistent", draft) is False   # missing file isn't staleness
+
+        # Same rule one link earlier: research answers must not predate the plan that asked
+        # the questions. Rewinding to research-planner is what strands them.
+        ws = os.path.join(tmp, "workspace"); os.makedirs(ws)
+        def mkf(name, mtime):
+            p = os.path.join(ws, name); open(p, "w").write("x"); os.utime(p, (mtime, mtime))
+            return p
+        intent = mkf("intent.md", 1000)
+        plan = mkf("research_plan.md", 2000)
+        q1, q2 = mkf("research_q1.md", 3000), mkf("research_q2.md", 3000)
+        answers = [p for p in glob.glob(os.path.join(ws, "research_*.md"))
+                   if os.path.basename(p) != "research_plan.md"]
+        assert len(answers) == 2                          # the plan excludes itself from its own check
+        assert stale_against(plan, answers) == []         # normal order -> all fresh
+        assert is_stale(plan, intent) is False
+        os.utime(plan, (4000, 4000))                      # research-planner re-runs
+        assert stale_against(plan, answers) == ["research_q1.md", "research_q2.md"]
+        os.utime(q1, (5000, 5000))                        # re-run only q1
+        assert stale_against(plan, answers) == ["research_q2.md"]   # names just what's stale
+        os.utime(intent, (9000, 9000))                    # intent edited after planning
+        assert is_stale(plan, intent) is True
     print("gate_check selftest: ok")
 
 
