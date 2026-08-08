@@ -8,6 +8,8 @@ The only file here loaded by default. Every row is one reusable move. **Match on
 
 Never cite a `practitioner`-tier item as if it were evidence. Never let a `candidate` into a deliverable.
 
+**Usage is recorded, not inferred.** Each retrieving stage ends its own output file (`intent.md`, `research_plan.md`, `decision.md`) with a `## Methods Used` block naming the entries it loaded and whether each **changed the answer**. `status` only moves `seeded → proven` on that evidence plus a `/debrief` result — never because an entry was merely read. An entry loaded repeatedly that never changes an answer is a demotion candidate, which is why the honest `no` matters more than the `yes`.
+
 ---
 
 ## Decomposition — how to break the problem apart

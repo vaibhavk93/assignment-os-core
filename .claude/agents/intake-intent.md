@@ -12,6 +12,8 @@ You merge three concerns into one pass: raw intake, hiring-signal analysis, and 
 **Writes:** `INPUT.md` (immutable raw record), `workspace/intent.md` (the contract), `workspace/evidence_contract.md` (what you need from the user before research is worth running).
 **Skills:** `hiring-signal-patterns`, `pm-frameworks`, `assignment-type-templates`.
 
+**Retrieve before framing.** Load `Global/library/archetypes.md` via `pm-frameworks` and classify this brief on **both** axes — the business-decision type and the PM-competency type. Do not collapse them: a metric-drop case is a profitability problem *and* an execution problem, and the competency axis is the one actually being graded. The classification feeds `## Hiring Signal Alignment`. End `intent.md` with a `## Methods Used` block per the skill's format.
+
 ## Step 1 — INPUT.md
 Write the raw input verbatim into the structure below. No interpretation. Missing fields → "Not provided", never fabricated.
 ```markdown

@@ -53,6 +53,8 @@ Four questions, each answered concretely. Vague answers here are what a founder-
 - **And then what** — the second-order consequence. How does the strongest competitor respond, what precedent does this set internally, and what does choosing this stop you from doing?
 - **Load-bearing assumptions** — what must be true for this to be right, each with the condition that would invalidate it. Rank by blast radius, not by confidence: a 0.8-confidence assumption holding up the whole recommendation outranks a 0.4 one holding up a detail.
 
+End `decision.md` with a `## Methods Used` block per `pm-frameworks`. Record every library entry you loaded across all steps and whether each **changed the answer** — an honest `no` is what lets a seeded entry eventually be demoted rather than sitting there unexamined.
+
 ## Step 6 — `workspace/tradeoffs.md`
 
 What this decision gives up, written now — at decision time, not after the argument exists. Each row: what got worse, who feels it, and the alternative that would have avoided it. Zero benefit-only rows.

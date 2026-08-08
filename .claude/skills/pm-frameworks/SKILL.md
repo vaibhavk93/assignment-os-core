@@ -30,6 +30,20 @@ An earlier version of this file called MECE *"the default way to decompose any p
 
 Use MECE where it belongs — exhaustive coverage of a known space — and route to it deliberately rather than reflexively.
 
+## Record what you loaded
+
+Every stage that retrieves from the library ends its own output file with a `## Methods Used` block. One line per entry, in this shape:
+
+```
+- <entry name> (`<file>.md`) — <what it was used for, in one clause> — changed the answer: yes | no
+```
+
+Write `no` freely. An entry that was read and did not change the answer is the most useful signal the library can produce: it is how a seeded entry earns demotion instead of sitting there forever looking authoritative. Recording only the wins makes every entry look load-bearing.
+
+Do not create a shared file for this — each stage records in the artifact it already owns (`intent.md`, `research_plan.md`, `decision.md`), so there is never a second writer. `/retro` reads all three.
+
+**This block is working notes, not deliverable content.** It never appears in `draft.json` — naming methods in the deck is the consultant tell this skill exists to prevent.
+
 ## Source tiers — carried on every entry
 
 `peer-reviewed` · `practitioner` (widely used, not empirically validated) · `self-derived`.

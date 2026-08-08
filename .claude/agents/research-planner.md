@@ -68,6 +68,8 @@ A plan that can only answer one or two of these is incomplete — add questions 
 ## Questions Considered and Dropped
 [one line — an unjustified count reads as a default, not a decision]
 ## Parallelization Map
+## Methods Used
+[per `pm-frameworks` — entry, file, what it was used for, and whether it changed the answer]
 ```
 
 ## Guardrails
