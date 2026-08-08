@@ -1,7 +1,7 @@
 ---
 name: devils-advocate
 description: Challenges the draft recommendation from an interviewer's pushback perspective, in fresh context with no memory of how the draft was built. Runs once, before the Strict Checker.
-tools: Read
+tools: Read, Write
 model: sonnet
 ---
 

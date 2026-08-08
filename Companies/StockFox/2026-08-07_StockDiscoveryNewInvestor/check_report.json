@@ -1,0 +1,39 @@
+{
+  "verdict": "PASS",
+  "loop_number": 0,
+  "draft_hash": "structural-fp:v2|s1-s8+appA,appB|body8|appx2|assump5|q6covered|created2026-08-07 (SHA not computed — no shell in checker sandbox; structural fingerprint used for loop-equality comparison)",
+  "tier1": {
+    "output_format_present": {"pass": true, "note": "assignment_type=case_study_presentation_hybrid + fully structured sections; renders to the selected HTML deck + PDF."},
+    "all_subquestions_addressed": {"pass": true, "note": "All 6 Option-2 questions (INPUT.md) map to sections: discover->S2; analysis paralysis->S1/S3; engaging-not-intimidating->S4; what to show->S3.card_shown; what to hide->S3.card_hidden; explore-while-simple->S2/S4/S5."},
+    "quantitative_claims_cited": {"pass": true, "note": "Every number carries a citations[] entry with source, q_id, and confidence (1.5-2pp/800k/650, 93% F&O, 2.5M/1.4B, 4-7 chunk, 11/12/8/6%, $7.5M/12,700, -4.7%, 90% StockGro)."},
+    "no_placeholder_text": {"pass": true, "note": "grep TODO|INSERT|ADD|lorem|TBD|PLACEHOLDER|XXX -> no matches."},
+    "assumptions_register_present": {"pass": true, "note": "assumptions_register[] has 5 entries, each with falsifier + confidence + source_type=ungrounded; s8.is_assumption=true."},
+    "hiring_signals_covered": {"pass": true, "note": "Every intent.md hiring-signal area has >=1 addressing section: thought/assumptions->s8; tradeoffs->s7; progressive disclosure (the discriminating question)->s3; JTBD endpoint->s2/s5; regulatory literacy->s3; monetisation funnel->s5; metrics+harm guardrail->s6; existing surfaces->s5."},
+    "three_lens_analysis": {"pass": true, "note": "lenses.md covers product, business AND user; 3 tensions named and resolved (excitement vs gamification harm; breadth vs meter; depth vs novice ceiling). User lens is the thinnest (DA-flagged) but present and substantive — gate met."},
+    "problem_breakdown_mece": {"pass": true, "note": "Zero-candidate split into 3 non-overlapping stalls (no entry point / can't parse / don't trust), each with a distinct design response; collectively exhaustive for the framed problem."},
+    "pm_voice_not_consultant": {"pass": true, "note": "grep for MECE/workstream/synergies/holistic/unlock value/etc. and framework names (JTBD/RICE/North Star) as prose -> no matches."},
+    "case_study_additions": {"pass": true, "note": "Alternatives evaluated not just one path (S7 rejected_alternative per row; S5 surfaces_deliberately_not_used); tradeoffs explicitly acknowledged (S7)."}
+  },
+  "tier2": {
+    "intent_alignment": {"score": 0.95, "reason": "Designs exactly the briefed artifact: a stock discovery experience for a zero-candidate first-time investor whose terminal action opens the Scorecard. Honors the ratified reframe resolution (decision anxiety as mechanism, not replacement; titled as a discovery experience). Answers the progressive-disclosure discriminating question head-on (S3). Does not drift into PRD/teardown/anxiety-thesis. -0.05: the question->page mapping table success-criterion artifact is not present in workspace/, though coverage itself is exact."},
+    "completeness": {"score": 0.9, "reason": "14 of 15 intent.md success criteria fully met (<=10 body pages, >=3 withheld elements w/ reasons, labelled assumptions w/ falsifiers, >=3 costed decisions, non-SRA constraint traced, one primary metric w/ event-level def + 2 guardrails incl. 1 harm, >=2 named existing surfaces w/ connection, zero TAM, zero framework headings, marketing-site facts labelled, StockGro 90% attributed, >=2 questions back to StockFox). Partial: the workspace question->page mapping table is missing (explicitly 'not required in the deliverable', so process-trail only, not deliverable content)."},
+    "grounding_faithfulness": {"score": 1.0, "reason": "Sampled 7 claims, all verified: 401(k) 1.5-2pp/800k/647 plans (context.md s4); 93% F&O FY22-24 (research_q1 F3, correctly caveated derivatives-not-equity); ~4/7 chunk Miller/Cowan (research_q2 F1); FCA 11/12/8/6% + worst-for-vulnerable (research_q4 F1); $7.5M/12,700 trades (research_q4 F3); StockGro 90% attributed to StockGro (INPUT.md); SEBI RA regs through Dec 2024 incl. regardless-of-payment (context.md s3). Confidence values and scope caveats mirror the source files honestly."},
+    "insight_quality": {"score": 0.9, "reason": "Evidence->implication throughout, not restatement: each stall maps to a design response; FCA evidence -> the specific non-rewarded progress readout; regulatory trace -> exact card show/hide list; metric framed as a lift-vs-baseline with an anti-gaming bounce-rate guardrail (genuine second-order thinking); the pre-click/post-click score reconciliation is a sharp, defensible distinction. Borrowed-direction evidence (F&O->equity, general cognitive load->stock card) is flagged as assumption rather than overclaimed — correct handling."},
+    "internal_consistency": {"score": 0.95, "reason": "v2 resolves all three high-severity DA inconsistencies in-text: search-demotion vs tip-driven users (S1 + S2 zone A now serve both, search positioned-second with stated reason); gamify-exploration vs regulator evidence (S4 names the literal non-rewarded mechanic and why it doesn't reproduce the loop); score-hidden-pre-click vs Scorecard-shows-it (S3 dual rationale). Compare-tray ranking back-door closed (S2 same no-rank rule). Meter rule consistent across S5/S6/S7 and assumption a2. No contradictions found. Minor residual (not a contradiction): the content-ops cost lenses.md calls the 'real build risk' is not priced as a tradeoff row."}
+  },
+  "tier3": {
+    "notes": [
+      "Slide budget: 8 body + 2 appendix — within the <=10 body / <=3 appendix ceiling. One-message-per-page holds (each section heading is a claim). Concise, not padded.",
+      "Tone fits the audience: understated, honest confidence labels, no overselling — right register for a founder-level live line-by-line defence.",
+      "Formatter watch item: appB is a full 5-product comparison table; keep the rendered BODY-level competitive footprint to <=0.5 page (intent.md criterion) — the full table belongs in the appendix, not the body.",
+      "Optional (non-blocking) polish for the live defence, both DA-flagged and deliberately left: (a) price the content-ops cost of keeping 4-5 rails current as a tradeoff row; (b) create the question->page mapping table in workspace/ for the process trail.",
+      "Loop detection: loop 0, no prior check_report.json — no hash comparison possible; fingerprint recorded for future-run equality checks."
+    ]
+  },
+  "routing": {
+    "route_to": null,
+    "reason": "All Tier 1 gates pass deterministically and all five Tier 2 criteria clear the >=0.8 threshold (0.95/0.9/1.0/0.9/0.95). v2 already absorbed every high- and medium-severity Devil's Advocate challenge. Cleared for Formatter.",
+    "specific_fix": null
+  },
+  "unmet_criteria": []
+}

@@ -1,0 +1,349 @@
+{
+  "title": "Explore: A Stock Discovery Experience for First-Time Investors",
+  "subtitle": "StockFox Senior Product Manager Assignment, Option 2. Ends at the Stock Health Scorecard.",
+  "audience": "StockFox evaluator(s), likely founder-level or senior product leadership at an early-stage company. Reviewed live in a two-way Friday/Saturday discussion, questioned line by line. Register: understated, no overselling, no claimed certainty where an assumption is doing the work.",
+  "assignment_type": "case_study_presentation_hybrid",
+  "sections": [
+    {
+      "id": "s1",
+      "type": "diagnosis",
+      "heading": "New investors stall at three points. Most products only fix one.",
+      "content": [
+        "Zero-candidate isn't one problem. It's three: no entry point into 5,000+ listed names, no way to parse what surfaces once a name appears, and not enough trust to click even after a candidate is legible.",
+        "Two different people hit these stalls differently. A blank-slate browser has no name at all: stall one is her whole problem. A tip-driven searcher already has a name, from a headline, a friend, a forwarded message, so she skips stall one and lands straight in stalls two and three, unable to parse what she finds and unsure whether to trust it. Nothing here says which group is bigger, so the design below has to serve both, not assume one.",
+        "Entry point: each +10 options in a 401(k) plan drops enrollment ~1.5–2 percentage points, across an ~800,000-employee, ~650-plan dataset (Iyengar, Huberman & Jiang). More options measurably reduce whether someone engages at all, before quality of choice even enters the picture.",
+        "Trust: overconfidence and the disposition effect (holding losers, selling winners too early) show up in an ISB study of ~2.5M NSE investors, ~1.4B trades, 2005–06 data, the most recent large-N India dataset found. SEBI's own F&O data: 93% of individual derivatives traders lost money FY22–24. Derivatives, not stock-picking. But the direction is the point worth borrowing: inexperience correlates with worse outcomes, not just different ones.",
+        "None of the five named comparables fix the entry-point problem. Screener, Tickertape, Trendlyne, StockGro, and TradingView all default a new user to a search bar, a filter panel, or a social feed, each one assuming a candidate already exists.",
+        "StockGro's own figure, attributed to StockGro and not independently verified: about 90% of users who start exploring an idea on Google or social media lose conviction before acting. If directionally right, the money is lost between noticing something and deciding. That's exactly the stall this design targets."
+      ],
+      "supporting_data": {
+        "problem_breakdown": [
+          {"part": "No entry point", "evidence": "Choice-overload: ~1.5–2pp lower plan enrollment per +10 options (Iyengar/Huberman/Jiang, ~800k employees, ~650 401(k) plans)", "design_response": "A starting point that isn't a search bar (S2)"},
+          {"part": "Can't parse what they find", "evidence": "~4–7 item working-memory ceiling for a fast, unrehearsed glance (Miller 1956 / Cowan 2001)", "design_response": "A card that shows less, not more (S3)"},
+          {"part": "Don't trust it enough to click", "evidence": "Overconfidence + disposition effect + herding documented in Indian retail trading (ISB NSE study; SEBI F&O Sep 2024)", "design_response": "Small, low-stakes conviction-building before commit (S2 compare tray, S6 guardrail)"}
+        ],
+        "competitive_snapshot": [
+          {"product": "Screener.in", "default_entry": "Search bar + community screens"},
+          {"product": "Tickertape", "default_entry": "Curated screens + sentiment gauge, still filter-centric"},
+          {"product": "Trendlyne", "default_entry": "Screener-first, anti-tip positioning"},
+          {"product": "StockGro", "default_entry": "Social feed, leaderboards, contests"},
+          {"product": "TradingView", "default_entry": "Screener + followable idea feed"}
+        ]
+      },
+      "citations": [
+        {"claim": "Each +10 fund options ~1.5–2pp lower 401(k) enrollment, ~800k employees / ~650 plans", "source": "Iyengar, Huberman & Jiang (2003/2004), Vanguard Center for Retirement Research data", "q_id": "context_4", "confidence": 0.85},
+        {"claim": "Overconfidence + disposition effect in Indian retail trading, ~2.5M NSE investors, ~1.4B trades", "source": "ISB Centre for Analytical Finance study, via Business Standard", "q_id": "Q1", "confidence": 0.6},
+        {"claim": "93% of individual F&O traders lost money FY22–24, worse under-30 than over-60", "source": "SEBI press release, Sep 2024", "q_id": "Q1", "confidence": 0.85},
+        {"claim": "All 5 named comparables default new users to search/filter/social feed, none lead with a zero-candidate starting point", "source": "context.md competitive scan, product sites/docs", "q_id": "context_2", "confidence": 0.55},
+        {"claim": "~90% of users who start exploring an idea on Google/social lose conviction before acting", "source": "StockGro (Stoxo positioning), attributed, not independently verified", "q_id": "input", "confidence": 0.3}
+      ],
+      "is_assumption": false
+    },
+    {
+      "id": "s2",
+      "type": "wireframe",
+      "heading": "Explore opens with what a user already recognizes, not a search bar.",
+      "content": [
+        "Top bar carries a search field, positioned second, not shrunk. The tip-driven searcher, holding a name from a headline or a friend, isn't demoted: she skips straight past the entry-point stall into the parsing one, and whatever she searches still renders as the same five-field card in S3, not a raw bypass to a wall of numbers. Rails and the brand strip lead visually because they solve the colder case, zero name at all, that none of the five comparables solve.",
+        "Below it, a brand-recognition strip: 8–10 horizontally scrolling cards for consumer names people already use (a bank, an airline, a coffee chain), not stock tips. A starting point that doesn't require already knowing what a screen or a filter is.",
+        "Below that, 4–5 theme rails, each a plain-language label plus one disclosed, objective sort criterion. Never a score. For example: 'Profitable every year for 5 years, sorted alphabetically,' not 'Top Picks.' This isn't a screener with someone else picking the filters. A screener assumes the user already knows what to filter by; a first-time investor with no candidate doesn't. That's the exact gap rails close.",
+        "A persistent compare tray at the bottom holds up to 4 stocks, added by tapping + on any card, without opening or spending anything. It's how a still-undecided user builds a shortlist before committing to one. Same rule as the card applies inside the tray: entries stay in the order added, never re-sorted or highlighted by any metric, so a 2–4 item table doesn't quietly crown a winner.",
+        "Tapping the card itself, not the tray's +, is the terminal action: it opens that stock's existing Stock Health Scorecard, unmodified, and spends one of the user's 3 free analyses."
+      ],
+      "supporting_data": {
+        "screen": "Explore (new home surface)",
+        "zones": [
+          {"zone": "A, top bar", "content": "Slim search field, secondary position", "purpose": "Serves the tip-driven searcher who already has a name; positioned second because it doesn't solve the colder blank-slate case, not because she matters less"},
+          {"zone": "B, brand strip", "content": "Horizontal scroll of 8–10 recognizable consumer names", "purpose": "Entry point for zero-candidate users"},
+          {"zone": "C, theme rails", "content": "4–5 horizontal rails, plain-language label + one disclosed objective sort criterion, 6–8 cards per rail", "purpose": "Browsable breadth without a ranked list, filters picked for the user, not typed by her, since a first-time investor doesn't yet know what to filter by"},
+          {"zone": "D, compare tray", "content": "Persistent bottom tray, up to 4 stocks, added via + on any card, entries stay in add-order, never re-sorted or highlighted", "purpose": "Build a shortlist before spending a free analysis"},
+          {"zone": "terminal action", "content": "Tapping a card (not the tray +) opens that stock's Stock Health Scorecard", "purpose": "The stated end point; the surface itself is unmodified"}
+        ]
+      },
+      "citations": [
+        {"claim": "Structural response to the entry-point and trust problems named in the diagnosis", "source": "internal synthesis", "q_id": "context_4", "confidence": 0.7},
+        {"claim": "Multi-touch exploration (adding to a tray, browsing rails) beats raw action count as a conversion predictor in comparable metered products", "source": "RevenueCat blog, activation-metric client examples", "q_id": "Q3", "confidence": 0.6}
+      ],
+      "is_assumption": false
+    },
+    {
+      "id": "s3",
+      "type": "wireframe",
+      "heading": "The card shows five facts and zero opinions.",
+      "content": [
+        "Shown: name and a one-line plain-English description of what the company does, the sector tag matching its rail, price and day change shown small and muted, the rail's disclosed sort criterion, and a read-time or complexity tag. Five fields, at the edge of what a fast, unrehearsed glance can hold: roughly 4 chunks with no time to rehearse, per Cowan's 2001 revision of Miller's 1956 figure.",
+        "Hidden: the composite Health Score number, valuation calls or price targets, peer and competitive ranking, any social or engagement signal, and the full 200+ metric breakdown. Five things withheld on purpose, not missing by oversight.",
+        "StockFox is not a SEBI Registered Analyst or Investment Adviser. SEBI's Research Analyst Regulations, amended through Dec 2024, define research services to include buy/sell/hold calls, price targets, and opinion on securities broadly, and that applies whether or not the platform charges for it. That's why a score and a price target aren't on this card. Not a formatting choice. A compliance line.",
+        "The Scorecard shows this same Health Score, one tap later, and that's not a contradiction: a bare number on an unopened card with no visible basis reads as our opinion, act now, while the identical score sitting next to the 200+ metrics and caveats that produced it is a disclosed analytical output, not a verdict handed down cold. It's withheld here for a second, independent reason too: it's the single densest number on the platform, and a first glance is the wrong place for it regardless of how the regulatory question resolves.",
+        "Whether a disclosed, objectively-sorted rail itself counts as a recommendation under that broadened definition isn't settled by anything found in this research. Flagged as an assumption, not a certainty."
+      ],
+      "supporting_data": {
+        "card_shown": [
+          {"field": "Name + one-line plain-English description", "reason_shown": "Baseline identity, not evaluative"},
+          {"field": "Sector/theme tag matching its rail", "reason_shown": "Explains why this card is here"},
+          {"field": "Price + day change, shown small", "reason_shown": "Neutral and factual; hiding it would feel evasive"},
+          {"field": "The rail's disclosed sort criterion (e.g., 'profitable 5 years straight')", "reason_shown": "Objective and falsifiable, not a score"},
+          {"field": "A read-time/complexity tag ('~3 min', 'Beginner-friendly')", "reason_shown": "Signals effort required, not quality"}
+        ],
+        "card_hidden": [
+          {"field": "Composite Health Score number", "reason_withheld": "Bare, it reads as our opinion, act now; the Scorecard shows the same score disclosed next to its 200+ metrics, which is why it's fine there and not here. Also simply the densest number on the platform, wrong for a first glance either way."},
+          {"field": "Valuation calls / price targets", "reason_withheld": "Definitionally research-analyst territory under SEBI's RA Regulations, regardless of payment"},
+          {"field": "Peer/competitive ranking (Competitive Lens-style)", "reason_withheld": "Comparing two names for the user edges toward telling them which to prefer"},
+          {"field": "Social/engagement signals (view counts, trending, leaderboard rank)", "reason_withheld": "The exact mechanic FCA ties to ~6–8pp higher risky-product trade share"},
+          {"field": "Full 200+ metric breakdown", "reason_withheld": "Exceeds a novice's pre-decision glance ceiling; it's the Scorecard's job"}
+        ],
+        "regulatory_trace": "StockFox is not a SEBI Registered Analyst or Investment Adviser. SEBI's Research Analyst Regulations (amended through Dec 2024) define 'research services' to include buy/sell/hold calls, price targets, and 'opinion on securities' broadly, applying regardless of payment. Items 1 through 3 in card_hidden are withheld for this reason, not a formatting preference."
+      },
+      "citations": [
+        {"claim": "~4–7 chunk working-memory ceiling for a fast, unrehearsed glance", "source": "Miller (1956); Cowan (2001)", "q_id": "Q2", "confidence": 0.75},
+        {"claim": "No study tests an exact pre-click item count for novice investors specifically", "source": "Q2 research gap, 9 searches conducted", "q_id": "Q2", "confidence": 0.55},
+        {"claim": "Not a SEBI Registered Analyst / Investment Adviser; no buy recommendations or personalized advice permitted", "source": "stockfox.pro, company-supplied verified research", "q_id": "input", "confidence": 0.9},
+        {"claim": "SEBI Research Analyst Regulations 2014, amended through Dec 2024 (FAQs July 2025), broadened definition of research services / opinion on securities, applies regardless of payment; Investment Adviser Regulations 2013 Reg 2(m)", "source": "sebi.gov.in regulation text + convergent legal analysis", "q_id": "context_3", "confidence": 0.8},
+        {"claim": "Whether an objectively-sorted, criteria-disclosed list itself constitutes a recommendation is unresolved in any SEBI guidance found", "source": "context.md reasoned flag", "q_id": "context_3", "confidence": 0.6},
+        {"claim": "A score disclosed alongside its underlying 200+ metrics functions as an analytical output; the same number alone, pre-click, functions as a verdict", "source": "internal synthesis", "q_id": "context_3", "confidence": 0.55}
+      ],
+      "is_assumption": false
+    },
+    {
+      "id": "s4",
+      "type": "principle",
+      "heading": "Explore shows progress. It never rewards trading.",
+      "content": [
+        "The brief asks for exciting. The obvious playbook (points, streaks, leaderboards, social proof) is what StockGro already runs, and it's exactly the mechanic three independent sources tie to worse outcomes for less experienced traders.",
+        "UK FCA's own study of trading-app engagement mechanics found push notifications raised trade count ~11% and raised risky-product trade share (crypto/CFDs) ~8%. Points and prize draws raised trade count ~12% and risky-product share ~6%. Worst for low-literacy, female, and younger users; heavier-usage accounts earned lower net returns.",
+        "The US SEC named leaderboards, streaks, badges, and celebratory animations a formal scrutiny category in a 2021 request for information. Massachusetts' securities regulator settled with Robinhood for $7.5M in Jan 2024 over exactly this pattern, citing one inexperienced customer who made 12,700+ trades in six months.",
+        "Resolution, made literal: a plain, non-rewarded progress readout, 'You've explored 3 of 5 sectors this week,' shown once when Explore reopens. No streak, no points, no badge, no push notification. FCA's mechanics that moved trade count were push notifications and points/prize draws specifically; a static count with no re-engagement trigger and no variable reward doesn't reproduce that loop. It just shows where you've been. Still nothing tied to opening a Scorecard, adding a stock, or any trade-adjacent action.",
+        "Cost: FCA's own numbers put the engagement lift from those mechanics at ~11–12% trade frequency. Explore will look less sticky week over week than a leaderboard-driven feed. That's the price of not building the thing three regulators and one peer-reviewed study have already flagged."
+      ],
+      "supporting_data": {
+        "mechanic": "A single static readout on Explore's header: 'X of Y sectors explored this week.' No streak, no points, no badge, no push notification. Resets silently each week, no lost-streak framing.",
+        "counted_in_readout": ["Sectors explored this week", "Cards added to the compare tray", "Lessons opened from a card's jargon tag"],
+        "never_this": ["Streaks tied to Scorecard opens", "Points/badges tied to adding a stock", "Leaderboards ranking users by activity", "Celebratory animations on trade-adjacent actions"],
+        "evidence": [
+          {"finding": "Push notifications: ~11% higher trade count; points/prize draws: ~12% higher trade count", "source": "FCA digital engagement practices study, via press, 2023"},
+          {"finding": "Same two mechanics: ~8% and ~6% higher share of trades in risky products (crypto/CFDs); effect largest for low-literacy, female, younger users", "source": "FCA digital engagement practices study, via press, 2023"},
+          {"finding": "Leaderboards, streaks, badges, celebratory cues named a formal scrutiny category", "source": "SEC RFI, 2021-167"},
+          {"finding": "$7.5M settlement over gamification-driven trading; one customer made 12,700+ trades in 6 months", "source": "Massachusetts Securities Division v. Robinhood, complaint Dec 2020, settled Jan 2024"},
+          {"finding": "Gamified UI causally raised risk-taking in a controlled study, more on volatile assets", "source": "Chapkovski, Khapko & Zoican, via press"}
+        ]
+      },
+      "citations": [
+        {"claim": "Push notifications +11% trade count, points/prize draws +12%; same mechanics +8%/+6% risky-product trade share, worse for low-literacy/female/younger users", "source": "FCA digital engagement practices study, via press (Finextra, MoneyWeek, Which?)", "q_id": "Q4", "confidence": 0.7},
+        {"claim": "Leaderboards, streaks, badges, points named a formal scrutiny category for encouraging trading for platform-revenue reasons", "source": "SEC.gov press release 2021-167 (Gensler RFI)", "q_id": "Q4", "confidence": 0.85},
+        {"claim": "$7.5M settlement; complaint cited one customer with 12,700+ trades in 6 months, gamification named as the mechanism", "source": "Massachusetts Securities Division v. Robinhood, complaint Dec 2020, settled Jan 2024", "q_id": "Q4", "confidence": 0.85},
+        {"claim": "Gamified UI (post-trade animation) causally raised risk-taking in a controlled study, amplified on volatile assets", "source": "Chapkovski, Khapko & Zoican, via Investment Executive", "q_id": "Q4", "confidence": 0.6},
+        {"claim": "Heavy Robinhood-user buying predicts ~−4.7% average 20-day abnormal returns", "source": "Barber, Huang, Odean & Schwarz, Journal of Finance 2022", "q_id": "Q4", "confidence": 0.85}
+      ],
+      "is_assumption": false
+    },
+    {
+      "id": "s5",
+      "type": "recommendation",
+      "heading": "Browsing is free. Opening a Scorecard spends one of the three.",
+      "content": [
+        "Explore itself (the brand strip, rails, and compare tray) is unmetered. The 3-free-analysis credit is spent only at the terminal action: opening a Scorecard.",
+        "Comparable metered products argue for gating there, not earlier. The strongest conversion-predicting behavior in metered consumer apps is a multi-session value threshold, not a raw action count (RevenueCat-reported client examples). The top behavioral flags in freemium conversion models are hitting a real limit and trying features beyond baseline, not browse volume (Amplitude). Seeking Alpha and TipRanks, the closest comparable products, gate on depth per item once a user is already engaged with one stock, not on browse count.",
+        "Cost: a determined window-shopper can view dozens of cards for free. Real serving cost, zero funnel progress. I'm betting that cost is small: cards are lightweight, and the expensive step is almost certainly the Scorecard's own AI-generated 200+-metric analysis, not the card feed. That's an assumption StockFox can confirm with its own compute-cost data. There's a user-side cost too: a judgment-free space with nothing ever prompting a decision can let an anxious user browse indefinitely without building toward one, which makes the stall more comfortable, not solved. Nothing here currently guards against that.",
+        "AI Research Copilot, already shipped, answers a query the user already knows how to ask; Explore is for the user who doesn't have a query yet to type, this brief's actual population, so it's a different job, not Copilot rebuilt with extra steps. Two existing surfaces plug in here too, per the public marketing site (the beta itself wasn't viewed this pass, see assumptions). Adding a stock to the compare tray without opening it routes a still-undecided user toward the Confidence Journal's guided, metric-by-metric research, not straight at a paid Scorecard open. A card's sector or jargon tag deep-links to the matching lesson in the existing 4-minute lesson library, instead of a new tooltip system. Peer comparison stays inside the Scorecard and Competitive Lens, post-click, not on the card."
+      ],
+      "supporting_data": {
+        "meter_rule": "Explore (brand strip, rails, compare tray) is unmetered. The 3-free-analysis credit is spent only when a Scorecard opens.",
+        "existing_surfaces_connected": [
+          {"surface": "Confidence Journal", "connection": "Adding a stock to the compare tray without opening it routes toward guided metric-by-metric research here, not straight at a paid Scorecard open"},
+          {"surface": "Learning layer (4-minute lessons)", "connection": "A card's jargon/sector tag deep-links to the matching lesson instead of a new tooltip system"},
+          {"surface": "Competitive Lens", "connection": "Peer comparison lives here, post-click, not on the pre-click card (see S3)"}
+        ],
+        "surfaces_deliberately_not_used": [
+          {"surface": "AI Research Copilot", "reason": "Answers a query the user already knows how to ask. Explore serves the user with no query yet, this brief's population, a different job, not a rebuild."}
+        ]
+      },
+      "citations": [
+        {"claim": "Multi-session/multi-day value threshold beats raw usage count as an activation predictor", "source": "RevenueCat blog, client examples", "q_id": "Q3", "confidence": 0.6},
+        {"claim": "Top freemium conversion flags: hitting a usage limit, trying features beyond baseline, not raw browse volume", "source": "Amplitude blog", "q_id": "Q3", "confidence": 0.55},
+        {"claim": "Seeking Alpha (~1 free premium article/month), TipRanks (Smart Score locked behind ~$30/mo) gate on depth-per-item, not browse count", "source": "current product pricing pages", "q_id": "Q3", "confidence": 0.45},
+        {"claim": "Confidence Journal (guided metric-by-metric research), learning layer (4-minute lessons), Competitive Lens (peer comparison) are shipped StockFox surfaces", "source": "stockfox.pro, company-supplied verified research", "q_id": "input", "confidence": 0.85},
+        {"claim": "AI Research Copilot is a shipped StockFox surface ('ask anything, get explainable answers') distinct from Explore's zero-query use case", "source": "stockfox.pro, company-supplied verified research", "q_id": "input", "confidence": 0.85}
+      ],
+      "is_assumption": false
+    },
+    {
+      "id": "s6",
+      "type": "metrics",
+      "heading": "One metric: did a stranger open that stock's Scorecard.",
+      "content": [
+        "Primary metric: the lift in Scorecard opens Explore causes, not a raw count. Explore-sourced opens per weekly active Explorer, measured against a same-week baseline cohort of users who never touch Explore and open Scorecards only through search or their watchlist. The gap between the two rates is what Explore actually adds; a raw count alone can't tell a genuinely new open from one that would have happened anyway. Counts a Scorecard-open event where the entry point is Explore (a rail card, the brand strip, or the compare tray, not search, not a deep link, not a push notification), the stock wasn't already in the user's watchlist before that session, and the view holds for at least 10 seconds.",
+        "Doesn't count: search-originated opens (a different, already-solved job: the user already had a name), opens of a stock the user already tracked, sub-10-second dismissals, or repeat opens of the same stock within 7 days.",
+        "Guardrail 1, harm: confidence-score movement without Confidence Journal engagement. StockFox already tracks a per-user confidence score. Flag any user whose score rises week over week while their Confidence Journal steps completed that week are zero. Rising confidence with no completed research is the overconfidence pattern Q1's evidence describes, not more informed confidence.",
+        "Guardrail 2, design integrity: Explore card bounce rate, the share of Explore-sourced Scorecard opens, the exact population the primary metric counts, dismissed in under 10 seconds. This is what catches the primary metric being gamed: if a growth team makes cards more clickbait (a bolder claim, a bigger number) to push the open count up, bounce rate rises right alongside it, and that's the tell. It doubles as funnel health: high bounce also means a first-time user is burning their only 3 free looks on noise."
+      ],
+      "supporting_data": {
+        "primary_metric": {
+          "name": "Lift in Scorecard opens: Explore-sourced opens per weekly active Explorer vs. a search-only baseline cohort",
+          "counts": "Scorecard-open event where entry_point = Explore (rail card, brand strip, or compare tray) AND stock not already in the user's watchlist before the session AND view sustained ≥10 seconds",
+          "baseline": "Same-week users who never open Explore, measured on their organic (search- or watchlist-driven) Scorecard-open rate. Reported lift = Explore cohort's rate minus this baseline, not the raw Explore number alone.",
+          "does_not_count": "Search-originated opens; opens of already-tracked stocks; sub-10-second dismissals; repeat opens of the same stock within 7 days (deduped)"
+        },
+        "guardrails": [
+          {"name": "Confidence-score movement without Confidence Journal engagement", "type": "harm", "definition": "User's tracked confidence score rises week over week while Confidence Journal steps completed that week = 0"},
+          {"name": "Explore card bounce rate", "type": "design integrity", "definition": "Share of Explore-sourced Scorecard opens (the same population the primary metric counts) dismissed in under 10 seconds. Catches a card optimizing for taps over informed taps: if the primary metric rises because this rises too, the card got more clickbait, not more useful. Doubles as a funnel-health check on the 3 free looks."}
+        ]
+      },
+      "citations": [
+        {"claim": "Overconfidence bias framing for the harm guardrail", "source": "Barber & Odean (2000); ISB NSE study", "q_id": "Q1", "confidence": 0.7},
+        {"claim": "Metering starts at Scorecard open; event definition built on the same multi-touch conversion logic", "source": "internal synthesis of Q3", "q_id": "Q3", "confidence": 0.55},
+        {"claim": "StockFox tracks a per-user confidence score and offers Confidence Journal guided research", "source": "stockfox.pro, company-supplied verified research", "q_id": "input", "confidence": 0.85},
+        {"claim": "3 free stock analyses, the metered unit this metric is defined against", "source": "stockfox.pro", "q_id": "input", "confidence": 0.85}
+      ],
+      "is_assumption": false
+    },
+    {
+      "id": "s7",
+      "type": "tradeoffs",
+      "heading": "Four decisions, four costs.",
+      "content": [
+        "No composite score or ranking anywhere pre-click. Cost: no one-glance is-this-good shortcut; some users bounce faster without it. Rejected alternative: show the score with a disclaimer. Rejected because a number outlives its disclaimer in a user's head. Same reasoning behind the finfluencer rule that educational content must reference price data at least 3 months old: people anchor on the number, not the fine print.",
+        "Browsing is unmetered; only a Scorecard open spends a free analysis. Cost: a determined browser can window-shop indefinitely with zero revenue signal and real serving cost. There's a user-side cost too: nothing here stops an anxious browser from postponing the click indefinitely inside a judgment-free space, which risks making the stall more comfortable instead of solving it. Rejected alternative: meter card views too. Rejected because it recreates the too-many-gates complaint already documented in beginner overwhelm patterns, and because the conversion evidence found rewards exploration breadth, not gating it.",
+        "No engagement gamification (points, streaks, leaderboards) tied to trading-adjacent actions. Cost: a measurably lower short-term engagement lift than competitors get from exactly these mechanics. FCA found ~11–12% higher trade frequency from them. Rejected alternative: scope streaks or badges to watchlist or Scorecard actions. Rejected because FCA ties the identical mechanic to a 6–8 percentage-point higher share of trades in riskier products, and the SEC has separately named it a formal scrutiny category.",
+        "Peer comparison hidden pre-click, shown only inside the Scorecard and Competitive Lens. Cost: removes a genuinely useful this-is-cheaper-than-its-peer signal that could speed up conviction earlier. Rejected alternative: show a one-line peer delta on the card. Rejected because a comparative claim about an unopened card reads closer to prefer-this-one than a standalone fact does. That's precisely the line SEBI's broadened opinion-on-securities definition is drawn around."
+      ],
+      "supporting_data": {
+        "tradeoff_table": [
+          {"decision": "No composite score or ranking pre-click", "cost": "No one-glance verdict; faster bounce for score-seeking users", "rejected_alternative": "Score with a disclaimer: rejected, disclaimers don't survive contact with a number"},
+          {"decision": "Meter only at Scorecard-open", "cost": "Free, unmetered browsing at real serving cost with no revenue signal; also lets an anxious user postpone the click indefinitely with nothing prompting a decision", "rejected_alternative": "Meter card views too: rejected, recreates the too-many-gates complaint"},
+          {"decision": "No trading-adjacent gamification", "cost": "~11–12% lower engagement lift than competitors chasing the same mechanic", "rejected_alternative": "Scope streaks to watchlist/Scorecard actions: rejected, same mechanic ties to +6–8pp risky-product trade share"},
+          {"decision": "Peer comparison hidden pre-click", "cost": "Loses an early, genuinely useful comparative signal", "rejected_alternative": "One-line peer delta on card: rejected, reads as an implied preference"}
+        ]
+      },
+      "citations": [
+        {"claim": "Regulatory basis for score/price-target withholding", "source": "context.md regulatory research", "q_id": "context_3", "confidence": 0.7},
+        {"claim": "Finfluencer rule requiring educational price data ≥ 3 months old", "source": "SEBI-adjacent finfluencer rules 2023–2025, convergent legal reporting", "q_id": "context_3", "confidence": 0.65},
+        {"claim": "Metering-point rationale", "source": "Q3 findings", "q_id": "Q3", "confidence": 0.55},
+        {"claim": "Gamification engagement lift and risk-share cost", "source": "FCA digital engagement practices study", "q_id": "Q4", "confidence": 0.7},
+        {"claim": "Leaderboard/streak/points named formal scrutiny category", "source": "SEC RFI 2021-167", "q_id": "Q4", "confidence": 0.85}
+      ],
+      "is_assumption": false
+    },
+    {
+      "id": "s8",
+      "type": "assumptions",
+      "heading": "What I don't know, and what I'd ask before this ships.",
+      "content": [
+        "Five assumptions carry real risk if wrong, each with the condition that would flip it. Listed alongside this page.",
+        "Three questions I'd bring to StockFox directly: does the current beta already have a discovery surface, and what did real users show about search-first versus browse-first behavior? Is SEBI Research Analyst registration on the roadmap, or is staying unregistered deliberate? That changes how conservative Explore needs to stay. What does existing funnel data show for where users drop off before a first Scorecard open: does it match no entry point as the biggest blocker, or is it something else?",
+        "This is v1, screen-level only. Testing the ~4–5-item card and the rail sort criteria with 5–10 real novice users is the next step before any of it ships."
+      ],
+      "supporting_data": {
+        "assumptions": [
+          {"id": "a1", "claim": "No Explore-style discovery surface exists yet in the current beta.", "falsifier": "Loom beta (unviewed) already ships a curated/thematic discovery home. This becomes a v2 critique, not net-new.", "confidence": 0.4},
+          {"id": "a2", "claim": "The 3-free-analysis meter counts full Scorecard opens specifically.", "falsifier": "Metered unit is something else (e.g., Copilot queries); the gating point in S5 moves.", "confidence": 0.5},
+          {"id": "a3", "claim": "A pre-click card can carry ~4–5 data points before it tips from inviting to intimidating.", "falsifier": "Usability testing shows novices want more before clicking. Not a tested number for stock cards.", "confidence": 0.45},
+          {"id": "a4", "claim": "Disclosed, objectively-sorted rails sit outside SEBI's broadened opinion-on-securities definition.", "falsifier": "SEBI or counsel rules criteria-based grouping is itself a recommendation. Flagged as genuinely unresolved.", "confidence": 0.4},
+          {"id": "a5", "claim": "Confidence-score tracking is a per-user signal that moves week to week, not a one-time quiz.", "falsifier": "Score is computed once at signup. The harm guardrail needs a substitute signal.", "confidence": 0.5}
+        ],
+        "questions_for_stockfox": [
+          "Does the current beta already have a discovery/browse surface, and what did real users show about search-first vs. browse-first behavior?",
+          "Is SEBI Research Analyst registration on the roadmap, or is staying unregistered a deliberate long-term position?",
+          "What does existing funnel data show for where users drop off before a first Scorecard open?"
+        ]
+      },
+      "citations": [
+        {"claim": "Loom beta walkthrough could not be viewed this session; all current-StockFox claims are marketing-site inference", "source": "assignment-supplied note, INPUT.md", "q_id": "input", "confidence": 0.9},
+        {"claim": "SEBI regulatory ambiguity on disclosed-criteria sorting", "source": "context.md reasoned flag", "q_id": "context_3", "confidence": 0.6},
+        {"claim": "No tested pre-click item count for novice investors exists in the literature searched", "source": "Q2 research gap", "q_id": "Q2", "confidence": 0.55},
+        {"claim": "StockFox tracks a per-user confidence score (existence well-grounded; longitudinal behavior is the uncertain part)", "source": "stockfox.pro, company-supplied verified research", "q_id": "input", "confidence": 0.85}
+      ],
+      "is_assumption": true
+    }
+  ],
+  "appendix_sections": [
+    {
+      "id": "appA",
+      "type": "wireframe",
+      "heading": "Explore, zone by zone",
+      "content": [
+        "First open, zero personalization history: every user sees the same theme rails, non-personalized by design in v1. Cost: rails may not match individual interest; someone who only cares about one sector still sees all 4–5 rails. Traded for simplicity, and for not needing behavioral data before it exists.",
+        "Rails personalize only after a signal exists: at minimum one completed Scorecard open, or an explicit tap of interest. Never before. Avoids building a cold-start recommender on zero data.",
+        "Tapping a card triggers a short loading state before the Scorecard renders, framed as pulling your Scorecard, not instant. Sets the expectation that real analysis takes a moment, consistent with depth living on the other side of the click, not on the card.",
+        "The compare tray caps at 4 stocks. A 5th add prompts a swap, not a scroll, keeping the shortlist within the same glance-level ceiling as the card."
+      ],
+      "supporting_data": {
+        "note": "Extends S2/S3 with interaction and empty-state detail for live defense."
+      },
+      "citations": [
+        {"claim": "Cold-start/non-personalization design choice, extends S2", "source": "internal synthesis", "q_id": "context_4", "confidence": 0.5},
+        {"claim": "Compare tray cap grounded in the same working-memory ceiling as the card", "source": "Miller (1956); Cowan (2001)", "q_id": "Q2", "confidence": 0.6}
+      ],
+      "is_assumption": false
+    },
+    {
+      "id": "appB",
+      "type": "comparison",
+      "heading": "The five named comparables, in full",
+      "content": [
+        "Screener.in: search bar plus 10,000+ community-built saved filters, a few editorially surfaced. Burden is on the user to already know what a screen is.",
+        "Tickertape: asset-class-segmented home, curated pre-built screens, a proprietary sentiment gauge, thematic collections. More curated than Screener, still filter-centric.",
+        "Trendlyne: screener-first including a Red Flag screener, watchlists, insider-trade tracking. Markets against vibes or influencer advice, an anti-tip positioning close to StockFox's own.",
+        "StockGro: social and gamified home, virtual-money contests, leaderboards, a social feed. Runs Stoxo, a SEBI-registered-analyst-backed research arm, as a separate, higher-trust product line.",
+        "TradingView: screener plus a followable public Ideas feed, explicitly likened to a social-media follow model. Least beginner-India-specific of the five."
+      ],
+      "supporting_data": {
+        "full_table": [
+          {"product": "Screener.in", "confidence": 0.6, "source": "screener.in/screens/, dhanarthi.com guide"},
+          {"product": "Tickertape", "confidence": 0.55, "source": "tickertape.in/blog, strike.money review"},
+          {"product": "Trendlyne", "confidence": 0.5, "source": "trendlyne.com, x.com/Trendlyne"},
+          {"product": "StockGro", "confidence": 0.55, "source": "inc42.com, stockgro.club"},
+          {"product": "TradingView", "confidence": 0.5, "source": "tradingview.com support docs"}
+        ]
+      },
+      "citations": [
+        {"claim": "Per-product default entry point scan", "source": "screener.in, tickertape.in, trendlyne.com, stockgro.club, tradingview.com support docs", "q_id": "context_2", "confidence": 0.55}
+      ],
+      "is_assumption": false
+    }
+  ],
+  "assumptions_register": [
+    {
+      "id": "a1",
+      "claim": "No Explore-style discovery surface exists yet in the current StockFox beta.",
+      "falsifier": "The Loom beta walkthrough (unviewed this pass) shows a curated/thematic discovery home already shipped. This design would then be a v2 critique, not net-new scope.",
+      "confidence": 0.4,
+      "source_type": "ungrounded"
+    },
+    {
+      "id": "a2",
+      "claim": "The 'first 3 stock analyses free' meter counts full Scorecard opens specifically.",
+      "falsifier": "StockFox confirms the metered unit is something else (e.g., Copilot queries); the gating point in S5 moves accordingly.",
+      "confidence": 0.5,
+      "source_type": "ungrounded"
+    },
+    {
+      "id": "a3",
+      "claim": "A pre-click card can carry ~4–5 data points before it tips from inviting to intimidating.",
+      "falsifier": "Usability testing with real novice users shows they want more (e.g., price is table-stakes) before they'll click at all. No study tests this exact number for stock cards; it's a bridge from general cognitive-load research (Miller/Cowan).",
+      "confidence": 0.45,
+      "source_type": "ungrounded"
+    },
+    {
+      "id": "a4",
+      "claim": "Disclosed, objectively-sorted rails sit outside SEBI's broadened 'opinion on securities' definition.",
+      "falsifier": "SEBI or StockFox's own counsel determines that criteria-based grouping itself constitutes an implicit recommendation. Flagged in the underlying research as genuinely unresolved, not settled law.",
+      "confidence": 0.4,
+      "source_type": "ungrounded"
+    },
+    {
+      "id": "a5",
+      "claim": "StockFox's existing confidence-score tracking is a per-user signal that moves week to week, not a one-time onboarding quiz.",
+      "falsifier": "If the confidence score is computed once at signup and never recomputed, the harm guardrail in S6 can't be measured as specified and needs a substitute, e.g. a self-reported conviction rating captured at each Scorecard open.",
+      "confidence": 0.5,
+      "source_type": "ungrounded"
+    }
+  ],
+  "metadata": {
+    "version": 2,
+    "checker_loop": 0,
+    "body_section_count": 8,
+    "appendix_section_count": 2,
+    "assumption_count": 5,
+    "created": "2026-08-07"
+  }
+}

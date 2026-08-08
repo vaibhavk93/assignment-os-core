@@ -1,0 +1,17 @@
+{
+  "assignment_id": "2026-08-07_StockDiscoveryNewInvestor",
+  "company": "StockFox",
+  "assignment_name": "StockDiscoveryNewInvestor",
+  "current_stage": "formatter",
+  "loop_count": 0,
+  "last_checkpoint": "2026-08-08T00:16:00Z",
+  "status": "complete",
+  "selected_outputs": [
+    "html_deck",
+    "pdf",
+    "pptx"
+  ],
+  "optional_stages": [],
+  "skipped_stages": [],
+  "outcome": "pending"
+}

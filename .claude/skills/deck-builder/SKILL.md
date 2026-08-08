@@ -58,6 +58,16 @@ Never hardcode hex or px font sizes in elements — always the tokens above.
 
 **Navigation:** dot indicators only (no prev/next buttons), left/right arrow keys, touch swipe, `N` toggles speaker notes panel (hidden `<aside class="speaker-notes">`, shown on print/PDF too, under 100 words each).
 
+**Print/PDF CSS — every slide must render, at the right page size:** since slides use `display: none` with a JS-toggled `.active` class, `@media print` must force every `.slide` back to visible or a PDF export captures only slide 1. It must also set an explicit `@page` size — without one, Chrome's print-to-pdf defaults to Letter portrait (8.5×11in) and squeezes a 16:9 deck into the wrong aspect ratio. Match the PPTX widescreen size (13.333in × 7.5in) so every export format shares one aspect ratio:
+```css
+@media print {
+  @page { size: 13.333in 7.5in; margin: 0; }
+  .navigation { display: none; }
+  .deck { height: auto; overflow: visible; }
+  .slide { display: flex !important; height: 7.5in; width: 13.333in; overflow: visible; page-break-after: always; }
+}
+```
+
 **Speaker notes structure:** restate the heading differently → 2-3 sentences of narrative → transition line to next slide.
 
 ## Anti-patterns (never)
@@ -70,3 +80,4 @@ No accent lines under headings. No decorative card-edge color bars. No prev/next
 - [ ] Headings are arguments, not topics
 - [ ] ≤5 bullets/slide, brand colors applied, dot count = slide count
 - [ ] No placeholder text, file opens standalone with no console errors
+- [ ] Print-to-PDF actually contains one page per slide, not just the active slide (check `@media print` overrides `display: none`)

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore: StockFox Stock Discovery</title>
+    <style>
+        :root {
+            --color-primary: #10B981;
+            --color-background: #0D1B2A;
+            --color-surface: rgba(255,255,255,0.06);
+            --color-text-primary: #FFFFFF;
+            --color-text-muted: rgba(255,255,255,0.55);
+            --color-border: rgba(255,255,255,0.10);
+            --text-title: clamp(1.375rem, 2.8vw + 0.5rem, 2.25rem);
+            --text-body: clamp(0.875rem, 1.4vw + 0.25rem, 1.125rem);
+            --text-small: clamp(0.625rem, 0.8vw + 0.15rem, 0.75rem);
+            --text-stat: clamp(2rem, 5vw + 0.5rem, 4rem);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--color-background);
+            color: var(--color-text-primary);
+            overflow: hidden;
+        }
+
+        .deck {
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            padding: 48px;
+            background: linear-gradient(135deg, var(--color-background) 0%, #132340 100%);
+            position: relative;
+        }
+
+        .slide.active { display: flex; }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            font-size: var(--text-small);
+            color: var(--color-text-muted);
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 12px;
+        }
+
+        .slide-header-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .slide-header-left .brand {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .slide-header-right {
+            text-align: right;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: var(--text-title);
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.2;
+            color: var(--color-text-primary);
+        }
+
+        .slide-body {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        p, li {
+            font-size: var(--text-body);
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: var(--color-text-primary);
+        }
+
+        ul {
+            margin-left: 24px;
+            list-style: none;
+        }
+
+        li {
+            position: relative;
+            padding-left: 12px;
+            margin-bottom: 10px;
+        }
+
+        li:before {
+            content: "▪";
+            position: absolute;
+            left: 0;
+            color: var(--color-primary);
+        }
+
+        .slide-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 32px;
+            padding-top: 12px;
+            border-top: 1px solid var(--color-border);
+            font-size: var(--text-small);
+            color: var(--color-text-muted);
+            gap: 24px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--color-primary);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .title-slide h1 {
+            font-size: clamp(2.5rem, 6vw + 1rem, 3.5rem);
+            margin-bottom: 16px;
+        }
+
+        .title-slide .subtitle {
+            font-size: var(--text-body);
+            color: var(--color-text-muted);
+            margin-bottom: 48px;
+            max-width: 90%;
+        }
+
+        .title-slide .exec-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .title-slide .summary-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: var(--text-small);
+        }
+
+        .summary-card strong {
+            color: var(--color-primary);
+        }
+
+        .stat-callout {
+            font-size: var(--text-stat);
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 20px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin-top: 16px;
+            font-size: var(--text-small);
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .comparison-table th {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .wireframe-zone {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-size: var(--text-small);
+        }
+
+        .wireframe-zone .label {
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .tradeoff-row {
+            background: var(--color-surface);
+            border-left: 3px solid var(--color-primary);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-size: var(--text-small);
+        }
+
+        .tradeoff-row .decision {
+            color: var(--color-text-primary);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .tradeoff-row .cost {
+            color: var(--color-text-muted);
+            margin-bottom: 4px;
+        }
+
+        .assumption-item {
+            background: var(--color-surface);
+            border-left: 3px solid #F59E0B;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-size: var(--text-small);
+        }
+
+        .assumption-item .id {
+            color: #F59E0B;
+            font-weight: 600;
+        }
+
+        .footnote {
+            font-size: var(--text-small);
+            color: var(--color-text-muted);
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        @media print {
+            @page { size: 13.333in 7.5in; margin: 0; }
+            .navigation { display: none; }
+            .deck { height: auto; overflow: visible; }
+            .slide { display: flex !important; height: 7.5in; width: 13.333in; overflow: visible; page-break-after: always; }
+        }
+    </style>
+</head>
+<body>
+    <div class="deck">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                </div>
+                <div class="slide-header-right">Slide 1 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>Explore: A Stock Discovery Experience for First-Time Investors</h1>
+                <p class="subtitle">StockFox Senior Product Manager Assignment, Option 2. Ends at the Stock Health Scorecard.</p>
+                <div class="exec-summary">
+                    <div class="summary-card">
+                        <strong>Problem:</strong> New investors stall at three distinct points: no entry point into 5,000+ names, can't parse what surfaces, not enough trust to click.
+                    </div>
+                    <div class="summary-card">
+                        <strong>Solution:</strong> Explore opens with brand recognition, not search. Four to five theme rails with disclosed sort criteria. Five-fact card that shows opinion-free facts and zeros scores/rankings.
+                    </div>
+                </div>
+                <div class="stat-callout">Zero-candidate isn't one stall. It's three.</div>
+                <p style="margin-top: 20px; color: var(--color-text-muted); font-size: var(--text-small);">This submission designs a stock discovery experience for a first-time Indian retail investor with no first candidate in mind, where the terminal action opens the StockFox Scorecard. It is a conversation scaffold for a live two-way discussion, questioned line by line.</p>
+            </div>
+            <div class="slide-footer">
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 2: S1 Diagnosis -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Explore</span>
+                </div>
+                <div class="slide-header-right">Slide 2 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>New investors stall at three points. Most products only fix one.</h1>
+                <div class="slide-body">
+                    <ul>
+                        <li><strong>No entry point:</strong> 5,000+ listed names, no obvious starting point. Each +10 options in a 401(k) plan drops enrollment ~1.5–2pp (Iyengar/Huberman/Jiang).</li>
+                        <li><strong>Can't parse:</strong> ~4–7 item working-memory ceiling (Miller/Cowan). A user stalls on legible-but-overwhelming stock data.</li>
+                        <li><strong>Don't trust:</strong> Overconfidence + disposition effect in Indian retail trading (~2.5M NSE investors, ~1.4B trades). 93% of F&O traders lost money FY22–24.</li>
+                        <li><strong>The gap:</strong> Screener, Tickertape, Trendlyne, StockGro, TradingView all default new users to search, filters, or social feeds—none solve a zero-candidate start.</li>
+                        <li><strong>The signal:</strong> StockGro reports ~90% of users exploring an idea on Google/social lose conviction before acting. Design targets that gap.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 2</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 3: S2 Wireframe - Entry -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Explore</span>
+                </div>
+                <div class="slide-header-right">Slide 3 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>Explore opens with what a user already recognizes, not a search bar.</h1>
+                <div class="slide-body">
+                    <div class="wireframe-zone">
+                        <div class="label">Zone A: Top bar</div>
+                        <p>Slim search field, secondary position. Serves the tip-driven searcher who already has a name.</p>
+                    </div>
+                    <div class="wireframe-zone">
+                        <div class="label">Zone B: Brand strip</div>
+                        <p>Horizontal scroll of 8–10 recognizable consumer names (bank, airline, coffee chain). Entry point for zero-candidate users.</p>
+                    </div>
+                    <div class="wireframe-zone">
+                        <div class="label">Zone C: Theme rails</div>
+                        <p>4–5 horizontal rails, plain-language label + one disclosed objective sort criterion (e.g., "Profitable every year for 5 years"). 6–8 cards per rail.</p>
+                    </div>
+                    <div class="wireframe-zone">
+                        <div class="label">Zone D: Compare tray</div>
+                        <p>Persistent bottom tray, up to 4 stocks, added via +, entries stay in add-order, never re-sorted.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 3</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 4: S3 Card Design -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Explore</span>
+                </div>
+                <div class="slide-header-right">Slide 4 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>The card shows five facts and zero opinions.</h1>
+                <div class="slide-body">
+                    <p style="margin-bottom: 16px;"><strong>Shown (5 facts):</strong> Name + description, sector tag, price + day change (small), rail's sort criterion, read-time/complexity tag.</p>
+                    <p style="margin-bottom: 16px;"><strong>Hidden (5 items):</strong> Composite Health Score, valuation calls, peer ranking, social signals, full 200+ metrics.</p>
+                    <p style="margin-bottom: 16px;"><strong>Why:</strong> A bare score on an unopened card reads as opinion, act now. The same score next to 200+ metrics reads as disclosed analysis. Not a formatting choice—it's regulatory: StockFox is not a SEBI Registered Analyst. SEBI's RA Regulations (amended Dec 2024) forbid price targets, buy/sell calls, and opinion on securities broadly.</p>
+                    <p style="margin-bottom: 16px;"><strong>The gap:</strong> Whether disclosed, objectively-sorted rails themselves count as a recommendation is unresolved. Flagged as an assumption, not a certainty.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 4</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 5: S4 Gamification -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Explore</span>
+                </div>
+                <div class="slide-header-right">Slide 5 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>Explore shows progress. It never rewards trading.</h1>
+                <div class="slide-body">
+                    <p style="margin-bottom: 16px;"><strong>The mechanic:</strong> A single static readout: "You've explored 3 of 5 sectors this week." No streaks, points, badges, or push notifications.</p>
+                    <ul>
+                        <li><strong>FCA study:</strong> Push notifications +11% trade count; points/prizes +12% trade count. Same mechanics: +8% risky-product trades (crypto/CFDs). Worst for low-literacy, female, younger users.</li>
+                        <li><strong>SEC:</strong> Leaderboards, streaks, badges named a formal scrutiny category (RFI 2021-167).</li>
+                        <li><strong>Precedent:</strong> $7.5M settlement with Robinhood; one customer made 12,700+ trades in 6 months under gamification.</li>
+                        <li><strong>Cost:</strong> FCA's mechanics lift trade frequency ~11–12%. Explore will look less sticky week over week. That's the price of not reproducing the harm loop.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 5</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 6: S5 Monetization -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Explore</span>
+                </div>
+                <div class="slide-header-right">Slide 6 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>Browsing is free. Opening a Scorecard spends one of the three.</h1>
+                <div class="slide-body">
+                    <p style="margin-bottom: 16px;"><strong>The rule:</strong> Explore (brand strip, rails, compare tray) is unmetered. The 3-free-analysis credit is spent only at the terminal action: opening a Scorecard.</p>
+                    <ul>
+                        <li><strong>Why here, not earlier:</strong> Multi-session value threshold beats raw usage count as an activation predictor. Top freemium conversion flags: hitting a real limit, trying features beyond baseline—not browse volume.</li>
+                        <li><strong>Existing surfaces:</strong> Confidence Journal (guided research), Learning layer (4-min lessons), Competitive Lens (peer comparison post-click) plug in here.</li>
+                        <li><strong>What doesn't plug in:</strong> AI Research Copilot answers a query the user already knows how to ask. Explore serves the user with no query yet.</li>
+                        <li><strong>Cost:</strong> Determined window-shoppers view dozens of cards free, zero funnel progress. Assumption: serving cost is small (cards are lightweight; Scorecard's AI analysis is expensive).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 6</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 7: S6 Metrics -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Explore</span>
+                </div>
+                <div class="slide-header-right">Slide 7 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>One metric: did a stranger open that stock's Scorecard.</h1>
+                <div class="slide-body">
+                    <p style="margin-bottom: 12px;"><strong>Primary metric:</strong> Lift in Scorecard opens. Explore-sourced opens per weekly active Explorer vs. a search-only baseline cohort. Counts opens where entry point = Explore AND stock not already in watchlist AND view ≥10 seconds.</p>
+                    <p style="margin-bottom: 12px;"><strong>Guardrail 1 (harm):</strong> Confidence-score movement without Confidence Journal engagement. Flag any user whose score rises week over week while their journal steps = 0. Rising confidence with no research is overconfidence, not informed conviction.</p>
+                    <p style="margin-bottom: 12px;"><strong>Guardrail 2 (design integrity):</strong> Explore card bounce rate—Explore-sourced opens dismissed in &lt;10 seconds. Catches clickbait optimization: if the primary metric rises because bounce rises too, the card got more sensational, not more useful.</p>
+                    <p class="footnote">Both guardrails assume Explore-specific instrumentation exists; verify with StockFox's data team before shipping.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 7</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 8: S7 Tradeoffs -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Explore</span>
+                </div>
+                <div class="slide-header-right">Slide 8 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>Four decisions, four costs.</h1>
+                <div class="slide-body">
+                    <div class="tradeoff-row">
+                        <div class="decision">No composite score or ranking pre-click</div>
+                        <div class="cost">Cost: No one-glance is-this-good shortcut; faster bounce for score-seeking users. Rejected: score with disclaimer. Reason: disclaimers don't survive contact with a number.</div>
+                    </div>
+                    <div class="tradeoff-row">
+                        <div class="decision">Meter only at Scorecard-open</div>
+                        <div class="cost">Cost: Window-shoppers can browse indefinitely free. Nothing stops anxious users from postponing the click. Rejected: meter card views too. Reason: recreates the too-many-gates complaint.</div>
+                    </div>
+                    <div class="tradeoff-row">
+                        <div class="decision">No gamification tied to trading-adjacent actions</div>
+                        <div class="cost">Cost: ~11–12% lower engagement lift than competitors. Rejected: scope streaks to Scorecard actions. Reason: FCA ties same mechanic to +6–8pp risky-product trade share.</div>
+                    </div>
+                    <div class="tradeoff-row">
+                        <div class="decision">Peer comparison hidden pre-click</div>
+                        <div class="cost">Cost: Loses an early, useful comparative signal. Rejected: one-line peer delta on card. Reason: comparative claim reads closer to prefer-this-one.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 8</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 9: S8 Assumptions -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Explore</span>
+                </div>
+                <div class="slide-header-right">Slide 9 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>What I don't know, and what I'd ask before this ships.</h1>
+                <div class="slide-body">
+                    <p style="margin-bottom: 12px;"><strong>Five assumptions carry real risk if wrong.</strong></p>
+                    <div class="assumption-item">
+                        <div class="id">A1:</div> No Explore-style discovery surface exists yet in the beta (confidence 0.4). Falsifier: Loom shows curated discovery already shipped.
+                    </div>
+                    <div class="assumption-item">
+                        <div class="id">A2:</div> The 3-free meter counts full Scorecard opens (confidence 0.5). Falsifier: Metered unit is something else (e.g., Copilot queries).
+                    </div>
+                    <div class="assumption-item">
+                        <div class="id">A3:</div> A pre-click card holds ~4–5 data points before tipping from inviting to intimidating (confidence 0.45). Falsifier: Usability testing shows novices want more.
+                    </div>
+                    <div class="assumption-item">
+                        <div class="id">A4:</div> Disclosed, objectively-sorted rails sit outside SEBI's opinion-on-securities definition (confidence 0.4). Falsifier: SEBI rules criteria-based grouping itself is a recommendation.
+                    </div>
+                    <div class="assumption-item">
+                        <div class="id">A5:</div> Confidence-score tracking is per-user and moves week to week (confidence 0.5). Falsifier: Score computed once; needs substitute signal.
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 9</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 10: AppA Appendix A -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Appendix A</span>
+                </div>
+                <div class="slide-header-right">Slide 10 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>Explore, zone by zone: interaction and empty-state detail.</h1>
+                <div class="slide-body">
+                    <ul>
+                        <li><strong>First open, zero history:</strong> Every user sees the same theme rails, non-personalized in v1. Cost: rails may not match individual interest. Traded for simplicity and not needing behavioral data before it exists.</li>
+                        <li><strong>Rails personalize only after signal:</strong> At minimum one completed Scorecard open or an explicit tap of interest. Never before. Avoids cold-start recommender.</li>
+                        <li><strong>Loading state:</strong> Tapping a card triggers a short loading state before the Scorecard renders, framed as pulling your analysis. Sets expectation that depth takes a moment.</li>
+                        <li><strong>Compare tray cap:</strong> Tray caps at 4 stocks. A 5th add prompts a swap, not a scroll, keeping the shortlist within the same glance-level ceiling as the card itself.</li>
+                    </ul>
+                    <p class="footnote">Appendix A extends S2/S3 with interaction and empty-state detail for live defense.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 10</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 11: AppB Appendix B -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Appendix B</span>
+                </div>
+                <div class="slide-header-right">Slide 11 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>The five named comparables, in full.</h1>
+                <div class="slide-body">
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Product</th>
+                            <th>Default Entry</th>
+                            <th>Solves Zero-Candidate?</th>
+                        </tr>
+                        <tr>
+                            <td>Screener.in</td>
+                            <td>Search + 10,000+ community screens</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>Tickertape</td>
+                            <td>Curated screens + sentiment gauge</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>Trendlyne</td>
+                            <td>Screener-first + Red Flag tool</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>StockGro</td>
+                            <td>Social feed + leaderboards + contests</td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td>TradingView</td>
+                            <td>Screener + followable Ideas feed</td>
+                            <td>No</td>
+                        </tr>
+                    </table>
+                    <p class="footnote">All five default a new user to search, filter, or social—none lead with an opinionated starting point for a zero-candidate user. Confidence: 0.55 across the scan.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 11</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+
+        <!-- Slide 12: Questions for StockFox -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-header-left">
+                    <span class="brand">STOCKFOX</span>
+                    <span>|</span>
+                    <span>Next Steps</span>
+                </div>
+                <div class="slide-header-right">Slide 12 of 12</div>
+            </div>
+            <div class="slide-content">
+                <h1>Three questions I'd bring to this conversation.</h1>
+                <div class="slide-body">
+                    <ul>
+                        <li><strong>On the beta:</strong> Does the current Loom beta already have a discovery/browse surface, and what did real users show about search-first vs. browse-first behavior? This is v1 against public surfaces only.</li>
+                        <li><strong>On regulation:</strong> Is SEBI Research Analyst registration on the roadmap, or is staying unregistered deliberate long-term? That changes how conservative Explore needs to stay on opinions and comparisons.</li>
+                        <li><strong>On the funnel:</strong> What does existing funnel data show for where users drop off before a first Scorecard open? Does it match no entry point as the biggest blocker, or is it something else?</li>
+                    </ul>
+                    <p style="margin-top: 24px; color: var(--color-text-muted);"><strong>Next step:</strong> Testing the ~4–5-item card and the rail sort criteria with 5–10 real novice users before any of it ships. This is v1, screen-level only.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Slide 12</span>
+                <span>2026-08-07</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <div class="nav-dot active" onclick="goToSlide(0)"></div>
+        <div class="nav-dot" onclick="goToSlide(1)"></div>
+        <div class="nav-dot" onclick="goToSlide(2)"></div>
+        <div class="nav-dot" onclick="goToSlide(3)"></div>
+        <div class="nav-dot" onclick="goToSlide(4)"></div>
+        <div class="nav-dot" onclick="goToSlide(5)"></div>
+        <div class="nav-dot" onclick="goToSlide(6)"></div>
+        <div class="nav-dot" onclick="goToSlide(7)"></div>
+        <div class="nav-dot" onclick="goToSlide(8)"></div>
+        <div class="nav-dot" onclick="goToSlide(9)"></div>
+        <div class="nav-dot" onclick="goToSlide(10)"></div>
+        <div class="nav-dot" onclick="goToSlide(11)"></div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            updateNavDots();
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function goToSlide(n) {
+            showSlide(n);
+        }
+
+        function updateNavDots() {
+            document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        document.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            let touchStart = touch.clientX;
+            document.addEventListener('touchend', (e) => {
+                const touchEnd = e.changedTouches[0].clientX;
+                if (touchStart > touchEnd + 50) nextSlide();
+                if (touchStart < touchEnd - 50) prevSlide();
+            }, { once: true });
+        });
+
+        updateNavDots();
+    </script>
+</body>
+</html>

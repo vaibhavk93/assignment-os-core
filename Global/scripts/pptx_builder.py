@@ -105,6 +105,19 @@ def add_bullet_box(slide, left_in, top_in, width_in, height_in, bullets,
     return txBox
 
 
+def get_heading(section: dict) -> str:
+    return section.get('action_title') or section.get('heading', '')
+
+
+def get_bullets(section: dict) -> list:
+    if section.get('bullets'):
+        return section['bullets']
+    content = section.get('content', '')
+    if isinstance(content, list):
+        return content
+    return content.split('\n') if content else []
+
+
 def add_speaker_notes(slide, notes_text: str):
     if not notes_text:
         return
@@ -132,7 +145,7 @@ def build_title_cover(prs, section, brand_primary, brand_bg):
                  color_hex=brand_primary, align=PP_ALIGN.LEFT)
     # Title
     add_text_box(slide, 0.8, 2.5, 11, 2,
-                 section.get('action_title', ''), 36, bold=True,
+                 get_heading(section), 36, bold=True,
                  color_hex=text_color, align=PP_ALIGN.LEFT)
     # Meta
     meta = section.get('meta', '')
@@ -148,9 +161,9 @@ def build_insight(prs, section, brand_primary, brand_bg):
     text_color = choose_text_color(brand_bg)
     # Heading
     add_text_box(slide, 0.5, 0.3, 12.3, 1.2,
-                 section.get('action_title', ''), 24, bold=True, color_hex=text_color)
+                 get_heading(section), 24, bold=True, color_hex=text_color)
     # Bullets
-    bullets = section.get('bullets', section.get('content', '').split('\n'))
+    bullets = get_bullets(section)
     add_bullet_box(slide, 0.5, 1.8, 8, 4.5, bullets, 14,
                    text_color=text_color, accent_hex=brand_primary)
     # Stat callout
@@ -183,9 +196,9 @@ def build_recommendation(prs, section, brand_primary, brand_bg):
                  'RECOMMENDATION', 9, bold=True, color_hex=brand_primary)
     # Heading
     add_text_box(slide, 0.5, 0.5, 12.3, 1.5,
-                 section.get('action_title', ''), 26, bold=True, color_hex=text_color)
+                 get_heading(section), 26, bold=True, color_hex=text_color)
     # Bullets
-    bullets = section.get('bullets', section.get('content', '').split('\n'))
+    bullets = get_bullets(section)
     add_bullet_box(slide, 0.5, 2.2, 12.3, 3.5, bullets, 14,
                    text_color=text_color, accent_hex=brand_primary)
     # Impact strip
@@ -209,10 +222,9 @@ def build_generic(prs, section, brand_primary, brand_bg):
     text_color = choose_text_color(brand_bg)
     # Heading
     add_text_box(slide, 0.5, 0.3, 12.3, 1.3,
-                 section.get('action_title', ''), 24, bold=True, color_hex=text_color)
+                 get_heading(section), 24, bold=True, color_hex=text_color)
     # Content
-    content = section.get('content', '')
-    bullets = section.get('bullets', content.split('\n') if content else [])
+    bullets = get_bullets(section)
     if bullets:
         add_bullet_box(slide, 0.5, 1.9, 12.3, 4.8, bullets, 14,
                        text_color=text_color, accent_hex=brand_primary)
@@ -245,6 +257,7 @@ def main():
     parser.add_argument('--template', default=None, help='Base template .pptx (optional)')
     parser.add_argument('--brand-primary', default='#E85D04', help='Brand primary hex')
     parser.add_argument('--brand-bg', default='#0D1B2A', help='Brand background hex')
+    parser.add_argument('--company', default='', help='Company name for the title slide')
     args = parser.parse_args()
 
     # Load draft
@@ -270,6 +283,14 @@ def main():
     # Build slides
     all_sections = draft.get('sections', []) + draft.get('appendix_sections', [])
     slide_count = 0
+
+    title_section = {
+        'company': args.company,
+        'action_title': draft.get('title', ''),
+        'meta': draft.get('subtitle', ''),
+    }
+    build_title_cover(prs, title_section, brand_primary, brand_bg)
+    slide_count += 1
 
     for section in all_sections:
         slide_type = section.get('type', 'insight')

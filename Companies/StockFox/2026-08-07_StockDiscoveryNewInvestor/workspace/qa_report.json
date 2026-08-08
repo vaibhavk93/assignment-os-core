@@ -1,0 +1,40 @@
+[
+  {
+    "format": "html_deck",
+    "file": "OUTPUTS/presentation.html",
+    "verdict": "PASS",
+    "issues": [],
+    "placeholder_found": false,
+    "details": {
+      "slide_count": 12,
+      "body_slides": 8,
+      "appendix_slides": 2,
+      "title_slide": 1,
+      "extra_closing_slide": 1,
+      "body_count_vs_ceiling": "9 <= 10 (within ceiling)",
+      "appendix_count_vs_ceiling": "2 <= 3 (within ceiling)",
+      "brand_colors_applied": "#10B981 (primary green), #0D1B2A (background navy)",
+      "css_tokens_used": true,
+      "no_hardcoded_hex": true,
+      "no_scrolling": true,
+      "navigation_dots": 12,
+      "print_ready": true,
+      "self_contained": "Yes, no external CDN except allowed Mermaid/Chart.js (not used)"
+    }
+  },
+  {
+    "format": "pdf",
+    "file": "OUTPUTS/presentation.pdf",
+    "verdict": "FAIL",
+    "issues": [
+      {
+        "location": "presentation.pdf generation",
+        "type": "environmental_constraint",
+        "description": "PDF file cannot be generated in this environment. No PDF rendering tool (wkhtmltopdf, headless Chrome, etc.) is available. The HTML file is complete and print-ready with proper @media print styles configured. PDF can be generated manually via browser print-to-PDF (Ctrl+P or Cmd+P in any modern browser, then print to PDF). All slide break logic is configured in CSS.",
+        "severity": "blocking"
+      }
+    ],
+    "placeholder_found": false,
+    "workaround": "Open presentation.html in any browser and use browser's native print-to-PDF functionality. This produces a pixel-perfect PDF matching the screen layout. Alternatively, use a command-line tool like 'wkhtmltopdf presentation.html presentation.pdf' or Puppeteer/Playwright outside this environment."
+  }
+]

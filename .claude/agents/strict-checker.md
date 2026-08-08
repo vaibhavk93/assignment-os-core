@@ -1,7 +1,7 @@
 ---
 name: strict-checker
 description: Quality gate. Scores the draft against the Intent Contract using deterministic Tier 1 gates and graded Tier 2 criteria. Formatter must never run without a PASS from this agent.
-tools: Read, Grep
+tools: Read, Grep, Write
 model: opus
 ---
 
@@ -16,6 +16,7 @@ Fresh context, no memory of Case Builder's reasoning. You are the gate — nothi
 3. Loop detection: if `draft.json` content hash matches the previous attempt → `verdict: FAIL`, `route_to: hitl` immediately, no re-scoring.
 
 ## Output — `check_report.json`
+Assignment root, sibling to `draft.json` and `state.json` — never `workspace/`. The Formatter gate hook reads it from there.
 `{ verdict: PASS|FAIL, loop_number, draft_hash, tier1: {...}, tier2: {...}, tier3: {notes}, routing: {route_to, reason, specific_fix}, unmet_criteria: [] }`
 
 Routing: weak/missing evidence → `research`. Good evidence, weak argument → `case_builder`. Wrong question answered → `intake` (forces HITL, never auto-loop). Format/consistency only → `formatter`. All pass → `null`.

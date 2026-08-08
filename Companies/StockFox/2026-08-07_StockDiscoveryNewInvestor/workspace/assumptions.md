@@ -1,0 +1,9 @@
+# Assumptions Register
+
+Each assumption states the condition that would invalidate it. All are labelled `source_type: ungrounded` — reasoned inference, not directly evidenced.
+
+1. **No Explore-style discovery surface exists yet in the current StockFox beta.** Confidence: 0.4. Falsifier: the Loom beta walkthrough (unviewed this pass, no video capability) shows a curated or thematic discovery home already shipped. If so, this design is a v2 critique against an existing surface, not net-new scope.
+2. **The "first 3 stock analyses free" meter counts full Scorecard opens specifically.** Confidence: 0.5. Falsifier: StockFox confirms the metered unit is something else, e.g. AI Research Copilot queries. The gating point (deck section S5) would need to move to match.
+3. **A pre-click card can carry ~4–5 data points before it tips from inviting to intimidating.** Confidence: 0.45. Falsifier: usability testing with real novice users shows they want more before they'll click at all (e.g., price is table-stakes, not optional). No study tests this exact number for stock cards; it's a bridge from general cognitive-load research (Miller 1956, Cowan 2001), not a tested finding.
+4. **Disclosed, objectively-sorted rails sit outside SEBI's broadened "opinion on securities" definition.** Confidence: 0.4. Falsifier: SEBI, or StockFox's own counsel, determines that criteria-based grouping itself constitutes an implicit recommendation. Flagged in the underlying research as genuinely unresolved, not settled law.
+5. **StockFox's existing confidence-score tracking is a per-user signal that moves week to week, not a one-time onboarding quiz.** Confidence: 0.5. Falsifier: the score is computed once at signup and never recomputed. The harm guardrail in the metrics section can't be measured as specified and needs a substitute, e.g. a self-reported conviction rating captured at each Scorecard open.
