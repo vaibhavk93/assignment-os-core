@@ -45,6 +45,16 @@ def load_json(path):
         return {}
 
 
+def is_stale(evidence, source):
+    """True when `evidence` was written before `source` — i.e. it describes an older version.
+    Equal mtimes pass: a coarse filesystem clock shouldn't strand a legitimate run. Either
+    file missing is not staleness; the caller's own existence checks handle that."""
+    try:
+        return os.path.getmtime(evidence) < os.path.getmtime(source)
+    except OSError:
+        return False
+
+
 def read_int(d, key):
     try:
         return int((d or {}).get(key) or 0)
@@ -95,6 +105,13 @@ def main():
         if not os.path.exists(report):
             deny("Formatter blocked: no check_report.json in %s. Run strict-checker first."
                  % os.path.basename(adir))
+        # A PASS is evidence about the draft the checker actually read. Re-running any
+        # upstream stage rewrites draft.json and leaves that evidence describing a draft
+        # that no longer exists -- so freshness is part of the gate, not a nicety.
+        if is_stale(report, os.path.join(adir, "draft.json")):
+            deny("Formatter blocked: draft.json is newer than check_report.json, so the PASS "
+                 "describes an older draft. Re-run strict-checker against the current draft. "
+                 'To bypass deliberately, set "gate_override": "<reason>" in state.json.')
         try:
             verdict = str(json.load(open(report)).get("verdict") or "").upper()
         except Exception:
@@ -166,6 +183,19 @@ def selftest():
         assert read_int({}, "loop_count") == 0            # missing key -> 0, not a crash
         assert read_int({"loop_count": "oops"}, "loop_count") == 0   # garbage -> 0
         assert load_json("/nonexistent/x.json") == {}     # absent report -> {}, fail open
+
+        # Staleness. The regression: re-running case-builder rewrites draft.json, leaving a
+        # PASS that describes a draft nobody checked -- the formatter gate then ships it.
+        draft, report = os.path.join(tmp, "draft.json"), os.path.join(tmp, "check_report.json")
+        for p in (draft, report):
+            open(p, "w").write("{}")
+        os.utime(report, (1000, 1000)); os.utime(draft, (9000, 9000))
+        assert is_stale(report, draft) is True            # draft rewritten after the PASS
+        os.utime(report, (9001, 9001))
+        assert is_stale(report, draft) is False           # checker re-run -> fresh again
+        os.utime(report, (9000, 9000))
+        assert is_stale(report, draft) is False           # equal mtimes must not strand a run
+        assert is_stale("/nonexistent", draft) is False   # missing file isn't staleness
     print("gate_check selftest: ok")
 
 

@@ -80,7 +80,7 @@ Every agent's real output is the **file it writes**. Its return message is a rec
 The first two are **enforced in code**, not on the honour system: a `PreToolUse` hook in `.claude/settings.json` runs `Global/scripts/gate_check.py` on every agent call and denies the ones below before the agent spawns.
 
 - **Evidence gate:** `research-planner` never runs while `workspace/evidence_contract.md` exists and `state.json.evidence_contract.status != "resolved"`. Written by `intake-intent`, resolved row-by-row at `/intent-confirm`. Every row ends `supplied` or `waived`, and a waived row's consequence is carried verbatim into the deliverable's assumptions. Researching around an artifact nobody looked at is how a 0.4-confidence assumption ends up under the lead recommendation.
-- **Formatter gate:** never runs unless `check_report.json.verdict == "PASS"`. Non-negotiable.
+- **Formatter gate:** never runs unless `check_report.json.verdict == "PASS"` **and** that report is at least as new as `draft.json`. A PASS is evidence about the draft the checker actually read; re-running any upstream stage rewrites the draft and leaves the PASS describing something that no longer exists. Non-negotiable.
 - **Loop cap:** `state.json.loop_count` reaching 2 on a Checker FAIL → surface HITL immediately, never a third auto-loop.
 - **Deliberate override:** set `"gate_override": "<reason>"` in the assignment's `state.json` to bypass either gate. Requires opening the file and writing a reason, so it can't be tripped by accident. Clear it once you're past the exception.
 - **Research expansion:** never run an extra research pass without explicit user approval.
