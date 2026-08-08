@@ -66,6 +66,9 @@ Assignment OS/
 
 **Why 4 and 5 are separate agents:** an agent that already knows which recommendation it is about to defend cannot neutrally eliminate the alternatives — it reverse-engineers the rejects into justification. That is not hypothetical: StockFox's `tradeoffs.md` `rejected_alternative` entries were written after the decision, so the options were never real candidates. Same reasoning that makes `panel-reviewer` fresh-context, one stage earlier. Rationale in `Documents/ROADMAP.md` — do not re-argue it.
 
+**Conditional, fires automatically when it applies:**
+- `ai-justification` runs after `case-builder`, alongside `panel-reviewer`, **only when the proposed solution contains AI/ML components**. Asks whether that AI earns its place — *should* AI do this, not *can* it. Distinct from the `ai_smell` persona, which asks whether the deck reads as machine-written. Reports to `workspace/ai_justification.md`; never edits `draft.json`. Skipped silently on assignments with no AI in the recommendation, which is why it costs nothing to leave enabled.
+
 Optional, opt-in, both advisory and non-blocking, both skipped by default:
 - `executive-reviewer` (via `/output-select`) runs after a Checker PASS — only worth it for genuinely executive audiences.
 - `interview-prep` (via `/interview-prep`) runs after Formatter, whenever an interview is actually scheduled — including on an assignment already marked `complete`. Reads the finished draft, writes `OUTPUTS/interview_prep.md`, re-runs nothing. Off by default because it's an opus-tier read of every artifact, and most submissions never get shortlisted.

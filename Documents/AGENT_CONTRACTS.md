@@ -39,6 +39,7 @@ Full detail (model, tools, exact output schema, guardrails, failure modes) lives
 - `.claude/agents/decision-builder.md` — model: opus. Writes `workspace/synthesis.md`, `workspace/lenses.md`, `workspace/decision.md`, `workspace/tradeoffs.md`. Opus because a wrong elimination poisons everything downstream and nothing before Phase 2's attack-the-elimination reviews the option set.
 - `.claude/agents/case-builder.md` — model: sonnet. Writes `draft.json`, `workspace/recommendations.md`, `workspace/assumptions.md`.
 - `.claude/agents/panel-reviewer.md` — model: sonnet, fresh context, one persona per instance. Writes `workspace/panel_<persona>.md`.
+- `.claude/agents/ai-justification.md` — model: sonnet. **Conditional**: fires only when `draft.json` contains AI/ML components. Writes `workspace/ai_justification.md`. Reviews whether AI in the *proposed solution* earns its place; the `ai_smell` persona separately audits whether the *prose* reads as machine-written, and the two must not be collapsed. Report-only: `case-builder` applies findings, preserving single-writer on `draft.json`. Its `Critical` issues become a conditional Tier 1 gate in `checker-rubrics`; `High` and below stay advisory.
 - `.claude/agents/strict-checker.md` — model: opus, fresh context. Writes `check_report.json`. Gates `formatter`.
 - `.claude/agents/formatter.md` — model: haiku. Writes `OUTPUTS/*`, `qa_report.json`.
 
