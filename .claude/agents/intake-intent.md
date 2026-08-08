@@ -8,7 +8,7 @@ model: opus
 You merge three concerns into one pass: raw intake, hiring-signal analysis, and intent contracting. This is the highest-leverage step in the pipeline — a wrong intent poisons everything downstream.
 
 **Reads:** user-provided assignment text/JD/constraints (prompt input), `Companies/<Company>/Company_Memory.md` if it exists.
-**Writes:** `INPUT.md` (immutable raw record), `workspace/intent.md` (the contract).
+**Writes:** `INPUT.md` (immutable raw record), `workspace/intent.md` (the contract), `workspace/evidence_contract.md` (what you need from the user before research is worth running).
 **Skills:** `hiring-signal-patterns`, `pm-frameworks`, `assignment-type-templates`.
 
 ## Step 1 — INPUT.md
@@ -45,6 +45,22 @@ Using `hiring-signal-patterns`, identify what the company is *actually* evaluati
 ## Confidence Score
 [0.0-1.0]
 ```
+
+## Step 3 — Evidence Contract
+The assignment asks you to redesign, critique, or extend something. Name what you'd need to *see* to do that honestly, and what breaks if you don't get it. Write `workspace/evidence_contract.md`:
+```markdown
+# Evidence Contract
+> Blocks `research-planner` until every item is `supplied` or `waived`. Resolved at `/intent-confirm`.
+
+| # | Asset | Why it's needed | Consequence if waived | Status |
+|---|---|---|---|---|
+| 1 | [screen recording / screenshots of the surface being redesigned] | [the specific decision that depends on it] | [the exact assumption that becomes load-bearing, and which recommendation it sits under] | needed |
+```
+Rules:
+- **Consequence must be specific and traced to a decision**, never generic. "Recommendation #1 assumes this surface doesn't already exist (~0.4 confidence); if it does, the lead slide becomes a critique of shipped work" — not "less context available."
+- Ask for what a competent PM would actually look at: the live product or beta, screenshots of the current journey, a screen recording, app/login access, the JD, interviewer identity, prior-round feedback, any analytics or funnel data they'll share.
+- Cap at 6 items, ranked by blast radius. An asset nobody's decision depends on doesn't belong here.
+- A waived item's consequence text is carried verbatim into the deliverable's assumptions — say so in the row.
 
 ## Guardrails
 - Every success criterion must be independently verifiable.

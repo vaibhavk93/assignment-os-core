@@ -52,7 +52,7 @@ Assignment OS/
 
 | # | Agent | Merges (history) | Reads → Writes |
 |---|---|---|---|
-| 1 | `intake-intent` | Intake + Hiring Signal + Intent | user input → `INPUT.md`, `workspace/intent.md` |
+| 1 | `intake-intent` | Intake + Hiring Signal + Intent | user input → `INPUT.md`, `workspace/intent.md`, `workspace/evidence_contract.md` |
 | 2 | `research-planner` | Classifier + Context Builder + Research Planner | `intent.md` → `context.md`, `research_plan.md` |
 | 3 | `research-executor` | (unchanged, parallel) | one question → `research_<qid>.md` |
 | 4 | `case-builder` | Insight Synthesizer + Case Builder | `research_*.md` → `draft.json` |
@@ -68,6 +68,7 @@ Stage 3 fans out: one `research-executor` per question, in parallel, **max 4 con
 
 The first two are **enforced in code**, not on the honour system: a `PreToolUse` hook in `.claude/settings.json` runs `Global/scripts/gate_check.py` on every agent call and denies the ones below before the agent spawns.
 
+- **Evidence gate:** `research-planner` never runs while `workspace/evidence_contract.md` exists and `state.json.evidence_contract.status != "resolved"`. Written by `intake-intent`, resolved row-by-row at `/intent-confirm`. Every row ends `supplied` or `waived`, and a waived row's consequence is carried verbatim into the deliverable's assumptions. Researching around an artifact nobody looked at is how a 0.4-confidence assumption ends up under the lead recommendation.
 - **Formatter gate:** never runs unless `check_report.json.verdict == "PASS"`. Non-negotiable.
 - **Loop cap:** `state.json.loop_count` reaching 2 on a Checker FAIL → surface HITL immediately, never a third auto-loop.
 - **Deliberate override:** set `"gate_override": "<reason>"` in the assignment's `state.json` to bypass either gate. Requires opening the file and writing a reason, so it can't be tripped by accident. Clear it once you're past the exception.
@@ -107,7 +108,9 @@ The first two are **enforced in code**, not on the honour system: a `PreToolUse`
 
 ## State Management
 
-`state.json` fields: `current_stage`, `loop_count`, `status` (active\|complete\|paused\|failed), `selected_outputs`, `optional_stages`, `outcome` (pending\|advanced\|rejected — set by `/debrief`).
+`state.json` fields: `current_stage`, `loop_count`, `status` (active\|complete\|paused\|failed), `selected_outputs`, `optional_stages`, `outcome` (pending\|advanced\|rejected — set by `/debrief`), `evidence_contract` (`{status: pending|resolved}` — gates `research-planner`).
+
+`gate_check.py` resolves "the active assignment" as the most recently modified `state.json` whose `status` is **not** `complete` — plain mtime would let a `/debrief`-ed old assignment hijack the gate for a live run.
 
 ---
 
