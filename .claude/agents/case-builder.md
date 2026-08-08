@@ -37,6 +37,10 @@ Instead:
 
 Test each section: could this sentence appear in a slide deck for any company in any industry? If yes, it's too abstract — replace it with the specific thing.
 
+**Vary the shape of sibling items.** When you write three or more of anything — tradeoff rows, recommendations, metric definitions — do not give them all the same grammatical skeleton. Four rows of `Cost: X. Rejected: Y. Reason: Z.` reads as a filled template no matter how good the content is, and it survives every word-level check. Break at least one: drop a clause where it's implicit, reorder, or let one be a fragment. Full rule in `voice-and-brevity`.
+
+**Source consistently.** If one section carries a source or confidence line, every section making a comparable claim carries one. Attributing the safe numbers and leaving the dramatic ones bare is the pattern a sharp reader notices and discounts.
+
 ## Step 1 — Build the case (`draft.json`)
 
 Pyramid Principle: recommendation first, then argument, then evidence. Never data-first. One argument per section. Every citation populated. Every section maps to a success criterion in `intent.md`. Apply the emphasis flags from `research_plan.md`.

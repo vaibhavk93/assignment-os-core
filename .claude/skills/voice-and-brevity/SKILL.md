@@ -37,6 +37,26 @@ The consultant-speak bans and the "never name the framework" rule already live i
 
 One hit is a defect, not a style note. Rewrite the sentence around the thing it was decorating.
 
+## Structural uniformity — the tell that survives every word-level check
+
+Every rule above operates on sentences. This one operates on shape, which is why a deck can pass the whole blocklist and still read as machine-written.
+
+**Three or more sibling items sharing an identical grammatical skeleton is a filled template, because it is one.** Tradeoff rows, recommendation blocks, metric definitions, persona cards — if each one is `[Thing]. Cost: X. Rejected: Y. Reason: Z.` with only the nouns swapped, a reader clocks the mould before they read the content.
+
+A person writing under time pressure does not produce four identical rows. One is two clauses because that was all there was to say. One is a fragment. One carries an aside that did not fit anywhere else. One drops the third clause because it was obvious.
+
+**Rule:** in any set of three or more siblings, at least one must break the pattern — different clause count, different ordering, or a dropped clause where it is implicit. Uniformity is not tidiness here; it is the fingerprint.
+
+Same applies to rhythm: if every slide body is three bullets of near-identical length, vary one. Real emphasis is uneven.
+
+## One citation convention, applied everywhere
+
+Selective sourcing reads as content assembled across different passes, which is exactly what it is. **If any slide carries a source or confidence line, every slide making a comparable factual claim carries one.**
+
+The specific failure to avoid: the safe, checkable numbers get attributed while the dramatic ones sit bare. A reader who notices that the competitor table is sourced but "93% lost money" is not will discount the second number, and reasonably so — it looks like the number nobody wanted to attach a source to.
+
+Pick one treatment (inline footnote, per-slide source line, or a numbered endnote slide), then apply it to every factual claim of the same weight. Not the ones that were easy.
+
 ## The compression test
 
 For every line: **if I delete this line, what question becomes unanswerable?**
