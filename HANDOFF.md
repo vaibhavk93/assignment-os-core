@@ -1,6 +1,6 @@
 # Assignment OS — Handoff Log
 
-_Last updated: 2026-08-08 by `/handover`_
+_Last updated: 2026-08-08 — Roadmap Phases 1–3 shipped_
 
 Claude has no memory across sessions. Read this + `CLAUDE.md` first — do not re-derive context that's already here.
 
@@ -33,7 +33,9 @@ Prior: `Companies/Ixigo/2026-07-05_InternationalBookingExperience/` — complete
 
 ## Known Issues / Gotchas
 
-- **Roadmap Phase 1 is next:** new `decision-builder` stage between research and case-builder; `case-builder` shrinks to argue-only. Rationale in `ROADMAP.md` — do not re-argue it.
+- **Roadmap Phases 1–3 are done** (`4e13b70`, `b2b8218`, `7c38ef9`). Phase 4 is blocked on `/debrief`; Phase 5 is deliberately deferred until the library is large. **Every implementable phase is now shipped** — the next real work is running an assignment, not building.
+- **The 8-stage pipeline has never run end to end.** `decision-builder` has never executed against a real assignment; StockFox completed on the 7-stage version. The gates around it are verified (live denial proven both ways, selftest asserts the new freshness link in both directions), but the stage's *output quality* is unobserved. The next assignment is its first real test.
+- **Three agents shipped write-blind and were fixed mid-run** (`devils-advocate`, `strict-checker`, `executive-reviewer` had read-only `tools:` while their contracts said they write files). An audit now covers all agents; re-run it after adding any agent: check each `**Writes:**` line has a matching `Write` in frontmatter.
 - **`effort:` on all 9 agents is unverified.** Set on research indicating Claude Code honours the frontmatter field; never confirmed at runtime. If it's inert, those lines do nothing.
 - **The Evidence Contract gate has never executed.** Built and unit-tested, but StockFox was already `complete`. Untested in a real flow.
 - **Fan-out caps are prose-only.** `research-executor` (×4) and `panel-reviewer` (×5) aren't in `gate_check.py`'s `GATED` tuple. Deliberately not enforced: a `PreToolUse` hook has no completion signal, so counting concurrency needs stale-entry expiry, and a false denial mid-run is worse than the retryable session error it would prevent.
