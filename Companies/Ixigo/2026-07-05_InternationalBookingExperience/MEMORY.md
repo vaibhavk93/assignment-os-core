@@ -162,3 +162,30 @@ Medium-severity (documented but not fully restructured):
 - "Why now" anchor = live, dated market event → single best way to make business case concrete
 - GMV multiplier → always stress-test as range (conservative/base/upside), never point estimate
 - Rollout sequencing → show you weighed "easiest" vs "most defensible" and chose with explicit rationale
+
+---
+
+## Outcome (added via `/debrief` on 2026-08-08)
+
+- **Result: rejected — at screening, no interview.** The submission did not convert to a shortlist.
+- **Interviewer feedback:** none received.
+- **Predicted vs actual questions:** **not testable.** All 11 questions in `OUTPUTS/interview_qa.md` were written for a discussion that never happened. The prep artifact cost real tokens and returned nothing, because it was produced before knowing whether it would ever be used. This is the evidence behind making `interview-prep` opt-in and post-shortlist rather than a default stage.
+
+### What this does and does not tell us
+
+**Does:** the internal quality gate passed this (Checker PASS, loop 1) and the system carried it as a completed success for a month. Reality disagreed at the first screen. A PASS means "meets our rubric", not "clears a real bar".
+
+**Does not:** say *why*. With zero feedback, attributing the rejection to deck length, structure, thesis, or fit would be invention. Rejections at screening are frequently pipeline noise — role filled, seniority mismatch, volume — and are often unrelated to artifact quality. **No cause is recorded here on purpose.**
+
+### Hypothesis to test against StockFox — explicitly NOT a learning
+
+The two runs differ structurally, which gives one controlled comparison when StockFox resolves:
+
+| | Ixigo (rejected at screening) | StockFox (pending) |
+|---|---|---|
+| Stated length limit | none — "No slide count or word limit stated" | ≤10 pages, restated 4× in the brief |
+| Delivered | 12-slide deck + 11-question prep doc + 3 variant HTML files | 8 body + cover + 2 appendix |
+| JD provided | no | no |
+| Checker | PASS loop 1 | PASS loop 0 |
+
+If StockFox also fails at screening, deck length is not the variable and the problem is upstream — the hiring-signal read, or targeting. If StockFox converts, length discipline becomes a candidate learning worth one more data point before promotion. **n=1 supports neither conclusion today.**

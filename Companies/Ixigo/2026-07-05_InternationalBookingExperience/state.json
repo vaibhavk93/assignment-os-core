@@ -7,11 +7,19 @@
   "last_checkpoint": "2026-07-05T10:00:00Z",
   "hitl_nudge_count": 1,
   "status": "complete",
-  "selected_outputs": ["slide_deck", "interview_qa"],
-  "skipped_stages": ["exec_review"],
+  "selected_outputs": [
+    "slide_deck",
+    "interview_qa"
+  ],
+  "skipped_stages": [
+    "exec_review"
+  ],
   "budget": {
     "complexity": "deep",
     "estimated_runtime_minutes": null,
     "approved": false
-  }
+  },
+  "outcome": "rejected",
+  "rejected_stage": "screening",
+  "debrief_last_run": "2026-08-08"
 }

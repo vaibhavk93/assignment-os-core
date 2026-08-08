@@ -37,3 +37,7 @@ No clear recommendation (excessive hedging). No numbers/estimates. Unstated assu
 
 ## Learnings Log (appended by /debrief after real interview outcomes)
 <!-- /debrief appends dated entries here: what actually got asked vs predicted, what worked, what didn't. This is the system's only real feedback loop on its stated goal — do not delete entries. -->
+
+**2026-08-08 — Ixigo (`case_study`, no length limit stated): rejected at screening. No interview, no feedback.** First measured outcome this system has ever had. The Checker PASSed it on loop 1 and it was carried as a completed success for a month — the internal gate did not predict conversion. **Treat a Checker PASS as "meets our rubric", never as evidence the submission clears a real screen.** No cause is recorded because none was given; attributing it to deck length or structure would be invention.
+
+**2026-08-08 — Prep written before a shortlist is waste.** Ixigo's 11-question `interview_qa.md` was produced at submission time for a discussion that never happened. Most submissions are not shortlisted, so rehearsal material is worth building only *after* an interview is scheduled — which is why `interview-prep` is opt-in and post-shortlist, not a default stage.
